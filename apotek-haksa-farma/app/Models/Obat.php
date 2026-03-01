@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Obat extends Model
+{
+    protected $fillable = [
+        'id_kategori',
+        'id_satuan',
+        'kode_obat',
+        'nama_obat',
+        'harga_beli',
+        'harga_jual',
+        'batas_stok_minimal',
+        'gambar',
+    ];
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'id_kategori');
+    }
+
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class, 'id_satuan');
+    }
+
+    public function pembelianDetails()
+    {
+        return $this->hasMany(DetailPembelian::class, 'id_obat');
+    }
+
+    public function penjualanDetails()
+    {
+        return $this->hasMany(DetailPenjualan::class, 'id_obat');
+    }
+
+    public function stokBatches()
+    {
+        return $this->hasMany(StokBatch::class, 'id_obat');
+    }
+
+    public function getTotalStokAttribute()
+    {
+        return $this->stokBatches()->sum('stok_sisa');
+    }
+
+    public function getTanggalKadaluarsaAttribute()
+    {
+        $batch = $this->stokBatches()->where('stok_sisa', '>', 0)->orderBy('tgl_expired', 'asc')->first();
+        if ($batch) {
+            return $batch->tgl_expired;
+        }
+        
+        // Fallback jika tidak ada stok sisa tapi ada batch 
+        $anyBatch = $this->stokBatches()->orderBy('tgl_expired', 'asc')->first();
+        return $anyBatch ? $anyBatch->tgl_expired : null;
+    }
+}
