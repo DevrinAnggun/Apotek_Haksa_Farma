@@ -162,7 +162,7 @@ class PenjualanController extends Controller
 
             DB::commit();
 
-            return redirect()->route('laporan.penjualan')->with('success', "Transaksi Selesai! (Invoice: {$noInvoice}) Kembalian: Rp. " . number_format($kembalian, 0, ',', '.'));
+            return redirect()->route('laporan.penjualan')->with('success', "Transaksi Selesai! Kembalian: Rp. " . number_format($kembalian, 0, ',', '.'));
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -200,7 +200,7 @@ class PenjualanController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', "Transaksi " . $penjualan->no_invoice . " berhasil dihapus dan stok telah dikembalikan.");
+            return redirect()->back()->with('success', "Transaksi berhasil dihapus dan stok telah dikembalikan.");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal Hapus Transaksi: ' . $e->getMessage());

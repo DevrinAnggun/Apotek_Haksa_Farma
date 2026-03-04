@@ -14,10 +14,16 @@ class KadaluarsaController extends Controller
      */
     public function index()
     {
-        // Tampilkan batch yang SUDAH expired atau H-30 (≤ 30 hari lagi akan expired)
-        $batasHari = Carbon::now()->addDays(30);
+        // Tampilkan batch yang SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
+        $batasHari = Carbon::now()->addDays(7);
 
-        $kadaluarsas = StokBatch::with(['obat.kategori'])
+        $kadaluarsas = StokBatch::with([
+            'obat' => function($q) {
+                $q->withSum('penjualanDetails as total_terjual', 'qty');
+            }, 
+            'obat.kategori'
+        ])
+            ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasHari)
             ->orderBy('tgl_expired', 'asc')
             ->get();

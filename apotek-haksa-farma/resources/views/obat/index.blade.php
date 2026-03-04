@@ -60,11 +60,12 @@
             <tr class="border-b border-gray-300">
                 <th class="py-3 px-4 font-bold text-gray-800 text-center w-16 relative">No<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                 <th class="py-3 px-6 font-bold text-gray-800 relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Harga<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Satuan<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Stok<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Tgl Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center">Aksi</th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-40 relative">Harga<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-28 relative">Satuan<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-24 relative">Stok<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-24 relative text-xs">Terjual<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-40 relative">Tgl Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-6 font-bold text-gray-800 text-center w-28">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +76,11 @@
                 <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">Rp.{{ number_format($obat->harga_jual, 0, ',', '.') }}</td>
                 <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">{{ $obat->satuan->nama_satuan ?? '—' }}</td>
                 <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">{{ $obat->total_stok }}</td>
+                <td class="py-3 px-6 text-center text-gray-800 border-r border-gray-100">
+                    <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
+                        {{ $obat->total_terjual ?? 0 }}
+                    </span>
+                </td>
                 <td class="py-3 px-6 text-center border-r border-gray-100">
                     @if($obat->tanggal_kadaluarsa)
                         <span class="font-medium {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-500 font-bold' : 'text-gray-800' }}">
@@ -84,15 +90,7 @@
                         <span class="text-gray-400 italic">Kosong</span>
                     @endif
                 </td>
-                <td class="py-3 px-6 flex justify-center items-center space-x-2">
-                    <!-- Tombol Hapus (buka modal konfirmasi) -->
-                    <button type="button"
-                        onclick="openHapusModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}')"
-                        class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition"
-                        title="Hapus">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                    </button>
-
+                <td class="py-3 px-6 flex justify-center items-center gap-1">
                     <!-- Tombol Edit (buka modal edit) -->
                     <button type="button"
                         data-id="{{ $obat->id }}"
@@ -105,9 +103,17 @@
                         data-harga-beli="{{ $obat->harga_beli }}"
                         data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
                         onclick="openEditModal(this)"
-                        class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition"
+                        class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition shadow-sm"
                         title="Edit">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </button>
+
+                    <!-- Tombol Hapus (buka modal konfirmasi) -->
+                    <button type="button"
+                        onclick="openHapusModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}')"
+                        class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm"
+                        title="Hapus">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                 </td>
             </tr>
@@ -125,7 +131,7 @@
 {{--  MODAL TAMBAH BARANG                                          --}}
 {{-- ============================================================ --}}
 <div id="modalTambah" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeTambahModal()"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTambahModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal">
         <!-- Header -->
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
@@ -192,7 +198,7 @@
 {{--  MODAL EDIT BARANG                                            --}}
 {{-- ============================================================ --}}
 <div id="modalEdit" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeEditModal()"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal">
         <!-- Header -->
         <div class="bg-green-800 px-6 py-4 flex items-center justify-between text-white">
@@ -256,7 +262,7 @@
 {{--  MODAL KONFIRMASI HAPUS                                       --}}
 {{-- ============================================================ --}}
 <div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeHapusModal()"></div>
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeHapusModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 animate-modal">
         <!-- Pesan -->
         <div class="px-6 pt-6 pb-4 text-center">
@@ -270,7 +276,7 @@
             <button type="button" onclick="closeHapusModal()" class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
             <form id="formHapus" action="" method="POST" class="flex-1">
                 @csrf @method('DELETE')
-                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
             </form>
         </div>
     </div>
@@ -278,7 +284,7 @@
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
 <div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->
         <div class="flex justify-center mb-5">

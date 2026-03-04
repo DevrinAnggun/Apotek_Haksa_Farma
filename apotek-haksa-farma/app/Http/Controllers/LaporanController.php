@@ -14,20 +14,37 @@ class LaporanController extends Controller
      */
     public function penjualan(Request $request)
     {
-        // Set default filter: 30 hari ke belakang (bulanan) sampai hari ini
-        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+        // Ambil range tanggal yang tersedia di database untuk default UI
+        $firstSale = Penjualan::orderBy('tgl_penjualan', 'asc')->first();
+        $lastSale  = Penjualan::orderBy('tgl_penjualan', 'desc')->first();
+        
+        $defaultStart = $firstSale ? \Carbon\Carbon::parse($firstSale->tgl_penjualan)->format('Y-m-d') : Carbon::now()->subDays(30)->format('Y-m-d');
+        $defaultEnd   = $lastSale ? \Carbon\Carbon::parse($lastSale->tgl_penjualan)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
 
-        // Query berdasarkan range tanggal (mengabaikan jam dengan date())
-        $penjualans = Penjualan::with('user')
-            ->whereDate('tgl_penjualan', '>=', $startDate)
-            ->whereDate('tgl_penjualan', '<=', $endDate)
-            ->latest('tgl_penjualan')
-            ->get();
+        // Gunakan input user jika ada, jika tidak ada (klik "Lihat Semua"), jangan filter database
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
 
+        $query = Penjualan::has('details')->with(['user', 'details.obat.kategori', 'details.obat.satuan']);
+
+        if ($startDate && $endDate) {
+            $query->whereDate('tgl_penjualan', '>=', $startDate)
+                  ->whereDate('tgl_penjualan', '<=', $endDate);
+        }
+
+        $penjualans = $query->latest('tgl_penjualan')->get();
         $totalPendapatan = $penjualans->sum('total_harga');
 
-        return view('laporan.penjualan', compact('penjualans', 'startDate', 'endDate', 'totalPendapatan'));
+        // Untuk input field di view, tampilkan tanggal yang sedang aktif atau default
+        $viewStart = $startDate ?: $defaultStart;
+        $viewEnd   = $endDate   ?: $defaultEnd;
+
+        return view('laporan.penjualan', [
+            'penjualans' => $penjualans,
+            'startDate' => $viewStart,
+            'endDate' => $viewEnd,
+            'totalPendapatan' => $totalPendapatan
+        ]);
     }
 
     /**
@@ -35,7 +52,10 @@ class LaporanController extends Controller
      */
     public function cetakPdf(Request $request)
     {
-        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $firstSale = Penjualan::orderBy('tgl_penjualan', 'asc')->first();
+        $defaultStart = $firstSale ? \Carbon\Carbon::parse($firstSale->tgl_penjualan)->format('Y-m-d') : Carbon::now()->subDays(30)->format('Y-m-d');
+
+        $startDate = $request->input('start_date', $defaultStart);
         $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
         $penjualans = Penjualan::with('user')

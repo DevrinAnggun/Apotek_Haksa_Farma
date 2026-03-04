@@ -15,7 +15,8 @@ class ObatController extends Controller
     {
         // Fitur with() adalah best practice Eager Loading di Laravel, 
         // fungsinya mencegah masalah "N+1 Query" agar database tidak lemot saat meload ribuan baris relasi.
-        $query = Obat::with(['kategori', 'satuan']);
+        $query = Obat::with(['kategori', 'satuan'])
+                     ->withSum('penjualanDetails as total_terjual', 'qty');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;

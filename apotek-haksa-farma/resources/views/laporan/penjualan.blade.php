@@ -76,25 +76,57 @@
     <div class="p-6 flex-1 overflow-auto">
         <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4 flex justify-between items-center">
             Daftar Transaksi Selesai
-            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full w-auto">
-                Riwayat Tersimpan
-            </span>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('laporan.penjualan') }}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full hover:bg-blue-200 transition">
+                    Lihat Semua
+                </a>
+                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full w-auto">
+                    Riwayat Tersimpan
+                </span>
+            </div>
         </h3>
     
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse min-w-max">
                 <thead>
-                    <tr class="border-b border-gray-200 text-gray-500 text-sm uppercase">
-                        <th class="py-3 px-3 font-semibold w-12 text-center">No</th>
-                        <th class="py-3 px-3 font-semibold">Tanggal Transaksi</th>
-                        <th class="py-3 px-3 font-semibold">Nama Obat</th>
-                        <th class="py-3 px-3 font-semibold">Jenis Obat</th>
-                        <th class="py-3 px-3 font-semibold">Satuan</th>
-                        <th class="py-3 px-3 font-semibold text-center">Stok Sisa</th>
-                        <th class="py-3 px-3 font-semibold text-right">Harga Satuan</th>
-                        <th class="py-3 px-3 font-semibold text-center w-24">Qty</th>
-                        <th class="py-3 px-3 font-semibold text-right">Total Transaksi</th>
-                        <th class="py-3 px-3 font-semibold text-center w-20">Aksi</th>
+                    <tr class="border-b border-gray-300">
+                        <th class="py-3 px-3 font-bold text-gray-800 text-center w-12 relative">
+                            No
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-32 relative">
+                            Tanggal
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center relative">
+                            Nama Obat
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-28 relative">
+                            Jenis
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-24 relative">
+                            Satuan
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-20 relative text-blue-600">
+                            Stok
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-32 relative">
+                            Harga
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-2 font-bold text-gray-800 text-center w-12 relative">
+                            Qty
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-36 relative">
+                            Total
+                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
+                        </th>
+                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-24">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,24 +144,25 @@
                             });
                         @endphp
                         @foreach($penjualan->details as $detail)
-                            <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                <td class="py-3 px-3 text-center text-gray-800">{{ $no++ }}</td>
-                                <td class="py-3 px-3 text-gray-600 text-sm whitespace-nowrap">
+                            <tr class="border-b border-gray-100 hover:bg-gray-50 transition text-sm">
+                                <td class="py-2 px-3 text-center font-medium text-gray-800 border-r border-gray-50">{{ $no++ }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center whitespace-nowrap">
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
-                                    <span class="text-[10px] text-gray-400 block">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }} WIB</span>
+                                    <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
-                                <td class="py-3 px-3 font-medium text-gray-800">{{ $detail->obat->nama_obat ?? '-' }}</td>
-                                <td class="py-3 px-3 text-gray-600">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
-                                <td class="py-3 px-3 text-gray-600">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
-                                <td class="py-3 px-3 text-center font-bold {{ ($detail->obat->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->nama_obat ?? '-' }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center text-sm">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
+                                <td class="py-2 px-3 text-center font-bold border-r border-gray-50 {{ ($detail->obat->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
                                     {{ $detail->obat->total_stok ?? 0 }}
                                 </td>
-                                <td class="py-3 px-3 text-right text-gray-600">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
-                                <td class="py-3 px-3 text-center">
-                                    <span class="bg-gray-200 text-black px-2 py-1 rounded font-bold">{{ $detail->qty }}</span>
+                                <td class="py-2 px-3 text-center font-medium text-gray-800 border-r border-gray-50">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
+                                <td class="py-2 px-2 text-center border-r border-gray-50">
+                                    <span class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold text-xs">{{ $detail->qty }}</span>
                                 </td>
-                                <td class="py-3 px-3 text-right font-bold text-gray-800">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
-                                <td class="py-3 px-3 text-center">
+                                <td class="py-2 px-3 text-center font-bold text-gray-800 border-r border-gray-50">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                <td class="py-2 px-3 text-center flex items-center justify-center gap-1">
+                                    {{-- Tombol Lihat Struk --}}
                                     <button type="button" 
                                         onclick='showStruk({
                                             id: "{{ $penjualan->id }}",
@@ -142,6 +175,20 @@
                                         title="Lihat Struk">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                     </button>
+
+                                    {{-- Tombol Hapus Transaksi --}}
+                                    <button type="button" 
+                                        onclick="confirmDelete('{{ $penjualan->id }}')"
+                                        class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm"
+                                        title="Hapus Transaksi">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+
+                                    {{-- Form Hapus (Hidden) --}}
+                                    <form id="form-delete-{{ $penjualan->id }}" action="{{ route('penjualan.destroy', $penjualan->id) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 </td>
                             </tr>
                             @php $grandTotal += $detail->subtotal; @endphp
@@ -161,7 +208,7 @@
     <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-xl flex justify-end items-center gap-4">
         <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Pendapatan Terjual:</p>
         <span class="text-base font-extrabold text-gray-900">
-            Rp{{ number_format($grandTotal, 0, ',', '.') }}
+            Rp{{ number_format($totalPendapatan, 0, ',', '.') }}
         </span>
     </div>
     @endif
@@ -278,8 +325,100 @@
 
     // Close on Escape
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeStruk();
+        if (e.key === 'Escape') {
+            closeStruk();
+            closeDelete();
+        }
     });
+
+    /* ===== LOGIKA HAPUS TRANSAKSI ===== */
+    let activeDeleteId = null;
+
+    function confirmDelete(id) {
+        activeDeleteId = id;
+        const modal = document.getElementById('modalHapus');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDelete() {
+        const modal = document.getElementById('modalHapus');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+        activeDeleteId = null;
+    }
+
+    function executeDelete() {
+        if (activeDeleteId) {
+            showSuccessAnimation('form-delete-' + activeDeleteId, 'Transaksi Berhasil Dihapus!');
+        }
+    }
+
+    /* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
+    function showSuccessAnimation(formId, titleText) {
+        const modal = document.getElementById('modalSukses');
+        document.getElementById('sukses_title').textContent = titleText;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // Restart animasi SVG
+        const circle = modal.querySelector('.circle-anim');
+        const check  = modal.querySelector('.check-anim');
+        circle.style.animation = 'none';
+        check.style.animation  = 'none';
+        circle.getBoundingClientRect(); // trigger reflow
+        check.getBoundingClientRect();
+        circle.style.animation = '';
+        check.style.animation  = '';
+
+        setTimeout(() => {
+            document.getElementById(formId).submit();
+        }, 1500);
+    }
 </script>
+
+{{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
+<div id="modalHapus" class="fixed inset-0 z-[110] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDelete()"></div>
+    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4">
+        <div class="px-6 pt-6 pb-4 text-center">
+            <p class="text-base font-semibold text-gray-800 mb-2">
+                Hapus Transaksi ini?
+            </p>
+            <p class="text-xs text-gray-500">Stok barang pada transaksi ini akan dikembalikan ke data stok.</p>
+        </div>
+        <div class="flex gap-3 px-6 pb-6">
+            <button type="button" onclick="closeDelete()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
+            <button type="button" onclick="executeDelete()" class="flex-1 py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+        </div>
+    </div>
+</div>
+
+{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
+<div id="modalSukses" class="fixed inset-0 z-[120] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
+        <div class="flex justify-center mb-5">
+            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
+                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
+            </svg>
+        </div>
+        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
+        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
+    </div>
+</div>
+
+<style>
+    .sukses-box { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+    .circle-anim { animation: drawCircle 0.65s ease forwards; }
+    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+</style>
 
 @endsection

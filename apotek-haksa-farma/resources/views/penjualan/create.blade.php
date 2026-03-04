@@ -340,7 +340,7 @@
 
 {{-- ===== MODAL TRANSAKSI BERHASIL ===== --}}
 <div id="modalSukses" class="fixed inset-0 z-50 hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->
         <div class="flex justify-center mb-5">

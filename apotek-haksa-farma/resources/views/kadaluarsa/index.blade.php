@@ -4,7 +4,7 @@
 {{-- Header --}}
 <div class="mb-8 text-center flex flex-col items-center">
     <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2">DATA KADALUARSA</h2>
-    <p class="text-sm text-gray-500">Otomatis menampilkan obat yang sudah kadaluarsa atau H-30 (≤ 30 hari lagi) dari data stok</p>
+    <p class="text-sm text-gray-500">Data obat yang sudah kadaluarsa atau H-7 (≤ 7 hari lagi) dari data stok</p>
 </div>
 
 {{-- Alert Success --}}
@@ -35,11 +35,6 @@
         </div>
     </div>
 
-    {{-- Tombol Tambah --}}
-    <button type="button" onclick="bukaModalTambah()"
-        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition shadow text-sm whitespace-nowrap leading-relaxed">
-        + Tambah
-    </button>
 </div>
 
 {{-- Tabel Data Kadaluarsa --}}
@@ -55,19 +50,23 @@
                     Nama Obat
                     <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
                 </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-32 relative">
                     Stok Sisa
                     <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
                 </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-40 relative">
                     Tgl Kadaluarsa
                     <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
                 </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-24 relative">
+                    Terjual
+                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
+                </th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-32 relative">
                     Status
                     <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
                 </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center">Aksi</th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-28">Aksi</th>
             </tr>
         </thead>
         <tbody id="kadaluarsaTableBody">
@@ -77,13 +76,13 @@
                 $expired = \Carbon\Carbon::parse($batch->tgl_expired);
                 $diffDays = (int)$now->diffInDays($expired, false); // negatif = sudah expired
 
-                if ($diffDays < 0) {
-                    $statusLabel = 'Sudah Kadaluarsa';
+                if ($diffDays <= 0) {
+                    $statusLabel = 'Kadaluarsa';
                     $statusClass = 'bg-red-100 text-red-700 border border-red-200';
                     $rowClass    = 'bg-red-50';
                 } else {
                     $hLabel      = 'H-' . $diffDays;
-                    $statusLabel = 'Segera — ' . $hLabel;
+                    $statusLabel = $hLabel;
                     $statusClass = $diffDays <= 7
                         ? 'bg-red-100 text-red-700 border border-red-200'
                         : 'bg-orange-100 text-orange-700 border border-orange-200';
@@ -107,26 +106,23 @@
                     </span>
                 </td>
                 <td class="py-3 px-5 text-center border-r border-gray-100">
+                    <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
+                        {{ $batch->obat->total_terjual ?? 0 }}
+                    </span>
+                </td>
+                <td class="py-3 px-5 text-center border-r border-gray-100">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">{{ $statusLabel }}</span>
                 </td>
                 <td class="py-3 px-5">
-                    <div class="flex items-center justify-center gap-2">
+                    <div class="flex items-center justify-center gap-1">
                         {{-- Tombol Lihat Detail (trigger modal) --}}
                         <button type="button" title="Lihat Detail"
                             data-nama="{{ $batch->obat->nama_obat ?? '-' }}"
                             data-kategori="{{ $batch->obat->kategori->nama_kategori ?? '-' }}"
                             data-stok="{{ number_format($batch->stok_sisa, 0) }}"
                             data-tgl="{{ $expired->format('d/m/Y') }}"
-                            class="btn-detail bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition">
+                            class="btn-detail bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </button>
-                        {{-- Tombol Edit (trigger modal) --}}
-                        <button type="button" title="Edit"
-                            data-id="{{ $batch->id }}"
-                            data-id-obat="{{ $batch->id_obat }}"
-                            data-tgl="{{ \Carbon\Carbon::parse($batch->tgl_expired)->format('Y-m-d') }}"
-                            class="btn-edit bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
                         </button>
                         {{-- Form hapus tersembunyi --}}
                         <form id="formHapus-{{ $batch->id }}"
@@ -137,8 +133,8 @@
                         <button type="button" title="Hapus"
                             data-form="formHapus-{{ $batch->id }}"
                             data-nama="{{ $batch->obat->nama_obat ?? '' }}"
-                            class="btn-hapus bg-red-500 hover:bg-red-600 text-white p-1.5 rounded transition">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            class="btn-hapus bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         </button>
                     </div>
                 </td>
@@ -147,9 +143,7 @@
             <tr>
                 <td colspan="6" class="py-10 text-center">
                     <div class="flex flex-col items-center gap-2">
-                        <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <p class="text-green-600 font-semibold">Semua stok obat masih aman!</p>
-                        <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-30.</p>
+                        <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-7.</p>
                     </div>
                 </td>
             </tr>
@@ -161,7 +155,7 @@
 {{-- ========== MODAL DETAIL OBAT ========== --}}
 <div id="modalDetail" class="fixed inset-0 z-50 flex items-center justify-center hidden">
     {{-- Overlay --}}
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="tutupDetail()"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="tutupDetail()"></div>
 
     {{-- Modal Box --}}
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
@@ -204,72 +198,11 @@
 
     </div>
 </div>
-{{-- ========== MODAL EDIT KADALUARSA ========== --}}
-{{-- ========== MODAL TAMBAH KADALUARSA ========== --}}
-<div id="modalTambah" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="tutupModalTambah()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden">
 
-        {{-- Header --}}
-        <div class="bg-green-700 px-6 py-4 flex items-center justify-between">
-            <h3 class="text-white font-bold text-lg">Tambah Data Kadaluarsa</h3>
-            <button type="button" onclick="tutupModalTambah()" class="text-white hover:text-green-200 text-2xl font-light leading-none">&times;</button>
-        </div>
-
-        {{-- Form Tambah --}}
-        <form id="formTambah" action="{{ route('kadaluarsa.store') }}" method="POST">
-            @csrf
-            <div class="bg-white px-8 py-6">
-                <div class="space-y-4">
-
-                    {{-- Nama Obat --}}
-                    <div>
-                        <select id="tambah_id_obat" name="id_obat"
-                            onchange="autoFillStokTambah(this)"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
-                            <option value="" disabled selected>-- Pilih Nama Obat --</option>
-                            @foreach(\App\Models\Obat::orderBy('nama_obat')->get() as $o)
-                            <option value="{{ $o->id }}" data-stok="{{ $o->total_stok }}">
-                                {{ $o->nama_obat }} (Stok: {{ $o->total_stok }})
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- Stok Sisa (otomatis) --}}
-                    <div>
-                        <div class="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-3 text-sm flex items-center justify-between">
-                            <span class="text-gray-500">Stok Sisa (dari Data &amp; Stok)</span>
-                            <span id="tambah_stok_display" class="font-bold text-gray-400">—</span>
-                        </div>
-                        <p class="text-gray-400 text-xs mt-1 px-1">Otomatis terisi sesuai stok obat yang dipilih</p>
-                        <input type="hidden" id="tambah_stok_awal" name="stok_awal" value="0">
-                    </div>
-
-                    {{-- Tanggal Kadaluarsa --}}
-                    <div>
-                        <input type="date" id="tambah_tgl_expired" name="tgl_expired"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <p class="text-gray-400 text-xs mt-1 px-1">Tanggal Kadaluarsa Obat</p>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between px-8 pb-6">
-                <button type="button" onclick="tutupModalTambah()"
-                    class="text-gray-500 hover:text-gray-700 text-sm transition">Batal</button>
-                <button type="button" onclick="showSuccessAnimation('formTambah', 'Data Berhasil Ditambahkan!')"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">Tambah</button>
-            </div>
-        </form>
-
-    </div>
-</div>
 
 {{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
 <div id="modalHapus" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <div class="absolute inset-0 bg-black bg-opacity-40" onclick="tutupHapus()"></div>
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="tutupHapus()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4">
         {{-- Pesan --}}
         <div class="px-6 pt-6 pb-4 text-center">
@@ -288,59 +221,11 @@
     </div>
 </div>
 
-<div id="modalEdit" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="tutupEdit()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden">
 
-        {{-- Header --}}
-        <div class="bg-green-700 px-6 py-4 flex items-center justify-between">
-            <h3 class="text-white font-bold text-lg uppercase">Edit Data Kadaluarsa</h3>
-            <button type="button" onclick="tutupEdit()" class="text-white hover:text-green-200 text-2xl font-light leading-none">&times;</button>
-        </div>
-
-        {{-- Form Edit --}}
-        <form id="formEdit" action="" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="bg-white px-8 py-6">
-                <div class="space-y-4">
-
-                    {{-- Nama Obat --}}
-                    <div>
-                        <select id="edit_id_obat" name="id_obat"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
-                            <option value="">-- Pilih Nama Obat --</option>
-                            @foreach(\App\Models\Obat::orderBy('nama_obat')->get() as $o)
-                            <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    {{-- Tanggal Kadaluarsa --}}
-                    <div>
-                        <input type="date" id="edit_tgl_expired" name="tgl_expired"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <p class="text-gray-400 text-xs mt-1 px-1">Tanggal Kadaluarsa Obat</p>
-                    </div>
-
-                </div>
-            </div>
-
-            {{-- Tombol Aksi --}}
-            <div class="flex items-center justify-between px-8 pb-6">
-                <button type="button" onclick="tutupEdit()"
-                    class="text-gray-500 hover:text-gray-700 text-sm transition">Batal</button>
-                <button type="button" onclick="showSuccessAnimation('formEdit', 'Perubahan Berhasil Disimpan!')"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">Simpan</button>
-            </div>
-        </form>
-
-    </div>
-</div>
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
 <div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->
         <div class="flex justify-center mb-5">
@@ -389,35 +274,6 @@ function tutupDetail() {
     document.body.style.overflow = '';
 }
 
-function tutupEdit() {
-    document.getElementById('modalEdit').classList.add('hidden');
-    document.body.style.overflow = '';
-}
-
-function bukaModalTambah() {
-    // Reset form sebelum dibuka
-    document.getElementById('formTambah').reset();
-    document.getElementById('tambah_stok_display').textContent = '—';
-    document.getElementById('tambah_stok_display').className = 'font-bold text-gray-400';
-    document.getElementById('tambah_stok_awal').value = '0';
-    document.getElementById('modalTambah').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function tutupModalTambah() {
-    document.getElementById('modalTambah').classList.add('hidden');
-    document.body.style.overflow = '';
-}
-
-function autoFillStokTambah(select) {
-    const option = select.options[select.selectedIndex];
-    const stok   = option.dataset.stok ?? 0;
-    const display = document.getElementById('tambah_stok_display');
-    display.textContent = stok > 0 ? stok : '0 (Habis)';
-    display.className   = stok > 0 ? 'font-bold text-green-700' : 'font-bold text-red-500';
-    document.getElementById('tambah_stok_awal').value = stok;
-}
-
 let activeFormHapus = null;
 function tutupHapus() {
     document.getElementById('modalHapus').classList.add('hidden');
@@ -431,7 +287,6 @@ function konfirmasiHapus() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-
     // Tombol Lihat → modal detail
     document.querySelectorAll('.btn-detail').forEach(function(btn) {
         btn.addEventListener('click', function() {
@@ -440,21 +295,6 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('d-stok').textContent     = this.dataset.stok;
             document.getElementById('d-tgl').textContent      = this.dataset.tgl;
             document.getElementById('modalDetail').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
-    // Tombol Edit → modal edit
-    document.querySelectorAll('.btn-edit').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const id     = this.dataset.id;
-            const idObat = this.dataset.idObat;
-            const tgl    = this.dataset.tgl;
-            document.getElementById('formEdit').action = '/kadaluarsa/' + id;
-            const sel = document.getElementById('edit_id_obat');
-            for (let opt of sel.options) { opt.selected = (opt.value == idObat); }
-            document.getElementById('edit_tgl_expired').value = tgl;
-            document.getElementById('modalEdit').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         });
     });
@@ -471,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Escape tutup semua modal
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { tutupDetail(); tutupEdit(); tutupHapus(); tutupModalTambah(); }
+        if (e.key === 'Escape') { tutupDetail(); tutupHapus(); }
     });
 });
 

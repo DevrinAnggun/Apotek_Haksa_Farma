@@ -22,13 +22,13 @@ class DashboardController extends Controller
         // 1. Total Transaksi Hari Ini
         // Menggunakan count() untuk menghitung jumlah baris/struk yang dibuat hari ini
         // -----------------------------------------------------------------------------
-        $totalTransaksiHariIni = Penjualan::whereDate('tgl_penjualan', $hariIni)->count();
+        $totalTransaksiHariIni = Penjualan::has('details')->whereDate('tgl_penjualan', $hariIni)->count();
 
         // -----------------------------------------------------------------------------
         // 2. Total Pendapatan / Omset Hari Ini
         // Menggunakan sum('total_harga') untuk menjumlahkan isi kolom uang
         // -----------------------------------------------------------------------------
-        $totalPendapatanHariIni = Penjualan::whereDate('tgl_penjualan', $hariIni)->sum('total_harga');
+        $totalPendapatanHariIni = Penjualan::has('details')->whereDate('tgl_penjualan', $hariIni)->sum('total_harga');
 
         // -----------------------------------------------------------------------------
         // 3. Obat dengan Stok Menipis (Berdasarkan Batas Minimal)
@@ -70,8 +70,12 @@ class DashboardController extends Controller
 
         // 5. Variabel Tambahan Untuk Desain Dashboard (Data Barang & Semua Penjualan)
         $totalDataBarang = Obat::count();
-        $totalPenjualan = Penjualan::count();
-        $totalSemuaPenjualan = Penjualan::sum('total_harga');
+        
+        // Hanya hitung penjualan yang memiliki detail/item (menghindari discrepancy data kosong)
+        $penjualanValid = Penjualan::has('details');
+        
+        $totalPenjualan = $penjualanValid->count();
+        $totalSemuaPenjualan = $penjualanValid->sum('total_harga');
         $jumlahObatKadaluarsa = $obatSudahExpired->count();
 
         // Lempar data ke halaman blade view dashboard
