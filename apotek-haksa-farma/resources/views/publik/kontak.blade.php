@@ -1,6 +1,6 @@
 @extends('layouts.publik')
 
-@section('title', 'Kontak Kami — Apotek Haksa Farma')
+@section('title', 'Kontak Kami')
 @section('meta_desc', 'Hubungi Apotek Haksa Farma — alamat, WhatsApp, dan lokasi Google Maps.')
 
 @section('content')
@@ -40,8 +40,8 @@
                     <div>
                         <p class="font-bold text-gray-800 mb-1">Alamat</p>
                         <p class="text-sm text-gray-600 leading-relaxed">
-                            Jl. Purwanjo No.80, Dusun Pw. Gemboci,<br>
-                            Purwanjo, Kec. Purwanjo, Klampok,<br>
+                            Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo,<br>
+                            Kec. Purwareja Klampok,<br>
                             Kab. Banjarnegara, Jawa Tengah 53474
                         </p>
                     </div>

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-    <h2 class="text-2xl font-extrabold text-gray-800 tracking-wide uppercase">Point of Sale — Kasir</h2>
+    <h2 class="text-2xl font-extrabold text-gray-800 tracking-wide uppercase">Kasir</h2>
     <a href="{{ route('laporan.penjualan') }}" class="text-sm text-green-700 hover:underline flex items-center gap-1">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         Kembali ke Riwayat Penjualan
@@ -28,11 +28,13 @@
 
         {{-- Search Bar --}}
         <div class="px-5 pt-4 pb-2">
-            <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input type="text" id="searchObat" placeholder="Cari nama atau kode obat..."
-                    class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            <div class="flex border border-gray-300 rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-green-600 bg-white shadow-sm">
+                <input type="text" id="searchObat" placeholder="Cari Barang....."
+                    class="w-full pl-4 pr-2 py-2 text-sm focus:outline-none"
                     oninput="filterObat(this.value)">
+                <div class="px-3 flex items-center bg-gray-50 border-l border-gray-200">
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
             </div>
         </div>
 
@@ -41,7 +43,7 @@
             <table class="w-full text-sm border-collapse mt-2">
                 <thead class="sticky top-0 bg-white z-10">
                     <tr class="border-b border-gray-200 text-gray-500 text-xs uppercase">
-                        <th class="py-2 px-2 text-left font-semibold">Kode</th>
+                        <th class="py-2 px-2 text-center font-semibold w-10">No</th>
                         <th class="py-2 px-2 text-left font-semibold">Nama Obat</th>
                         <th class="py-2 px-2 text-center font-semibold">Stok</th>
                         <th class="py-2 px-2 text-right font-semibold">Harga</th>
@@ -54,7 +56,7 @@
                     <tr class="border-b border-gray-100 hover:bg-green-50 transition obat-row"
                         data-nama="{{ strtolower($obat->nama_obat) }}"
                         data-kode="{{ strtolower($obat->kode_obat) }}">
-                        <td class="py-2.5 px-2 text-gray-500 font-mono text-xs">{{ $obat->kode_obat }}</td>
+                        <td class="py-2.5 px-2 text-center text-gray-400 font-medium">{{ $loop->iteration }}</td>
                         <td class="py-2.5 px-2 font-medium text-gray-800">{{ $obat->nama_obat }}
                             <span class="text-xs text-gray-400 block">{{ $obat->kategori->nama_kategori ?? '-' }} · {{ $obat->satuan->nama_satuan ?? '-' }}</span>
                         </td>

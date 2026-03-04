@@ -61,13 +61,10 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="flex items-center justify-between mt-7">
-                    <a href="{{ route('kadaluarsa.index') }}"
-                        class="text-gray-500 hover:text-gray-700 text-sm underline underline-offset-2 transition">
-                        Batal
-                    </a>
+                    <button type="button" onclick="closeTambahModal()" class="px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg transition">Batal</button>
                     <button type="submit"
                         class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">
-                        Simpan Perubahan
+                        Simpan
                     </button>
                 </div>
 

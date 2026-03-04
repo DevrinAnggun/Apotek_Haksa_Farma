@@ -52,19 +52,10 @@ class ObatController extends Controller
             'harga_jual'  => 'required|integer|min:0',
             'stok'        => 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
-            'gambar'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
-
-        // Upload gambar jika ada
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/obat'), $filename);
-            $obatData['gambar'] = 'images/obat/' . $filename;
-        }
 
         $obat = Obat::create($obatData);
 
@@ -99,23 +90,10 @@ class ObatController extends Controller
             'harga_jual'  => 'required|integer|min:0',
             'stok'        => 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
-            'gambar'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
-
-        // Upload gambar baru jika ada
-        if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($obat->gambar && file_exists(public_path($obat->gambar))) {
-                unlink(public_path($obat->gambar));
-            }
-            $file = $request->file('gambar');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('images/obat'), $filename);
-            $obatData['gambar'] = 'images/obat/' . $filename;
-        }
 
         $obat->update($obatData);
 

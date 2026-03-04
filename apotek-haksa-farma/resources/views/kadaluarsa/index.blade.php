@@ -10,7 +10,7 @@
 {{-- Alert Success --}}
 @if(session('success'))
 <div id="alert-success" class="mb-4 flex justify-between items-center bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg text-sm font-medium">
-    <span>✅ {{ session('success') }}</span>
+    <span>{{ session('success') }}</span>
     <button onclick="dismissAlert('alert-success')" class="text-green-400 hover:text-green-700 font-bold text-lg">&times;</button>
 </div>
 @endif
@@ -18,25 +18,27 @@
 {{-- Alert Error --}}
 @if(session('error'))
 <div id="alert-error" class="mb-4 flex justify-between items-center bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
-    <span>⚠️ {{ session('error') }}</span>
+    <span>{{ session('error') }}</span>
     <button onclick="dismissAlert('alert-error')" class="text-red-400 hover:text-red-700 font-bold text-lg">&times;</button>
 </div>
 @endif
 
 {{-- Toolbar --}}
-<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-2 mb-6">
     {{-- Search --}}
-    <div class="relative w-72">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" id="searchKadaluarsa" placeholder="Cari nama obat..."
-            class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+    <div class="flex w-full sm:w-1/2 md:w-1/3 border border-gray-400 rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-green-600 bg-white shadow-sm">
+        <input type="text" id="searchKadaluarsa" placeholder="Cari Barang....."
+            class="w-full pl-4 pr-2 py-2 text-sm focus:outline-none"
             oninput="filterTable(this.value)">
+        <div class="px-3 flex items-center bg-gray-50 border-l border-gray-200">
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
     </div>
 
     {{-- Tombol Tambah --}}
     <button type="button" onclick="bukaModalTambah()"
-        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-5 rounded-lg transition shadow text-sm whitespace-nowrap">
-        + Data Kadaluarsa
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition shadow text-sm whitespace-nowrap leading-relaxed">
+        + Tambah
     </button>
 </div>
 
@@ -254,11 +256,10 @@
                 </div>
             </div>
 
-            {{-- Tombol Aksi --}}
-            <div class="flex items-center justify-end px-8 pb-6">
+            <div class="flex items-center justify-between px-8 pb-6">
                 <button type="button" onclick="tutupModalTambah()"
-                    class="text-gray-500 hover:text-gray-700 text-sm underline underline-offset-2 transition mr-4">Batal</button>
-                <button type="submit"
+                    class="text-gray-500 hover:text-gray-700 text-sm transition">Batal</button>
+                <button type="button" onclick="showSuccessAnimation('formTambah', 'Data Berhasil Ditambahkan!')"
                     class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">Tambah</button>
             </div>
         </form>
@@ -328,14 +329,51 @@
             {{-- Tombol Aksi --}}
             <div class="flex items-center justify-between px-8 pb-6">
                 <button type="button" onclick="tutupEdit()"
-                    class="text-gray-500 hover:text-gray-700 text-sm underline underline-offset-2 transition">Batal</button>
-                <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">Simpan Perubahan</button>
+                    class="text-gray-500 hover:text-gray-700 text-sm transition">Batal</button>
+                <button type="button" onclick="showSuccessAnimation('formEdit', 'Perubahan Berhasil Disimpan!')"
+                    class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-7 rounded-lg transition shadow text-sm">Simpan</button>
             </div>
         </form>
 
     </div>
 </div>
+
+{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
+<div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
+        <!-- Animated Checkmark SVG -->
+        <div class="flex justify-center mb-5">
+            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6"
+                    stroke-dasharray="276" stroke-dashoffset="276"
+                    class="circle-anim">
+                </circle>
+                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    stroke-dasharray="80" stroke-dashoffset="80"
+                    class="check-anim">
+                </polyline>
+            </svg>
+        </div>
+        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
+        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
+    </div>
+</div>
+
+<style>
+    .sukses-box {
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.7); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    .circle-anim { animation: drawCircle 0.65s ease forwards; }
+    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+</style>
 
 <script>
 function filterTable(keyword) {
@@ -387,7 +425,9 @@ function tutupHapus() {
     activeFormHapus = null;
 }
 function konfirmasiHapus() {
-    if (activeFormHapus) activeFormHapus.submit();
+    if (activeFormHapus) {
+        showSuccessAnimation(activeFormHapus.id, 'Data Berhasil Dihapus!');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -434,5 +474,35 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Escape') { tutupDetail(); tutupEdit(); tutupHapus(); tutupModalTambah(); }
     });
 });
+
+/* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
+function showSuccessAnimation(formId, titleText) {
+    const form = document.getElementById(formId);
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const modal = document.getElementById('modalSukses');
+    document.getElementById('sukses_title').textContent = titleText;
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Restart animasi SVG
+    const circle = modal.querySelector('.circle-anim');
+    const check  = modal.querySelector('.check-anim');
+    circle.style.animation = 'none';
+    check.style.animation  = 'none';
+    circle.getBoundingClientRect(); // trigger reflow
+    check.getBoundingClientRect();
+    circle.style.animation = '';
+    check.style.animation  = '';
+
+    setTimeout(() => {
+        form.submit();
+    }, 1500);
+}
 </script>
 @endsection

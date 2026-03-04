@@ -1,6 +1,6 @@
 @extends('layouts.publik')
 
-@section('title', 'Artikel Kesehatan — Apotek Haksa Farma')
+@section('title', 'Artikel Kesehatan')
 @section('meta_desc', 'Baca artikel seputar kesehatan dan informasi obat dari Apotek Haksa Farma.')
 
 @section('content')

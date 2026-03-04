@@ -59,13 +59,6 @@
                     class="nav-item px-4 py-2 rounded-full text-sm font-semibold {{ request()->routeIs('publik.kontak') ? 'nav-active' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
                     Kontak Kami
                 </a>
-                {{-- Jika admin / login --}}
-                @auth
-                <a href="{{ route('dashboard') }}"
-                    class="ml-2 px-4 py-2 rounded-full text-sm font-semibold bg-green-700 text-white hover:bg-green-800 transition">
-                    ← Dashboard
-                </a>
-                @endauth
             </nav>
         </div>
     </header>

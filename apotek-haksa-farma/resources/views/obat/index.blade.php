@@ -95,18 +95,16 @@
 
                     <!-- Tombol Edit (buka modal edit) -->
                     <button type="button"
-                        onclick="openEditModal(
-                            {{ $obat->id }},
-                            '{{ addslashes($obat->nama_obat) }}',
-                            {{ $obat->id_kategori }},
-                            {{ $obat->harga_jual }},
-                            {{ $obat->total_stok }},
-                            {{ $obat->id_satuan }},
-                            '{{ $obat->kode_obat }}',
-                            {{ $obat->harga_beli }},
-                            '{{ $obat->tanggal_kadaluarsa ?? '' }}',
-                            '{{ $obat->gambar ?? '' }}'
-                        )"
+                        data-id="{{ $obat->id }}"
+                        data-nama="{{ $obat->nama_obat }}"
+                        data-id-kategori="{{ $obat->id_kategori }}"
+                        data-harga-jual="{{ $obat->harga_jual }}"
+                        data-stok="{{ $obat->total_stok }}"
+                        data-id-satuan="{{ $obat->id_satuan }}"
+                        data-kode-obat="{{ $obat->kode_obat }}"
+                        data-harga-beli="{{ $obat->harga_beli }}"
+                        data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
+                        onclick="openEditModal(this)"
                         class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition"
                         title="Edit">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
@@ -176,31 +174,15 @@
                     </div>
                 </div>
 
-                <!-- Upload Foto Produk -->
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Foto Produk <span class="text-gray-400 font-normal">(Opsional, maks. 2MB)</span></label>
-                    <div class="flex items-center gap-3">
-                        <div id="tambah_preview_wrap" class="hidden">
-                            <img id="tambah_preview" src="" class="w-14 h-14 object-cover rounded-lg border border-gray-200">
-                        </div>
-                        <label class="flex-1 cursor-pointer">
-                            <div class="border-2 border-dashed border-gray-300 hover:border-green-500 rounded-lg px-4 py-3 text-center transition">
-                                <p class="text-sm text-gray-400" id="tambah_file_label">Klik untuk pilih foto (JPG/PNG/WEBP)</p>
-                            </div>
-                            <input type="file" name="gambar" accept="image/*" class="hidden" onchange="previewGambar(this,'tambah_preview','tambah_preview_wrap','tambah_file_label')">
-                        </label>
-                    </div>
-                </div>
 
                 @if ($errors->any() && !session('_edit_mode'))
                     <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100">{{ $errors->first() }}</div>
                 @endif
             </form>
         </div>
-        <!-- Footer -->
-        <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+        <div class="flex justify-between items-center px-6 py-4 border-t border-gray-100 bg-gray-50">
             <button type="button" onclick="closeTambahModal()" class="px-5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg transition">Batal</button>
-            <button type="submit" form="formTambah" class="px-6 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Tambah</button>
+            <button type="button" onclick="showSuccessAnimation('formTambah', 'Data Berhasil Ditambahkan!')" class="px-6 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Tambah</button>
         </div>
     </div>
 </div>
@@ -260,27 +242,11 @@
                     </div>
                 </div>
 
-                <!-- Upload Foto Produk -->
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 mb-1.5">Foto Produk <span class="text-gray-400 font-normal">(Kosongkan jika tidak diganti)</span></label>
-                    <div class="flex items-center gap-3">
-                        <div id="edit_preview_wrap">
-                            <img id="edit_preview" src="" class="w-14 h-14 object-cover rounded-lg border border-gray-200">
-                        </div>
-                        <label class="flex-1 cursor-pointer">
-                            <div class="border-2 border-dashed border-gray-300 hover:border-green-500 rounded-lg px-4 py-3 text-center transition">
-                                <p class="text-sm text-gray-400" id="edit_file_label">Klik untuk ganti foto</p>
-                            </div>
-                            <input type="file" name="gambar" accept="image/*" class="hidden" onchange="previewGambar(this,'edit_preview','edit_preview_wrap','edit_file_label')">
-                        </label>
-                    </div>
-                </div>
             </form>
         </div>
-        <!-- Footer -->
         <div class="flex justify-between items-center px-6 py-4 border-t border-gray-100 bg-gray-50">
-            <button type="button" onclick="closeEditModal()" class="px-5 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline transition">Batal</button>
-            <button type="submit" form="formEdit" class="px-6 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Simpan Perubahan</button>
+            <button type="button" onclick="closeEditModal()" class="px-5 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition">Batal</button>
+            <button type="button" onclick="showSuccessAnimation('formEdit', 'Perubahan Berhasil Disimpan!')" class="px-6 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Simpan</button>
         </div>
     </div>
 </div>
@@ -304,9 +270,32 @@
             <button type="button" onclick="closeHapusModal()" class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
             <form id="formHapus" action="" method="POST" class="flex-1">
                 @csrf @method('DELETE')
-                <button type="submit" class="w-full py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
             </form>
         </div>
+    </div>
+</div>
+
+{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
+<div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
+        <!-- Animated Checkmark SVG -->
+        <div class="flex justify-center mb-5">
+            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6"
+                    stroke-dasharray="276" stroke-dashoffset="276"
+                    class="circle-anim">
+                </circle>
+                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    stroke-dasharray="80" stroke-dashoffset="80"
+                    class="check-anim">
+                </polyline>
+            </svg>
+        </div>
+        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
+        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
     </div>
 </div>
 
@@ -316,6 +305,18 @@
         to   { opacity: 1; transform: scale(1)    translateY(0); }
     }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
+
+    .sukses-box {
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes popIn {
+        from { opacity: 0; transform: scale(0.7); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    .circle-anim { animation: drawCircle 0.65s ease forwards; }
+    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
 
 @endsection
@@ -335,14 +336,23 @@
     }
 
     /* ===== MODAL EDIT ===== */
-    function openEditModal(id, nama, idKategori, hargaJual, stok, idSatuan, kodeObat, hargaBeli, expiredDate, gambar) {
+    function openEditModal(el) {
+        const d = el.dataset;
+        const id = d.id;
+        const nama = d.nama;
+        const idKategori = d.idKategori;
+        const hargaJual = d.hargaJual;
+        const stok = d.stok;
+        const idSatuan = d.idSatuan;
+        const kodeObat = d.kodeObat;
+        const hargaBeli = d.hargaBeli;
+        const expiredDate = d.expiredDate;
+
         const modal = document.getElementById('modalEdit');
         const form  = document.getElementById('formEdit');
 
-        // Set action URL
         form.action = '{{ url("obat") }}/' + id;
 
-        // Isi field
         document.getElementById('edit_kode_obat').value    = kodeObat;
         document.getElementById('edit_harga_beli').value   = hargaBeli;
         document.getElementById('edit_nama_obat').value    = nama;
@@ -350,27 +360,12 @@
         document.getElementById('edit_stok').value         = stok;
         document.getElementById('edit_expired_date').value = expiredDate;
 
-        // Set dropdown kategori
         const selKat = document.getElementById('edit_id_kategori');
         selKat.value = idKategori;
 
-        // Set dropdown satuan
         const selSat = document.getElementById('edit_id_satuan');
         selSat.value = idSatuan;
 
-        // Tampilkan foto yang sudah ada
-        const prevImg  = document.getElementById('edit_preview');
-        const prevWrap = document.getElementById('edit_preview_wrap');
-        const fileLabel = document.getElementById('edit_file_label');
-        if (gambar) {
-            prevImg.src = '/' + gambar;
-            prevWrap.classList.remove('hidden');
-            fileLabel.textContent = 'Klik untuk ganti foto';
-        } else {
-            prevImg.src = '';
-            prevWrap.classList.add('hidden');
-            fileLabel.textContent = 'Klik untuk pilih foto (JPG/PNG/WEBP)';
-        }
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -380,21 +375,6 @@
         document.body.style.overflow = '';
     }
 
-    /* ===== PREVIEW GAMBAR ===== */
-    function previewGambar(input, previewId, wrapId, labelId) {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img  = document.getElementById(previewId);
-            const wrap = document.getElementById(wrapId);
-            const lbl  = document.getElementById(labelId);
-            img.src = e.target.result;
-            wrap.classList.remove('hidden');
-            lbl.textContent = file.name;
-        };
-        reader.readAsDataURL(file);
-    }
 
     /* ===== MODAL HAPUS ===== */
     function openHapusModal(id, nama) {
@@ -421,6 +401,38 @@
     @if ($errors->any() && old('_form_type') === 'tambah')
         document.addEventListener('DOMContentLoaded', () => openTambahModal());
     @endif
+
+    /* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
+    function showSuccessAnimation(formId, titleText) {
+        const form = document.getElementById(formId);
+        
+        // Validasi simpel (HTML5 required check)
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const modal = document.getElementById('modalSukses');
+        document.getElementById('sukses_title').textContent = titleText;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // Restart animasi SVG
+        const circle = modal.querySelector('.circle-anim');
+        const check  = modal.querySelector('.check-anim');
+        circle.style.animation = 'none';
+        check.style.animation  = 'none';
+        circle.getBoundingClientRect(); // trigger reflow
+        check.getBoundingClientRect();
+        circle.style.animation = '';
+        check.style.animation  = '';
+
+        // Submit setelah animasi (1.5 detik)
+        setTimeout(() => {
+            form.submit();
+        }, 1500);
+    }
 </script>
 @endpush
 

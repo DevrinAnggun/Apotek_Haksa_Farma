@@ -1,6 +1,6 @@
 @extends('layouts.publik')
 
-@section('title', 'Katalog Produk — Apotek Haksa Farma')
+@section('title', 'Katalog Produk')
 @section('meta_desc', 'Temukan berbagai produk obat dan suplemen di Apotek Haksa Farma Banjarnegara.')
 
 @section('content')
@@ -145,21 +145,52 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($obats as $obat)
                 <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-hidden group cursor-pointer"
-                    onclick="bukaDetailObat(
-                        '{{ addslashes($obat->nama_obat) }}',
-                        '{{ addslashes($obat->kategori->nama_kategori ?? '-') }}',
-                        '{{ number_format($obat->harga_jual, 0, ',', '.') }}',
-                        '{{ $obat->satuan->nama_satuan ?? '-' }}',
-                        {{ $obat->total_stok }},
-                        '{{ addslashes($obat->kode_obat) }}'
-                    )">
-                    {{-- Gambar Placeholder --}}
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 h-32 flex items-center justify-center relative">
-                        <svg class="w-10 h-10 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                        {{-- Hover overlay --}}
-                        <div class="absolute inset-0 bg-green-700/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <span class="bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded-full">Lihat Detail</span>
-                        </div>
+                    data-nama="{{ $obat->nama_obat }}"
+                    data-kategori="{{ $obat->kategori->nama_kategori ?? '-' }}"
+                    data-harga="{{ number_format($obat->harga_jual, 0, ',', '.') }}"
+                    data-satuan="{{ $obat->satuan->nama_satuan ?? '-' }}"
+                    data-stok="{{ $obat->total_stok }}"
+                    data-gambar="{{ $obat->gambar ? asset($obat->gambar) : '' }}"
+                    data-deskripsi="{{ $obat->deskripsi ?? '' }}"
+                    data-dosis-min="{{ $obat->dosis_min ?? '' }}"
+                    data-dosis-max="{{ $obat->dosis_max ?? '' }}"
+                    data-cara-pakai="{{ $obat->cara_pakai ?? '' }}"
+                    onclick="bukaDetailObat(this)">
+        
+                    @switch($obat->id)
+                        @case(4)
+                            <img src="{{ asset('images/obat/tolakangin.png') }}" alt="{{ $obat->tolakangin }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(6)
+                            <img src="{{ asset('images/obat/panadol.jpg') }}" alt="{{ $obat->panadol }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(7)
+                            <img src="{{ asset('images/obat/bisolvon.jpg') }}" alt="{{ $obat->bisolvon }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(9)
+                            <img src="{{ asset('images/obat/teh-china.jpg') }}" alt="{{ $obat->teh_china }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(10)
+                            <img src="{{ asset('images/obat/vitamin-c.jpg') }}" alt="{{ $obat->vitamin_c }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(11)
+                            <img src="{{ asset('images/obat/masker.jpg') }}" alt="{{ $obat->masker }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(12)
+                            <img src="{{ asset('images/obat/teh-sari.jpg') }}" alt="{{ $obat->teh_sari }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @case(13)
+                            <img src="{{ asset('images/obat/latex.webp') }}" alt="{{ $obat->latex }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
+                            @break
+                        @default
+                            {{-- Produk belum punya foto --}}
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 w-full h-32 flex items-center justify-center">
+                                <svg class="w-10 h-10 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                            </div>
+                    @endswitch
+                    {{-- Hover overlay --}}
+                    <div class="absolute inset-0 bg-green-700/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none">
+                        <span class="bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded-full">Lihat Detail</span>
                     </div>
                     {{-- Info --}}
                     <div class="p-3">
@@ -194,9 +225,10 @@
 <div id="modalDetailObat" class="fixed inset-0 z-50 hidden flex items-center justify-center">
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="tutupDetailObat()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" style="animation: popIn 0.25s ease-out both;">
-        {{-- Gambar Obat (Placeholder) --}}
-        <div class="bg-gradient-to-br from-green-100 to-green-200 h-44 flex items-center justify-center relative">
-            <svg class="w-16 h-16 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {{-- Gambar Obat --}}
+        <div id="d-img-wrap" class="bg-gradient-to-br from-green-100 to-green-200 h-44 flex items-center justify-center relative overflow-hidden">
+            <img id="d-img" src="" alt="" class="w-full h-full object-contain hidden">
+            <svg id="d-img-placeholder" class="w-16 h-16 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
             </svg>
             {{-- Tombol tutup --}}
@@ -210,6 +242,11 @@
             <h3 id="d-nama" class="font-extrabold text-gray-800 uppercase text-base leading-snug mb-3"></h3>
 
             <div class="space-y-2 text-sm">
+                {{-- Kegunaan (Deskripsi) --}}
+                <div id="d-deskripsi-wrap" class="flex justify-between items-start py-2 border-b border-gray-100 hidden">
+                    <span class="text-gray-500 font-medium shrink-0 mr-2">Kegunaan</span>
+                    <span id="d-deskripsi" class="font-semibold text-gray-700 text-right text-xs"></span>
+                </div>
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
                     <span class="text-gray-500 font-medium">Harga</span>
                     <span id="d-harga" class="font-extrabold text-green-700 text-base"></span>
@@ -222,9 +259,14 @@
                     <span class="text-gray-500 font-medium">Stok</span>
                     <span id="d-stok" class="font-semibold"></span>
                 </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-gray-500 font-medium">Kode</span>
-                    <span id="d-kode" class="font-mono text-xs text-gray-500"></span>
+                {{-- Usia --}}
+                <div id="d-usia-wrap" class="flex justify-between items-center py-2 border-b border-gray-100 hidden">
+                    <span class="text-gray-500 font-medium">Usia</span>
+                    <span id="d-usia" class="font-semibold text-gray-700 text-right text-xs"></span>
+                </div>
+                <div id="d-cara-wrap" class="flex justify-between items-start py-2 hidden">
+                    <span class="text-gray-500 font-medium shrink-0 mr-2">Cara Pakai</span>
+                    <span id="d-cara" class="font-semibold text-gray-700 text-right text-xs"></span>
                 </div>
             </div>
 
@@ -249,16 +291,67 @@
 @push('scripts')
 <script>
     /* ===== MODAL DETAIL OBAT ===== */
-    function bukaDetailObat(nama, kategori, harga, satuan, stok, kode) {
+    function bukaDetailObat(el) {
+        const d = el.dataset;
+        const nama       = d.nama;
+        const kategori   = d.kategori;
+        const harga      = d.harga;
+        const satuan     = d.satuan;
+        const stok       = parseInt(d.stok);
+        const gambarUrl  = d.gambar;
+        const deskripsi  = d.deskripsi;
+        const dosisMin   = d.dosisMin;
+        const dosisMax   = d.dosisMax;
+        const caraPakai  = d.caraPakai;
         document.getElementById('d-nama').textContent     = nama;
         document.getElementById('d-kategori').textContent = kategori;
         document.getElementById('d-harga').textContent    = 'Rp' + harga;
         document.getElementById('d-satuan').textContent   = satuan;
-        document.getElementById('d-kode').textContent     = kode;
 
+        // Stok
         const stokEl = document.getElementById('d-stok');
-        stokEl.textContent  = stok > 0 ? stok + ' (Tersedia)' : 'Habis';
-        stokEl.className    = 'font-semibold ' + (stok > 0 ? 'text-green-600' : 'text-red-500');
+        stokEl.textContent = stok > 0 ? stok + ' (Tersedia)' : 'Habis';
+        stokEl.className   = 'font-semibold ' + (stok > 0 ? 'text-green-600' : 'text-red-500');
+
+        // Kegunaan (Deskripsi)
+        const deskWrap = document.getElementById('d-deskripsi-wrap');
+        const deskEl   = document.getElementById('d-deskripsi');
+        if (deskripsi && deskripsi.trim() !== '') {
+            deskEl.textContent = deskripsi;
+            deskWrap.classList.remove('hidden');
+        } else {
+            deskWrap.classList.add('hidden');
+        }
+
+        // Usia (Dosis)
+        const usiaWrap = document.getElementById('d-usia-wrap');
+        const usiaEl   = document.getElementById('d-usia');
+        if (dosisMin || dosisMax) {
+            const txt = (dosisMin && dosisMax) ? dosisMin + ' – ' + dosisMax : (dosisMin || dosisMax);
+            usiaEl.textContent = txt;
+            usiaWrap.classList.remove('hidden');
+        } else {
+            usiaWrap.classList.add('hidden');
+        }
+
+        // Cara Pakai
+        const caraWrap = document.getElementById('d-cara-wrap');
+        const caraEl   = document.getElementById('d-cara');
+        if (caraPakai && caraPakai.trim() !== '') {
+            caraEl.textContent = caraPakai;
+            caraWrap.classList.remove('hidden');
+        } else {
+            caraWrap.classList.add('hidden');
+        }
+
+        // Foto
+        const img = document.getElementById('d-img');
+        const ph  = document.getElementById('d-img-placeholder');
+        if (gambarUrl && gambarUrl !== '') {
+            img.src = gambarUrl; img.classList.remove('hidden'); ph.classList.add('hidden');
+        } else {
+            img.src = ''; img.classList.add('hidden'); ph.classList.remove('hidden');
+        }
 
         const modal = document.getElementById('modalDetailObat');
         modal.classList.remove('hidden');

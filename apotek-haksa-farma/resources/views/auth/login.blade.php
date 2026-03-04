@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Apotek Haksa Farma</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -18,18 +19,23 @@
                             700: '#15803d',
                             800: '#166534',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
 <body class="bg-green-50 flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg border border-green-100 p-8">
-        <div class="text-center mb-6">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Apotek Haksa Farma" class="h-28 mx-auto mb-4 object-contain">
-            <h2 class="text-2xl font-bold text-green-700">Apotek Haksa Farma</h2>
-            <p class="text-gray-500 mt-2">Masuk ke dalam sistem manajemen</p>
+    <div class="w-full max-w-sm bg-white rounded-xl shadow-lg border border-green-100 p-6">
+        <div class="text-center mb-5">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Apotek Haksa Farma" class="h-20 mx-auto mb-3 object-contain">
+            <h2 class="text-xl font-bold text-green-700 tracking-tight uppercase">Apotek Haksa Farma</h2>
         </div>
 
         @if(session('error'))
@@ -48,20 +54,20 @@
             @csrf
             
             <div class="mb-4">
-                <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+                <label for="username" class="block text-gray-700 font-bold mb-1 text-sm">Username</label>
                 <input type="text" name="username" id="username" value="{{ old('username') }}"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 @error('username') border-red-500 @enderror" 
-                    placeholder="Masukkan username anda">
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 @error('username') border-red-500 @enderror text-sm" 
+                    placeholder="Username">
                 @error('username')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror
             </div>
 
             <div class="mb-6">
-                <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                <label for="password" class="block text-gray-700 font-bold mb-1 text-sm">Password</label>
                 <div class="relative">
                     <input type="password" name="password" id="password"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 pr-11" 
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 pr-11 text-sm" 
                         placeholder="••••••••">
                     <button type="button" id="togglePassword"
                         onclick="togglePasswordVisibility()"
@@ -81,7 +87,7 @@
             </div>
 
             <button type="submit" 
-                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-200">
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold py-2 px-4 rounded-lg focus:outline-none shadow-md transition duration-200 uppercase tracking-widest text-xs">
                 Masuk
             </button>
         </form>
