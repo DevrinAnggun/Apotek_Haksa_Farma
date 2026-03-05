@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Penjualan;
 use App\Models\StokBatch;
 use App\Models\Obat;
+use App\Models\Pembelian; // Tambahkan ini
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -25,10 +26,12 @@ class DashboardController extends Controller
         $totalTransaksiHariIni = Penjualan::has('details')->whereDate('tgl_penjualan', $hariIni)->count();
 
         // -----------------------------------------------------------------------------
-        // 2. Total Pendapatan / Omset Hari Ini
-        // Menggunakan sum('total_harga') untuk menjumlahkan isi kolom uang
+        // 2. Stok Masuk / Pembelian dari Supplier (Bulan Ini)
+        // Menjumlahkan total harga beli dari tabel pembelian untuk bulan berjalan.
         // -----------------------------------------------------------------------------
-        $totalPendapatanHariIni = Penjualan::has('details')->whereDate('tgl_penjualan', $hariIni)->sum('total_harga');
+        $totalRestockBulanIni = Pembelian::whereMonth('tgl_pembelian', Carbon::now()->month)
+            ->whereYear('tgl_pembelian', Carbon::now()->year)
+            ->sum('total_bayar');
 
         // -----------------------------------------------------------------------------
         // 3. Obat dengan Stok Menipis (Berdasarkan Batas Minimal)
@@ -81,7 +84,7 @@ class DashboardController extends Controller
         // Lempar data ke halaman blade view dashboard
         return view('dashboard.index', compact(
             'totalTransaksiHariIni',
-            'totalPendapatanHariIni',
+            'totalRestockBulanIni',
             'obatStokMenipis',
             'obatMendekatiExpired',
             'obatSudahExpired',

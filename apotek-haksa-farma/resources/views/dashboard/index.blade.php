@@ -49,15 +49,19 @@
         <svg class="absolute -bottom-4 -right-4 w-24 h-24 text-white opacity-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
     </a>
     
-    <!-- Card: Penjualan Hari Ini → Green -->
-    <a href="{{ route('laporan.penjualan') }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between">
-        <div>
-            <div class="text-3xl font-extrabold mb-2 break-all">Rp. {{ number_format($totalPendapatanHariIni ?? 0, 0, ',', '.') }}</div>
-            <div class="text-green-100 font-semibold text-lg tracking-wide uppercase">Penjualan Hari Ini</div>
+    <!-- Card: Stok Supplier → Green -->
+    <a href="{{ route('obat.index', ['#supplier-table']) }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
+        <div class="relative z-10">
+            <div class="text-3xl font-extrabold mb-2 break-all">Rp. {{ number_format($totalRestockBulanIni ?? 0, 0, ',', '.') }}</div>
+            <div class="text-green-100 font-semibold text-lg tracking-wide uppercase">Stok Supplier</div>
         </div>
-        <div class="flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
-            Lihat Data Penjualan <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
+            Lihat Stok Masuk <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
+        <!-- bg icon abstrak -->
+        <svg class="absolute -bottom-4 -right-4 w-24 h-24 text-white opacity-10 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM10 4h4v3h-4V4zm10 16H4V9h16v11z"/>
+        </svg>
     </a>
 
     <!-- Card: Barang Kadaluarsa → Orange -->

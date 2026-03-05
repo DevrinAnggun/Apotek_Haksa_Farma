@@ -8,6 +8,8 @@ use App\Models\StokBatch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PembelianController extends Controller
 {
@@ -16,9 +18,7 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        // Eager load relasi supplier dan user agar query lebih optimal
-        $pembelians = Pembelian::with(['supplier', 'user'])->latest()->get();
-        return view('pembelian.index', compact('pembelians'));
+        return redirect()->route('obat.index', ['#supplier-table']);
     }
 
     /**
@@ -39,16 +39,14 @@ class PembelianController extends Controller
     public function store(Request $request)
     {
         // 1. Validasi Input Array Request
-        // Anggaplah di frontend, user mengirim form input berupa array untuk banyak obat sekaligus.
         $request->validate([
-            'id_suplier' => 'required|exists:supliers,id',
-            'no_faktur' => 'required|string|max:50|unique:pembelians,no_faktur',
+            'nama_suplier' => 'required|string|max:255',
+            'no_faktur' => 'required|string|max:100', // Relaxed unique check for flexibility if needed, or keep if strict
             'tgl_pembelian' => 'required|date',
-            // array items: list obat dari keranjang
             'items' => 'required|array|min:1',
             'items.*.id_obat' => 'required|exists:obats,id',
-            'items.*.no_batch' => 'required|string|max:100', // Wajib diisi dari kemasan pabrik
-            'items.*.tgl_expired' => 'required|date|after:today', // Expired harus di masa depan
+            'items.*.no_batch' => 'required|string|max:100',
+            'items.*.tgl_expired' => 'required|date|after:today',
             'items.*.qty' => 'required|integer|min:1',
             'items.*.harga_beli' => 'required|integer|min:0',
         ]);
@@ -56,14 +54,17 @@ class PembelianController extends Controller
         // Mulai Database Transaction untuk keamanan aliran data
         // Jika salah satu proses (misal: generate batch gagal), maka seluruh penyimpanan dari header hingga detail akan dibatalkan (Rollback) otomatis.
         try {
-            DB::beginTransaction();
+            // A. Cari atau Buat Supplier Berdasarkan Nama
+            $supplier = \App\Models\Supplier::firstOrCreate(
+                ['nama_suplier' => strtoupper($request->nama_suplier)]
+            );
 
             $totalBayar = 0;
 
             // 2. Simpan Header: Tabel Pembelian
             $pembelian = Pembelian::create([
-                'id_suplier' => $request->id_suplier,
-                'id_user' => auth()->id() ?? 1, // Diisi oleh ID Akun Admin yang Login
+                'id_suplier' => $supplier->id,
+                'id_user' => auth()->id(), // Diisi oleh ID Akun Admin yang Login
                 'no_faktur' => $request->no_faktur,
                 'tgl_pembelian' => $request->tgl_pembelian,
                 'total_bayar' => 0, // Inisiasi nilai awal, nanti akan diupdate setelah looping kalkulasi item
@@ -104,8 +105,8 @@ class PembelianController extends Controller
             // 5. Finalisasi Sukses dan Simpan ke Server Permanen (Commit)
             DB::commit();
 
-            return redirect()->route('pembelian.index')
-                ->with('success', 'Faktur Pembelian berhasil disimpan dan Stok Batch baru telah digenerate di gudang sistem.');
+            return redirect()->route('obat.index', ['#supplier-table'])
+                ->with('success', 'Penerimaan Stok Berhasil Disimpan!');
 
         } catch (\Exception $e) {
             // Jika terjadi kesalahan baris kode / trigger query gagal di loop manapun, Cancel semuanya (Rollback)
@@ -116,5 +117,33 @@ class PembelianController extends Controller
                 ->withInput()
                 ->with('error', 'Terjadi kesalahan sistem saat menyimpan nota: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Mengekspor data laporan pembelian/supplier ke PDF.
+     */
+    public function cetakPdf(Request $request)
+    {
+        // Default start date (misal 3 bulan terakhir jika tidak filter)
+        $startDate = $request->input('start_date', Carbon::now()->subMonths(3)->format('Y-m-d'));
+        $endDate   = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+
+        $pembelians = Pembelian::with(['supplier', 'user', 'details.obat'])
+            ->whereDate('tgl_pembelian', '>=', $startDate)
+            ->whereDate('tgl_pembelian', '<=', $endDate)
+            ->latest('tgl_pembelian')
+            ->get();
+
+        $totalPembelian = $pembelians->sum('total_bayar');
+
+        $pdf = Pdf::loadView('pembelian.pdf', compact(
+            'pembelians', 
+            'startDate', 
+            'endDate', 
+            'totalPembelian'
+        ));
+
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->download("Laporan_Stok_Masuk_{$startDate}_sampai_{$endDate}.pdf");
     }
 }

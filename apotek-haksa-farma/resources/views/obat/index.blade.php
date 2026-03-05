@@ -53,12 +53,17 @@
         <!-- Tombol Tambah Obat -->
         <button type="button" onclick="openTambahModal()"
             class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition text-center shadow">
-            + Tambah Obat
+            + Obat
         </button>
         <!-- Tombol Tambah Kategori -->
         <button type="button" onclick="openTambahKatModal()"
             class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition text-center shadow">
-            + Tambah Kategori
+            + Kategori
+        </button>
+        <!-- Tombol Tambah Stok (Pembelian Supplier) -->
+        <button type="button" onclick="openModalStokMasuk()"
+            class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition text-center shadow">
+            + Stok Masuk
         </button>
     </form>
 </div>
@@ -69,7 +74,7 @@
             <thead>
                 <tr class="border-b border-gray-300">
                     <th class="py-3 px-4 font-bold text-gray-800 text-center w-16 relative">No<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                    <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                     <th class="py-3 px-6 font-bold text-gray-800 text-center w-40 relative">Harga<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                     <th class="py-3 px-6 font-bold text-gray-800 text-center w-28 relative">Satuan<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                     <th class="py-3 px-6 font-bold text-gray-800 text-center w-24 relative">Stok<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
@@ -82,7 +87,7 @@
                 @forelse($obats as $index => $obat)
                 <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
                     <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">{{ $index + 1 }}</td>
-                    <td class="py-3 px-6 text-gray-800 font-medium uppercase border-r border-gray-100">{{ $obat->nama_obat }}</td>
+                    <td class="py-3 px-6 text-center text-gray-800 font-medium uppercase border-r border-gray-100">{{ $obat->nama_obat }}</td>
                     <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}</td>
                     <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">
                         @if($obat->satuan)
@@ -99,7 +104,7 @@
                         @endif
                     </td>
                     <td class="py-3 px-6 text-center text-gray-800 border-r border-gray-100">
-                        <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
+                        <span class="bg-green-50 text-green-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-green-100">
                             {{ $obat->total_terjual ?? 0 }}
                         </span>
                     </td>
@@ -148,6 +153,108 @@
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    <!-- Pagination Data Obat -->
+    <div class="mt-6 flex items-center justify-between px-2">
+        <div class="text-xs text-gray-500 font-medium">
+            Menampilkan {{ $obats->firstItem() ?? 0 }} - {{ $obats->lastItem() ?? 0 }} dari {{ $obats->total() }} barang
+        </div>
+        <div class="flex gap-2">
+            @if($obats->onFirstPage())
+                <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed">
+                    &#9664; Back
+                </span>
+            @else
+                <a href="{{ $obats->previousPageUrl() }}" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md">
+                    &#9664; Back
+                </a>
+            @endif
+
+            @if($obats->hasMorePages())
+                <a href="{{ $obats->nextPageUrl() }}" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md">
+                    Next &#9654;
+                </a>
+            @else
+                <span class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed">
+                    Next &#9654;
+                </span>
+            @endif
+        </div>
+    </div>
+
+    {{-- ===== TABEL SUPPLIER / RIWAYAT STOK MASUK (Ditambahkan di bawah Obat) ===== --}}
+    <div id="supplier-table" class="mt-16 mb-12 animate-modal scroll-mt-24">
+        <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+            <h3 class="text-xl font-bold text-gray-800 border-l-4 border-green-600 pl-4 uppercase tracking-widest">Riwayat Stok Masuk dari Supplier</h3>
+            
+            <a href="{{ route('pembelian.cetak_pdf') }}" 
+               class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 transition shadow-lg">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 16H8V8h4a4 4 0 110 8zm-8 4h16v-2H4v2zm12-14H8v2h8c1.1 0 2 .9 2 2s-.9 2-2 2H8v2h8c2.2 0 4-1.8 4-4s-1.8-4-4-4z"/></svg>
+                PDF Laporan Supplier
+            </a>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden border-t-4 border-t-green-600">
+            <div class="overflow-x-auto">
+                <table class="w-full text-center border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100 uppercase tracking-widest">
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">No</th>
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">Nama Barang</th>
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">Tanggal Terima</th>
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">Nama Supplier</th>
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">Tanggal Kadaluarsa</th>
+                            <th class="py-4 px-4 font-bold text-gray-700 text-[10px]">Barang Masuk</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 uppercase">
+                        @forelse($pembelians as $beli)
+                            @foreach($beli->details as $detail)
+                            <tr class="hover:bg-green-50 transition duration-150">
+                                <td class="py-4 px-4 text-xs font-medium text-gray-400">{{ ($pembelians->currentPage()-1) * $pembelians->perPage() + $loop->parent->iteration }}</td>
+                                <td class="py-4 px-4 text-xs font-bold text-gray-800">{{ $detail->obat->nama_obat ?? '-' }}</td>
+                                <td class="py-4 px-4 text-xs font-medium text-gray-600">{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d/m/Y') }}</td>
+                                <td class="py-4 px-4 text-xs font-bold text-green-700">{{ $beli->supplier->nama_suplier ?? '-' }}</td>
+                                <td class="py-4 px-4 text-xs font-medium text-red-600">
+                                    {{ \Carbon\Carbon::parse($detail->obat->stokBatches()->where('id_pembelian', $beli->id)->first()->tgl_expired ?? now())->format('d/m/Y') }}
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="bg-green-100 text-green-800 font-extrabold px-3 py-1 rounded-full text-[10px]">
+                                        + {{ $detail->qty }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="6" class="py-12 text-center text-gray-400 text-xs italic">Belum ada riwayat pengadaan stok (restock) dari supplier.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Data Supplier -->
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="text-[10px] text-gray-400 font-medium italic">
+                    * Menampilkan riwayat stok masuk per item barang.
+                </div>
+                <div class="flex gap-2">
+                    @if($pembelians->onFirstPage())
+                        <span class="px-3 py-1.5 bg-white border border-gray-200 text-gray-300 rounded text-[10px] font-bold uppercase cursor-not-allowed">Back</span>
+                    @else
+                        <a href="{{ $pembelians->previousPageUrl() }}" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 rounded text-[10px] font-bold uppercase transition">Back</a>
+                    @endif
+
+                    @if($pembelians->hasMorePages())
+                        <a href="{{ $pembelians->nextPageUrl() }}" class="px-3 py-1.5 bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 rounded text-[10px] font-bold uppercase transition">Next</a>
+                    @else
+                        <span class="px-3 py-1.5 bg-white border border-gray-200 text-gray-300 rounded text-[10px] font-bold uppercase cursor-not-allowed">Next</span>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -479,6 +586,94 @@
     }
 </style>
 
+{{-- ===== MODAL STOK MASUK (SUPPLIER) ===== --}}
+<div id="modalStokMasuk" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeModalStokMasuk()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
+        <!-- Header -->
+        <div class="bg-green-600 px-6 py-4 flex items-center justify-between text-white">
+            <div class="flex items-center gap-3">
+                <div class="bg-green-500 bg-opacity-30 p-2 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                <h3 class="font-bold text-lg uppercase tracking-wide">Penerimaan Stok (Supplier)</h3>
+            </div>
+            <button onclick="closeModalStokMasuk()" class="text-green-100 hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <form action="{{ route('pembelian.store') }}" method="POST" id="formStokMasuk" onsubmit="event.preventDefault(); showSuccessAnimation('formStokMasuk', 'Stok Berhasil Ditambahkan!');">
+            @csrf
+            {{-- Hidden Fields for System Requirements --}}
+            <input type="hidden" name="no_faktur" id="restock_no_faktur">
+            <input type="hidden" name="items[0][no_batch]" id="restock_no_batch">
+            <input type="hidden" name="items[0][harga_beli]" value="0">
+
+            <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+                <!-- Nama Barang -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
+                    <select name="items[0][id_obat]" id="restock_id_obat" required class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 appearance-none shadow-sm">
+                        <option value="">-- Pilih Barang / Obat --</option>
+                        @foreach($obats as $obat)
+                            @if(($obat->kategori->nama_kategori ?? '') !== 'CEK')
+                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Tanggal Terima -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima</label>
+                    <input type="date" name="tgl_pembelian" required value="{{ date('Y-m-d') }}"
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
+                </div>
+
+                <!-- Nama Supplier -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier</label>
+                    <input list="supplier_list" name="nama_suplier" required placeholder="Ketik nama supplier..."
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
+                    <datalist id="supplier_list">
+                        @foreach($suppliers as $supplier)
+                            <option value="{{ $supplier->nama_suplier }}">
+                        @endforeach
+                    </datalist>
+                </div>
+
+                <!-- Tanggal Kadaluarsa -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
+                    <input type="date" name="items[0][tgl_expired]" required
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
+                </div>
+
+                <!-- Barang Masuk (Qty) -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Barang Masuk (Qty)</label>
+                    <input type="number" name="items[0][qty]" min="1" required placeholder="0"
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-600 shadow-sm">
+                </div>
+
+                <p class="text-[10px] text-gray-400 italic text-center pt-2">
+                    * Penambahan stok ini akan otomatis memperbarui data stok utama dan laporan kadaluarsa.
+                </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-3 px-6 py-5 bg-gray-50 border-t border-gray-100">
+                <button type="button" onclick="closeModalStokMasuk()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Simpan Stok Masuk
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -526,7 +721,18 @@
     /* ===== MODAL EDIT ===== */
     function openEditModal(el) {
         const d = el.dataset;
-        // ... (existing logic)
+        const id          = d.id;
+        const nama        = d.nama;
+        const idKategori  = d.idKategori;
+        const hargaJual   = d.hargaJual;
+        const stok        = d.stok;
+        const idSatuan    = d.idSatuan;
+        const kodeObat    = d.kodeObat;
+        const hargaBeli   = d.hargaBeli;
+        const expiredDate = d.expiredDate;
+
+        const modal = document.getElementById('modalEdit');
+        const form  = document.getElementById('formEdit');
         form.action = '{{ url("obat") }}/' + id;
 
         document.getElementById('edit_kode_obat').value    = kodeObat;
@@ -599,8 +805,6 @@
     /* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
     function showSuccessAnimation(formId, titleText) {
         const form = document.getElementById(formId);
-        
-        // Validasi simpel (HTML5 required check)
         if (!form.checkValidity()) {
             form.reportValidity();
             return;
@@ -612,7 +816,6 @@
         modal.classList.remove('hidden');
         modal.classList.add('flex');
 
-        // Restart animasi SVG
         const circle = modal.querySelector('.circle-anim');
         const check  = modal.querySelector('.check-anim');
         circle.style.animation = 'none';
@@ -622,11 +825,57 @@
         circle.style.animation = '';
         check.style.animation  = '';
 
-        // Submit setelah animasi (1.5 detik)
         setTimeout(() => {
             form.submit();
         }, 1500);
     }
+
+    /* ===== MODAL STOK MASUK ===== */
+    function openModalStokMasuk() {
+        // Auto-generate hidden fields for DB requirements
+        const now = Date.now();
+        document.getElementById('restock_no_faktur').value = 'INV-RESTOCK-' + now;
+        document.getElementById('restock_no_batch').value = 'BATCH-TEMP-' + now;
+
+        document.getElementById('restock_id_obat').removeAttribute('disabled');
+        document.getElementById('restock_id_obat').classList.remove('bg-gray-100');
+        document.getElementById('formStokMasuk').reset();
+        
+        // Restore values after reset
+        document.getElementById('restock_no_faktur').value = 'INV-RESTOCK-' + now;
+        document.getElementById('restock_no_batch').value = 'BATCH-TEMP-' + now;
+
+        document.getElementById('modalStokMasuk').classList.remove('hidden');
+        document.getElementById('modalStokMasuk').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalStokMasuk() {
+        document.getElementById('modalStokMasuk').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    /* ===== QUICK RESTOCK FROM ROW ===== */
+    function openQuickRestock(el) {
+        const id = el.dataset.id;
+        const nama = el.dataset.nama;
+        
+        openModalStokMasuk();
+        
+        const select = document.getElementById('restock_id_obat');
+        select.value = id;
+    }
+
+    // Update Escape handler
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeTambahModal();
+            closeEditModal();
+            closeHapusModal();
+            closeTambahKatModal();
+            closeModalStokMasuk();
+        }
+    });
 </script>
 @endpush
 

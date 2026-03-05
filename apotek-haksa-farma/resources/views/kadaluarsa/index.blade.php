@@ -207,7 +207,7 @@
         {{-- Pesan --}}
         <div class="px-6 pt-6 pb-4 text-center">
             <p class="text-base font-semibold text-gray-800 mb-2">
-                Yakin ingin menghapus <span id="hapusNamaObat" class="text-green-700"></span>?
+                Yakin ingin menghapus <span id="hapusNamaObat" class="text-red-700"></span>?
             </p>
             <p class="text-sm text-gray-500">Data yang dihapus tidak dapat dikembalikan.</p>
         </div>
@@ -216,7 +216,7 @@
             <button type="button" onclick="tutupHapus()"
                 class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
             <button type="button" id="btnKonfirmasiHapus" onclick="konfirmasiHapus()"
-                class="flex-1 py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                class="flex-1 py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
         </div>
     </div>
 </div>

@@ -12,6 +12,7 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KadaluarsaController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\PembelianController; // Import PembelianController
 
 // ===== HALAMAN PUBLIK USER (tanpa login) =====
 Route::get('/publik/katalog', [PublicController::class, 'katalog'])->name('publik.katalog');
@@ -42,12 +43,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('supplier', SupplierController::class);
         Route::resource('obat', ObatController::class);
         Route::resource('kadaluarsa', KadaluarsaController::class);
+        Route::resource('pembelian', PembelianController::class); // Add pembelian resource
 
+        // Laporan & Print
         Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
         Route::get('/laporan/penjualan/pdf', [LaporanController::class, 'cetakPdf'])->name('laporan.cetak_pdf');
-        
-        // Hapus Transaksi Penjualan
-        Route::delete('/penjualan/{penjualan}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
+        Route::get('/laporan/pembelian/pdf', [PembelianController::class, 'cetakPdf'])->name('pembelian.cetak_pdf');
     });
 
     // Admin & Kasir Bisa Transaksi

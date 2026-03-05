@@ -6,7 +6,11 @@ use App\Models\Obat;
 use App\Models\Kategori;
 use App\Models\Satuan;
 use App\Models\StokBatch;
+use App\Models\Supplier; // Import Supplier
+use App\Models\Pembelian; // Import Pembelian
+use App\Models\DetailPembelian; // Import DetailPembelian
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ObatController extends Controller
@@ -28,12 +32,21 @@ class ObatController extends Controller
             $query->where('id_kategori', $request->kategori);
         }
 
-        $obats = $query->get();
+        // Paginate obats: 10 per page as requested by user
+        $obats = $query->paginate(10)->withQueryString();
+        
+        // Paginate purchases history as well
+        $pembelians = Pembelian::with(['supplier', 'user'])
+                               ->latest()
+                               ->paginate(5, ['*'], 'page_pembelian')
+                               ->withQueryString();
+
         // Load kategoris for the tabs
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
+        $suppliers = Supplier::all(); 
         
-        return view('obat.index', compact('obats', 'kategoris', 'satuans'));
+        return view('obat.index', compact('obats', 'kategoris', 'satuans', 'suppliers', 'pembelians'));
     }
 
     public function create()
