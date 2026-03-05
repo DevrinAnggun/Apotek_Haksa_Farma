@@ -57,13 +57,17 @@
                         data-nama="{{ strtolower($obat->nama_obat) }}"
                         data-kode="{{ strtolower($obat->kode_obat) }}">
                         <td class="py-2.5 px-2 text-center text-gray-400 font-medium">{{ $loop->iteration }}</td>
-                        <td class="py-2.5 px-2 font-medium text-gray-800">{{ $obat->nama_obat }}
-                            <span class="text-xs text-gray-400 block">{{ $obat->kategori->nama_kategori ?? '-' }} · {{ $obat->satuan->nama_satuan ?? '-' }}</span>
+                        <td class="py-2.5 px-2 font-medium text-gray-800 uppercase tracking-wide">{{ $obat->nama_obat }}
+                            <span class="text-xs text-gray-400 block capitalize font-normal">{{ strtolower($obat->kategori->nama_kategori ?? '-') }} · {{ strtolower($obat->satuan->nama_satuan ?? '-') }}</span>
                         </td>
                         <td class="py-2.5 px-2 text-center">
-                            <span class="font-bold {{ $stok <= 0 ? 'text-red-500' : ($stok < 5 ? 'text-yellow-600' : 'text-green-600') }}">
-                                {{ $stok }}
-                            </span>
+                            @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
+                                <span class="text-gray-400 font-semibold">—</span>
+                            @else
+                                <span class="font-bold {{ $stok <= 0 ? 'text-red-500' : ($stok < 5 ? 'text-yellow-600' : 'text-green-600') }}">
+                                    {{ $stok }}
+                                </span>
+                            @endif
                         </td>
                         <td class="py-2.5 px-2 text-right font-semibold text-gray-700">
                             Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}
@@ -182,7 +186,7 @@
             html += `
             <div class="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-gray-800 truncate">${item.nama}</p>
+                    <p class="text-sm font-semibold text-gray-800 truncate uppercase tracking-wide">${item.nama}</p>
                     <p class="text-xs text-gray-500">Rp${numberFormat(item.harga_jual)} × ${item.qty} = <span class="font-bold text-gray-700">Rp${numberFormat(subtotal)}</span></p>
                 </div>
                 <div class="flex items-center gap-1">

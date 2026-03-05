@@ -9,8 +9,7 @@ class KategoriController extends Controller
 {
     public function index()
     {
-        $kategoris = Kategori::all();
-        return view('kategori.index', compact('kategoris'));
+        return redirect()->route('obat.index');
     }
 
     public function create()
@@ -31,7 +30,7 @@ class KategoriController extends Controller
         // 2. Simpan Data
         Kategori::create($request->all());
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('obat.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(Kategori $kategori)
@@ -48,12 +47,12 @@ class KategoriController extends Controller
 
         $kategori->update($request->all());
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diupdate.');
+        return redirect()->route('obat.index')->with('success', 'Kategori berhasil diupdate.');
     }
 
     public function destroy(Kategori $kategori)
     {
         $kategori->delete();
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->route('obat.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

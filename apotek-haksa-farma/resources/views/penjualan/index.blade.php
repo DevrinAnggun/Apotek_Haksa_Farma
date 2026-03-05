@@ -150,11 +150,17 @@
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
                                     <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->nama_obat ?? '-' }}</td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center text-sm">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center uppercase tracking-wide">{{ $detail->obat->nama_obat ?? '-' }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center text-sm uppercase tracking-wide">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
                                 <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
-                                <td class="py-2 px-3 text-center font-bold border-r border-gray-50 {{ ($detail->obat->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
-                                    {{ $detail->obat->total_stok ?? 0 }}
+                                <td class="py-2 px-3 text-center border-r border-gray-50">
+                                    @if(($detail->obat->kategori->nama_kategori ?? '') === 'CEK')
+                                        <span class="text-gray-400 font-semibold">—</span>
+                                    @else
+                                        <span class="font-bold {{ ($detail->obat->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
+                                            {{ $detail->obat->total_stok ?? 0 }}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="py-2 px-3 text-center font-medium text-gray-800 border-r border-gray-50">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
                                 <td class="py-2 px-2 text-center border-r border-gray-50">

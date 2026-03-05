@@ -39,7 +39,7 @@ class LaporanController extends Controller
         $viewStart = $startDate ?: $defaultStart;
         $viewEnd   = $endDate   ?: $defaultEnd;
 
-        return view('laporan.penjualan', [
+        return view('penjualan.index', [
             'penjualans' => $penjualans,
             'startDate' => $viewStart,
             'endDate' => $viewEnd,
@@ -67,8 +67,8 @@ class LaporanController extends Controller
         $totalPendapatan = $penjualans->sum('total_harga');
 
         // Render blade view menjadi halaman HTML untuk PDF
-        // Load view 'laporan.pdf_penjualan' dan passing datanya
-        $pdf = Pdf::loadView('laporan.pdf_penjualan', compact(
+        // Load view 'penjualan.pdf' dan passing datanya
+        $pdf = Pdf::loadView('penjualan.pdf', compact(
             'penjualans', 
             'startDate', 
             'endDate', 

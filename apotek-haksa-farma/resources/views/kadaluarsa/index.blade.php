@@ -24,7 +24,7 @@
 @endif
 
 {{-- Toolbar --}}
-<div class="flex items-center gap-2 mb-6">
+<div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
     {{-- Search --}}
     <div class="flex w-full sm:w-1/2 md:w-1/3 border border-gray-400 rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-green-600 bg-white shadow-sm">
         <input type="text" id="searchKadaluarsa" placeholder="Cari Barang....."
@@ -34,7 +34,6 @@
             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
     </div>
-
 </div>
 
 {{-- Tabel Data Kadaluarsa --}}
@@ -124,6 +123,7 @@
                             class="btn-detail bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </button>
+
                         {{-- Form hapus tersembunyi --}}
                         <form id="formHapus-{{ $batch->id }}"
                             action="{{ route('kadaluarsa.destroy', $batch->id) }}" method="POST" class="hidden">
@@ -274,6 +274,11 @@ function tutupDetail() {
     document.body.style.overflow = '';
 }
 
+function tutupDetail() {
+    document.getElementById('modalDetail').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
 let activeFormHapus = null;
 function tutupHapus() {
     document.getElementById('modalHapus').classList.add('hidden');
@@ -311,7 +316,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Escape tutup semua modal
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') { tutupDetail(); tutupHapus(); }
+        if (e.key === 'Escape') { 
+            tutupDetail(); 
+            tutupHapus(); 
+        }
     });
 });
 
