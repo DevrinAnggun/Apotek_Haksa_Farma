@@ -33,11 +33,11 @@
         <thead>
             <tr>
                 <th width="30">No</th>
-                <th width="70">Tgl Terima</th>
-                <th width="90">No. Faktur</th>
+                <th width="80">Tgl Terima</th>
                 <th width="120">Supplier</th>
-                <th width="180">Nama Barang & Detail Batch</th>
-                <th width="50">Qty</th>
+                <th width="150">Nama Barang</th>
+                <th width="90">Tgl Kadaluarsa</th>
+                <th width="40">Qty</th>
                 <th width="90">Harga Beli</th>
                 <th width="100">Subtotal</th>
             </tr>
@@ -46,16 +46,15 @@
             @php $no = 1; @endphp
             @forelse($pembelians as $pembelian)
                 @foreach($pembelian->details as $detail)
+                @php 
+                    $batch = $detail->obat->stokBatches()->where('id_pembelian', $pembelian->id)->first();
+                @endphp
                 <tr>
                     <td class="text-center">{{ $no++ }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($pembelian->tgl_pembelian)->format('d/m/Y') }}</td>
-                    <td class="text-center">{{ $pembelian->no_faktur }}</td>
                     <td>{{ $pembelian->supplier->nama_suplier ?? '-' }}</td>
-                    <td>
-                        <span class="font-bold">{{ $detail->obat->nama_obat ?? 'Barang Terhapus' }}</span><br>
-                        <small>Batch: {{ $detail->obat->stokBatches()->where('id_pembelian', $pembelian->id)->first()->no_batch ?? '-' }}</small><br>
-                        <small>Exp: {{ \Carbon\Carbon::parse($detail->obat->stokBatches()->where('id_pembelian', $pembelian->id)->first()->tgl_expired ?? now())->format('d/m/Y') }}</small>
-                    </td>
+                    <td><span class="font-bold">{{ $detail->obat->nama_obat ?? 'Barang Terhapus' }}</span></td>
+                    <td class="text-center">{{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('d/m/Y') }}</td>
                     <td class="text-center">{{ $detail->qty }}</td>
                     <td class="text-right">Rp{{ number_format($detail->harga_beli, 0, ',', '.') }}</td>
                     <td class="text-right">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>

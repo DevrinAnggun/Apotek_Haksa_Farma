@@ -18,7 +18,16 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        return redirect()->route('obat.index', ['#supplier-table']);
+        // Data for purchase listing
+        $pembelians = Pembelian::with(['supplier', 'user', 'details.obat'])
+                               ->latest()
+                               ->paginate(10);
+
+        // Data for the modal (Add Stock)
+        $suppliers = \App\Models\Supplier::all();
+        $obats = \App\Models\Obat::all();
+
+        return view('pembelian.index', compact('pembelians', 'suppliers', 'obats'));
     }
 
     /**
@@ -105,7 +114,7 @@ class PembelianController extends Controller
             // 5. Finalisasi Sukses dan Simpan ke Server Permanen (Commit)
             DB::commit();
 
-            return redirect()->route('obat.index', ['#supplier-table'])
+            return redirect()->route('pembelian.index')
                 ->with('success', 'Penerimaan Stok Berhasil Disimpan!');
 
         } catch (\Exception $e) {
@@ -145,5 +154,89 @@ class PembelianController extends Controller
 
         $pdf->setPaper('A4', 'landscape');
         return $pdf->download("Laporan_Stok_Masuk_{$startDate}_sampai_{$endDate}.pdf");
+    }
+
+    /**
+     * Memperbarui data riwayat pembelian dan stok batch.
+     */
+    public function update(Request $request, Pembelian $pembelian)
+    {
+        $request->validate([
+            'id_obat' => 'required|exists:obats,id',
+            'tgl_pembelian' => 'required|date',
+            'nama_suplier' => 'required|string|max:255',
+            'tgl_expired' => 'required|date',
+            'qty' => 'required|integer|min:1',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Update Supplier
+            $supplier = \App\Models\Supplier::firstOrCreate(
+                ['nama_suplier' => strtoupper($request->nama_suplier)]
+            );
+
+            // 2. Update Pembelian Header
+            $pembelian->update([
+                'id_suplier' => $supplier->id,
+                'tgl_pembelian' => $request->tgl_pembelian,
+            ]);
+
+            // 3. Update Detail & Stok Batch
+            // Asumsi: 1 Pembelian dari form ini hanya punya 1 detail (untuk simplisitas edit per baris)
+            $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->first();
+            if ($detail) {
+                $detail->update([
+                    'id_obat' => $request->id_obat,
+                    'qty' => $request->qty,
+                ]);
+
+                // Update Stok Batch
+                $batch = StokBatch::where('id_pembelian', $pembelian->id)->first();
+                if ($batch) {
+                    $batch->update([
+                        'id_obat' => $request->id_obat,
+                        'tgl_expired' => $request->tgl_expired,
+                        'stok_awal' => $request->qty,
+                        'stok_sisa' => $request->qty, // Reset sisa ke qty baru (simpel)
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('pembelian.index')->with('success', 'Riwayat stok berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal update riwayat pembelian: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui riwayat: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Menghapus riwayat pembelian dan stok batch terkait.
+     */
+    public function destroy(Pembelian $pembelian)
+    {
+        try {
+            DB::beginTransaction();
+
+            // 1. Hapus Stok Batch yang terkait dengan pembelian ini
+            StokBatch::where('id_pembelian', $pembelian->id)->delete();
+
+            // 2. Hapus Detail Pembelian
+            DetailPembelian::where('id_pembelian', $pembelian->id)->delete();
+
+            // 3. Hapus Data Utama Pembelian
+            $pembelian->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Riwayat stok masuk berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal hapus riwayat pembelian: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus riwayat: ' . $e->getMessage());
+        }
     }
 }

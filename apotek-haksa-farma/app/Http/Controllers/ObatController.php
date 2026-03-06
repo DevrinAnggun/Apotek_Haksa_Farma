@@ -44,9 +44,8 @@ class ObatController extends Controller
         // Load kategoris for the tabs
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
-        $suppliers = Supplier::all(); 
         
-        return view('obat.index', compact('obats', 'kategoris', 'satuans', 'suppliers', 'pembelians'));
+        return view('obat.index', compact('obats', 'kategoris', 'satuans'));
     }
 
     public function create()

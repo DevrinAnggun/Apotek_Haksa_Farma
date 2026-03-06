@@ -32,8 +32,8 @@ class LaporanController extends Controller
                   ->whereDate('tgl_penjualan', '<=', $endDate);
         }
 
-        $penjualans = $query->latest('tgl_penjualan')->get();
-        $totalPendapatan = $penjualans->sum('total_harga');
+        $totalPendapatan = $query->sum('total_harga'); // Total of all filtered records
+        $penjualans = $query->latest('tgl_penjualan')->paginate(10)->withQueryString();
 
         // Untuk input field di view, tampilkan tanggal yang sedang aktif atau default
         $viewStart = $startDate ?: $defaultStart;

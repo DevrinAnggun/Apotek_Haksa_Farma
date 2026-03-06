@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');
         Route::get('/laporan/penjualan/pdf', [LaporanController::class, 'cetakPdf'])->name('laporan.cetak_pdf');
         Route::get('/laporan/pembelian/pdf', [PembelianController::class, 'cetakPdf'])->name('pembelian.cetak_pdf');
+        Route::delete('/penjualan/{penjualan}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
     });
 
     // Admin & Kasir Bisa Transaksi
