@@ -102,10 +102,6 @@
                             Nama Obat
                             <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
                         </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-28 relative">
-                            Jenis
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
                         <th class="py-3 px-4 font-bold text-gray-800 text-center w-24 relative">
                             Satuan
                             <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
@@ -150,8 +146,10 @@
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
                                     <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center uppercase tracking-wide">{{ $detail->obat->nama_obat ?? '-' }}</td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center text-sm uppercase tracking-wide">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center uppercase tracking-wide">
+                                    {{ $detail->obat->nama_obat ?? '-' }}
+                                    <span class="text-[10px] text-gray-400 block font-normal normal-case">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</span>
+                                </td>
                                 <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
                                 <td class="py-2 px-3 text-center border-r border-gray-50">
                                     @if(($detail->obat->kategori->nama_kategori ?? '') === 'CEK')
@@ -203,7 +201,7 @@
                         @endforeach
                     @empty
                         <tr>
-                            <td colspan="10" class="py-8 text-center text-gray-400 italic">Belum ada data penjualan pada rentang tanggal ini.</td>
+                            <td colspan="9" class="py-8 text-center text-gray-400 italic">Belum ada data penjualan pada rentang tanggal ini.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -412,7 +410,7 @@
 
         setTimeout(() => {
             document.getElementById(formId).submit();
-        }, 1500);
+        }, 800);
     }
 </script>
 

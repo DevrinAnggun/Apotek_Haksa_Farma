@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pembelian;
 use App\Models\DetailPembelian;
 use App\Models\StokBatch;
+use App\Models\RiwayatStokMasuk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -58,6 +59,7 @@ class PembelianController extends Controller
             'items.*.tgl_expired' => 'required|date|after:today',
             'items.*.qty' => 'required|integer|min:1',
             'items.*.harga_beli' => 'required|integer|min:0',
+            'items.*.harga_jual' => 'required|integer|min:0',
         ]);
 
         // Mulai Database Transaction untuk keamanan aliran data
@@ -85,7 +87,7 @@ class PembelianController extends Controller
                 $totalBayar += $subtotal;
 
                 // A. Simpan Rincian Pembelian: Tabel DetailPembelian
-                DetailPembelian::create([
+                $detail = DetailPembelian::create([
                     'id_pembelian' => $pembelian->id,
                     'id_obat' => $item['id_obat'],
                     'qty' => $item['qty'],
@@ -104,8 +106,21 @@ class PembelianController extends Controller
                     'stok_sisa' => $item['qty'], // Sisa stok (awalnya sama dengan qty pembelian)
                 ]);
                 
-                // C. (Opsional) Update Harga Beli dasar obat di Master Data Obat (jika harga dari supplier naik/turun)
-                // \App\Models\Obat::where('id', $item['id_obat'])->update(['harga_beli' => $item['harga_beli']]);
+                // B2. Log Riwayat Stok Masuk Awal
+                RiwayatStokMasuk::create([
+                    'id_pembelian_detail' => $detail->id,
+                    'id_obat' => $item['id_obat'],
+                    'qty_masuk' => $item['qty'],
+                    'harga_beli' => $item['harga_beli'],
+                    'harga_jual' => $item['harga_jual'],
+                    'keterangan' => 'Penerimaan Stok Awal'
+                ]);
+
+                // C. Update Harga Beli dasar & Harga Jual obat di Master Data Obat
+                \App\Models\Obat::where('id', $item['id_obat'])->update([
+                    'harga_beli' => $item['harga_beli'],
+                    'harga_jual' => $item['harga_jual']
+                ]);
             }
 
             // 4. Update Ulang Total Pembayaran pada Tabel Utama (Header)
@@ -169,6 +184,7 @@ class PembelianController extends Controller
             'qty' => 'required|integer|min:1',
             'tambah_stok' => 'nullable|integer|min:0',
             'harga_beli' => 'required|numeric|min:0',
+            'harga_jual' => 'required|numeric|min:0',
         ]);
 
         try {
@@ -218,6 +234,27 @@ class PembelianController extends Controller
                     $batch->tgl_expired = $request->tgl_expired;
                     $batch->save();
                 }
+
+                // Log Riwayat jika ada tambah_stok baru
+                if ($tambahStok > 0) {
+                    RiwayatStokMasuk::create([
+                        'id_pembelian_detail' => $detail->id,
+                        'id_obat' => $request->id_obat,
+                        'qty_masuk' => $tambahStok,
+                        'harga_beli' => $request->harga_beli,
+                        'harga_jual' => $request->harga_jual,
+                        'keterangan' => 'Penambahan Stok Baru (Edit)'
+                    ]);
+                }
+
+                // Update Master Harga Obat
+                $obat = \App\Models\Obat::find($request->id_obat);
+                if ($obat) {
+                    $obat->update([
+                        'harga_beli' => $request->harga_beli,
+                        'harga_jual' => $request->harga_jual
+                    ]);
+                }
             }
 
             // Sync total_bayar header
@@ -240,13 +277,17 @@ class PembelianController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Hapus Stok Batch yang terkait dengan pembelian ini
+            // 1. Hapus Riwayat Stok Masuk yang terkait dengan detail pembelian ini
+            $detailIds = DetailPembelian::where('id_pembelian', $pembelian->id)->pluck('id');
+            RiwayatStokMasuk::whereIn('id_pembelian_detail', $detailIds)->delete();
+
+            // 2. Hapus Stok Batch yang terkait dengan pembelian ini
             StokBatch::where('id_pembelian', $pembelian->id)->delete();
 
-            // 2. Hapus Detail Pembelian
+            // 3. Hapus Detail Pembelian
             DetailPembelian::where('id_pembelian', $pembelian->id)->delete();
 
-            // 3. Hapus Data Utama Pembelian
+            // 4. Hapus Data Utama Pembelian
             $pembelian->delete();
 
             DB::commit();
@@ -257,5 +298,17 @@ class PembelianController extends Controller
             Log::error('Gagal hapus riwayat pembelian: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal menghapus riwayat: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Mendapatkan data JSON riwayat penambahan stok untuk popup.
+     */
+    public function getRiwayat($id_detail)
+    {
+        $riwayat = RiwayatStokMasuk::where('id_pembelian_detail', $id_detail)
+            ->latest('created_at')
+            ->get();
+
+        return response()->json($riwayat);
     }
 }

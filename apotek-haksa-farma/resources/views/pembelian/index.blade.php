@@ -8,11 +8,18 @@
     </h2>
 </div>
 
-{{-- Flash Message --}}
 @if(session('success'))
     <div id="flash-success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-5 text-sm flex items-center justify-between">
         <span>{{ session('success') }}</span>
         <button onclick="dismissAlert('flash-success')" class="ml-4 text-green-700 hover:text-green-900 font-bold text-lg leading-none">&times;</button>
+    </div>
+@endif
+
+{{-- Flash Error Message --}}
+@if(session('error'))
+    <div id="flash-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-5 text-sm flex items-center justify-between">
+        <span>{{ session('error') }}</span>
+        <button onclick="dismissAlert('flash-error')" class="ml-4 text-red-700 hover:text-red-900 font-bold text-lg leading-none">&times;</button>
     </div>
 @endif
 
@@ -93,6 +100,14 @@
                         Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
                     </td>
                     <td class="py-3 px-6 flex justify-center items-center gap-1">
+                        <!-- Tombol Riwayat -->
+                        <button type="button"
+                            onclick="openRiwayatModal('{{ $detail->id }}', '{{ $detail->obat->nama_obat ?? '' }}')"
+                            class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm"
+                            title="Riwayat Penambahan">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+
                         <!-- Tombol Edit -->
                         <button type="button"
                             onclick="openEditRestockModal(this)"
@@ -104,6 +119,7 @@
                             data-tgl-expired="{{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('Y-m-d') }}"
                             data-qty="{{ $detail->qty }}"
                             data-harga-beli="{{ $detail->harga_beli }}"
+                            data-harga-jual="{{ $detail->obat->harga_jual ?? 0 }}"
                             class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition shadow-sm"
                             title="Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -116,12 +132,6 @@
                             title="Hapus">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         </button>
-
-                        {{-- Form Hapus (Hidden) --}}
-                        <form id="form-delete-pembelian-{{ $beli->id }}" action="{{ route('pembelian.destroy', $beli->id) }}" method="POST" class="hidden">
-                            @csrf
-                            @method('DELETE')
-                        </form>
                     </td>
                 </tr>
                 @endforeach
@@ -165,7 +175,7 @@
 {{-- Modals extracted to partials at the end of file --}}
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[110] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[150] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <div class="flex justify-center mb-5">
@@ -204,6 +214,42 @@
 @include('pembelian.partials.modal_edit')
 @include('pembelian.partials.modal_add_stock')
 
+    </div>
+</div>
+
+{{-- ===== MODAL RIWAYAT STOK MASUK ===== --}}
+<div id="modalRiwayatStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center font-sans">
+    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeRiwayatModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white text-center">
+            <h3 class="font-bold text-lg uppercase tracking-widest w-full">Riwayat Stok: <span id="riwayat_nama_obat">--</span></h3>
+            <button onclick="closeRiwayatModal()" class="absolute right-5 text-blue-100 hover:text-white transition text-3xl font-light">&times;</button>
+        </div>
+
+        <div class="p-4 overflow-y-auto max-h-[60vh]">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 border-b border-gray-200">
+                        <th class="p-2 font-bold text-gray-700 text-center">Tgl & Jam</th>
+                        <th class="p-2 font-bold text-gray-700 text-center">Jumlah</th>
+                        <th class="p-2 font-bold text-gray-700 text-center">Harga Beli</th>
+                        <th class="p-2 font-bold text-gray-700 text-center">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayat_body">
+                    <!-- Data injected via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+            <button type="button" onclick="closeRiwayatModal()" class="px-5 py-2 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Tutup</button>
+        </div>
+    </div>
+</div>
+
 {{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
 <div id="modalHapusPembelian" class="fixed inset-0 z-[110] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeletePembelian()"></div>
@@ -225,6 +271,12 @@
         </div>
     </div>
 </div>
+
+{{-- Single Form for Deletion --}}
+<form id="form-delete-pembelian" action="" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
 
 @endsection
 
@@ -249,6 +301,51 @@
         document.body.style.overflow = '';
     }
 
+    /* ===== LOGIKA RIWAYAT STOK ===== */
+    function openRiwayatModal(idDetail, namaObat) {
+        document.getElementById('riwayat_nama_obat').innerText = namaObat;
+        const body = document.getElementById('riwayat_body');
+        body.innerHTML = '<tr><td colspan="4" class="p-4 text-center italic text-gray-400">Memuat data...</td></tr>';
+        
+        document.getElementById('modalRiwayatStok').classList.remove('hidden');
+        document.getElementById('modalRiwayatStok').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+
+        fetch(`/pembelian/riwayat/${idDetail}`)
+            .then(response => response.json())
+            .then(data => {
+                body.innerHTML = '';
+                if (data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="4" class="p-5 text-center text-gray-400">Tidak ada riwayat penambahan.</td></tr>';
+                    return;
+                }
+                data.forEach(item => {
+                    const dateObj = new Date(item.created_at);
+                    const formattedDate = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const formattedTime = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    
+                    body.innerHTML += `
+                        <tr class="border-b border-gray-100 text-center">
+                            <td class="p-3 text-gray-600">${formattedDate} <br> <span class="text-[10px] text-gray-400">${formattedTime} WIB</span></td>
+                            <td class="p-3 font-bold text-green-600">+${item.qty_masuk}</td>
+                            <td class="p-3 text-gray-700 font-medium">Rp${new Intl.NumberFormat('id-ID').format(item.harga_beli)}</td>
+                            <td class="p-3 text-gray-500 italic text-[11px]">${item.keterangan || '-'}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(error => {
+                body.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-500">Gagal memuat data.</td></tr>';
+                console.error('Error fetching riwayat:', error);
+            });
+    }
+
+    function closeRiwayatModal() {
+        document.getElementById('modalRiwayatStok').classList.add('hidden');
+        document.getElementById('modalRiwayatStok').classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
     /* ===== LOGIKA EDIT RIWAYAT ===== */
     function openEditRestockModal(btn) {
         const idPembelian = btn.getAttribute('data-id-pembelian');
@@ -258,6 +355,7 @@
         const tglExp = btn.getAttribute('data-tgl-expired');
         const qty = btn.getAttribute('data-qty');
         const hargaBeli = btn.getAttribute('data-harga-beli');
+        const hargaJual = btn.getAttribute('data-harga-jual');
 
         // Set Form Action
         document.getElementById('formEditStok').action = '/pembelian/' + idPembelian;
@@ -269,6 +367,7 @@
         document.getElementById('edit_tgl_expired').value = tglExp;
         document.getElementById('edit_qty').value = qty;
         document.getElementById('edit_harga_beli').value = hargaBeli;
+        document.getElementById('edit_harga_jual').value = hargaJual;
         document.getElementById('edit_tambah_stok').value = '';
 
         // Show Modal
@@ -304,7 +403,10 @@
 
     function executeDeletePembelian() {
         if (activeDeletePembelianId) {
-            showSuccessAnimation('form-delete-pembelian-' + activeDeletePembelianId, 'Riwayat Berhasil Dihapus!');
+            const form = document.getElementById('form-delete-pembelian');
+            form.action = '/pembelian/' + activeDeletePembelianId;
+            closeDeletePembelian(); // ID sekarang tetap aman karena form sudah diset actionnya
+            showSuccessAnimation('form-delete-pembelian', 'Riwayat Berhasil Dihapus!');
         }
     }
 
@@ -313,9 +415,22 @@
         const modal = document.getElementById('modalSukses');
         const title = document.getElementById('sukses_title');
         title.innerText = message;
+        
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(() => { document.getElementById(formId).submit(); }, 1200);
+
+        // Restart animasi centang
+        const circle = modal.querySelector('.circle-anim');
+        const check  = modal.querySelector('.check-anim');
+        if(circle && check) {
+            circle.style.animation = 'none';
+            check.style.animation  = 'none';
+            circle.offsetHeight; // trigger reflow
+            circle.style.animation = '';
+            check.style.animation  = '';
+        }
+
+        setTimeout(() => { document.getElementById(formId).submit(); }, 800);
     }
 </script>
 @endpush

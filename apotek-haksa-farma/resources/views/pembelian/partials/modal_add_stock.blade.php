@@ -65,13 +65,25 @@
                     </div>
                 </div>
 
-                <!-- Harga Beli -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
-                        <input type="number" name="items[0][harga_beli]" min="0" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-gray-800 shadow-sm">
+                <!-- Harga Beli & Jual -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Harga Beli -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
+                            <input type="number" name="items[0][harga_beli]" min="0" required placeholder="0"
+                                class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-gray-800 shadow-sm">
+                        </div>
+                    </div>
+                    <!-- Harga Jual -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
+                            <input type="number" name="items[0][harga_jual]" min="0" required placeholder="0"
+                                class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-gray-800 shadow-sm">
+                        </div>
                     </div>
                 </div>
 

@@ -23,4 +23,9 @@ class DetailPembelian extends Model
     {
         return $this->belongsTo(Obat::class, 'id_obat');
     }
+
+    public function riwayat()
+    {
+        return $this->hasMany(RiwayatStokMasuk::class, 'id_pembelian_detail');
+    }
 }

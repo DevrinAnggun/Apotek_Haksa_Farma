@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('obat', ObatController::class);
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);
+        Route::get('/pembelian/riwayat/{id_detail}', [PembelianController::class, 'getRiwayat'])->name('pembelian.riwayat');
         Route::resource('pembelian', PembelianController::class);
 
         // Laporan & Print
