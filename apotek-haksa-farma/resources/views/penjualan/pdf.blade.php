@@ -32,7 +32,6 @@
             <tr>
                 <th width="30">No</th>
                 <th width="80">Tanggal</th>
-                <th>Jenis Barang</th>
                 <th width="150">Nama Barang</th>
                 <th width="80">Harga Satuan</th>
                 <th width="50">Stok Terkini</th>
@@ -47,7 +46,6 @@
                 <tr>
                     <td class="text-center">{{ $no++ }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($trx->tgl_penjualan)->format('d-m-Y') }}</td>
-                    <td>{{ $detail->obat->kategori->nama_kategori ?? '-' }}</td>
                     <td>{{ $detail->obat->nama_obat ?? 'Barang Terhapus' }}</td>
                     <td class="text-right">Rp. {{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
                     <td class="text-center">{{ $detail->obat->total_stok ?? 0 }}</td>
@@ -58,13 +56,13 @@
                 @endforeach
             @empty
                 <tr>
-                    <td colspan="8" class="text-center" style="padding: 20px;">Belum ada data penjualan pada rentang periode ini.</td>
+                    <td colspan="7" class="text-center" style="padding: 20px;">Belum ada data penjualan pada rentang periode ini.</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr style="background-color: #eee;">
-                <td colspan="7" class="text-right" style="font-weight: bold; padding-right: 15px;">TOTAL PENDAPATAN :</td>
+                <td colspan="6" class="text-right" style="font-weight: bold; padding-right: 15px;">TOTAL PENDAPATAN :</td>
                 <td class="text-right" style="font-weight: bold; color: green;">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
         </tfoot>

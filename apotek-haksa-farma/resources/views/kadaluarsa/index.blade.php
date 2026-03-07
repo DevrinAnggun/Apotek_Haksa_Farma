@@ -69,10 +69,10 @@
             </tr>
         </thead>
         <tbody id="kadaluarsaTableBody">
-            @forelse($kadaluarsas as $index => $batch)
+            @forelse($kadaluarsas as $index => $item)
             @php
                 $now     = \Carbon\Carbon::now();
-                $expired = \Carbon\Carbon::parse($batch->tgl_expired);
+                $expired = \Carbon\Carbon::parse($item->earliest_expired);
                 $diffDays = (int)$now->diffInDays($expired, false); // negatif = sudah expired
 
                 if ($diffDays <= 0) {
@@ -89,15 +89,14 @@
                 }
             @endphp
             <tr class="border-b border-gray-200 hover:bg-gray-50 transition {{ $rowClass }} kadaluarsa-row"
-                data-nama="{{ strtolower($batch->obat->nama_obat ?? '') }}"
-                data-batch="{{ strtolower($batch->no_batch ?? '') }}">
+                data-nama="{{ strtolower($item->obat->nama_obat ?? '') }}">
                 <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">{{ $index + 1 }}</td>
                 <td class="py-3 px-5 font-semibold text-gray-800 uppercase border-r border-gray-100">
-                    {{ $batch->obat->nama_obat ?? '—' }}
-                    <span class="text-xs font-normal text-gray-400 block normal-case">{{ $batch->obat->kategori->nama_kategori ?? '—' }}</span>
+                    {{ $item->obat->nama_obat ?? '—' }}
+                    <span class="text-xs font-normal text-gray-400 block normal-case">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
                 </td>
-                <td class="py-3 px-5 text-center font-bold border-r border-gray-100 {{ $batch->stok_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
-                    {{ number_format($batch->stok_sisa, 0, ',', '.') }}
+                <td class="py-3 px-5 text-center font-bold border-r border-gray-100 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
+                    {{ number_format($item->total_sisa, 0, ',', '.') }}
                 </td>
                 <td class="py-3 px-5 text-center border-r border-gray-100">
                     <span class="font-semibold {{ $diffDays < 0 ? 'text-red-600' : 'text-gray-800' }}">
@@ -106,7 +105,7 @@
                 </td>
                 <td class="py-3 px-5 text-center border-r border-gray-100">
                     <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
-                        {{ $batch->obat->total_terjual ?? 0 }}
+                        {{ $item->obat->total_terjual ?? 0 }}
                     </span>
                 </td>
                 <td class="py-3 px-5 text-center border-r border-gray-100">
@@ -116,23 +115,23 @@
                     <div class="flex items-center justify-center gap-1">
                         {{-- Tombol Lihat Detail (trigger modal) --}}
                         <button type="button" title="Lihat Detail"
-                            data-nama="{{ $batch->obat->nama_obat ?? '-' }}"
-                            data-kategori="{{ $batch->obat->kategori->nama_kategori ?? '-' }}"
-                            data-stok="{{ number_format($batch->stok_sisa, 0) }}"
+                            data-nama="{{ $item->obat->nama_obat ?? '-' }}"
+                            data-kategori="{{ $item->obat->kategori->nama_kategori ?? '-' }}"
+                            data-stok="{{ number_format($item->total_sisa, 0) }}"
                             data-tgl="{{ $expired->format('d/m/Y') }}"
                             class="btn-detail bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </button>
 
-                        {{-- Form hapus tersembunyi --}}
-                        <form id="formHapus-{{ $batch->id }}"
-                            action="{{ route('kadaluarsa.destroy', $batch->id) }}" method="POST" class="hidden">
+                        {{-- Form hapus tersembunyi (Sekarang per Obat id) --}}
+                        <form id="formHapus-{{ $item->id_obat }}"
+                            action="{{ route('kadaluarsa.destroy', $item->id_obat) }}" method="POST" class="hidden">
                             @csrf @method('DELETE')
                         </form>
                         {{-- Tombol Hapus (trigger modal konfirmasi) --}}
-                        <button type="button" title="Hapus"
-                            data-form="formHapus-{{ $batch->id }}"
-                            data-nama="{{ $batch->obat->nama_obat ?? '' }}"
+                        <button type="button" title="Bersihkan Data Kadaluarsa"
+                            data-form="formHapus-{{ $item->id_obat }}"
+                            data-nama="{{ $item->obat->nama_obat ?? '' }}"
                             class="btn-hapus bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         </button>

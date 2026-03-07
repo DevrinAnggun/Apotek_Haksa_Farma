@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('supplier', SupplierController::class);
         Route::resource('obat', ObatController::class);
         Route::resource('kadaluarsa', KadaluarsaController::class);
-        Route::resource('pembelian', PembelianController::class); // Add pembelian resource
+        Route::resource('pembelian', PembelianController::class);
 
         // Laporan & Print
         Route::get('/laporan/penjualan', [LaporanController::class, 'penjualan'])->name('laporan.penjualan');

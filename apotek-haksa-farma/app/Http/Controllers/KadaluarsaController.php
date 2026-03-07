@@ -14,18 +14,25 @@ class KadaluarsaController extends Controller
      */
     public function index()
     {
-        // Tampilkan batch yang SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
+        // Tampilkan obat yang memiliki batch SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
         $batasHari = Carbon::now()->addDays(7);
 
-        $kadaluarsas = StokBatch::with([
-            'obat' => function($q) {
-                $q->withSum('penjualanDetails as total_terjual', 'qty');
-            }, 
-            'obat.kategori'
-        ])
+        // Group by id_obat agar tidak double di tabel
+        $kadaluarsas = StokBatch::select(
+                'id_obat',
+                DB::raw('SUM(stok_sisa) as total_sisa'),
+                DB::raw('MIN(tgl_expired) as earliest_expired')
+            )
+            ->with([
+                'obat' => function($q) {
+                    $q->withSum('penjualanDetails as total_terjual', 'qty');
+                }, 
+                'obat.kategori'
+            ])
             ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasHari)
-            ->orderBy('tgl_expired', 'asc')
+            ->groupBy('id_obat')
+            ->orderBy('earliest_expired', 'asc')
             ->get();
 
         return view('kadaluarsa.index', compact('kadaluarsas'));
@@ -43,10 +50,21 @@ class KadaluarsaController extends Controller
     /**
      * Menghapus data batch dari database (Mungkin untuk membersihkan log lama).
      */
-    public function destroy(StokBatch $kadaluarsa)
+    public function destroy($id_obat)
     {
-        $kadaluarsa->delete();
-        return redirect()->route('kadaluarsa.index')
-            ->with('success', 'Data batch obat berhasil dihapus.');
+        try {
+            $batasHari = Carbon::now()->addDays(7);
+            
+            // Hapus semua batch obat ini yang sudah expired / H-7
+            StokBatch::where('id_obat', $id_obat)
+                ->where('stok_sisa', '>', 0)
+                ->whereDate('tgl_expired', '<=', $batasHari)
+                ->delete();
+
+            return redirect()->route('kadaluarsa.index')
+                ->with('success', 'Data kadaluarsa obat tersebut berhasil dibersihkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }

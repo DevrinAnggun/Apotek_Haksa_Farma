@@ -45,17 +45,19 @@
         <thead>
             <tr class="border-b border-gray-300">
                 <th class="py-3 px-4 font-bold text-gray-800 text-center w-16 relative">No<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Tanggal Terima<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">Nama Supplier<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                 <th class="py-3 px-5 font-bold text-gray-800 text-center relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-44">Tanggal Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-24 relative">Qty<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Harga Beli<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Tgl Terima<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-44">Tgl Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">Supplier<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center w-20 relative">Qty<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-32">Harga Beli<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
+                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-32">Harga Jual<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                 <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Subtotal<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
                 <th class="py-3 px-6 font-bold text-gray-800 text-center w-28">Aksi</th>
             </tr>
         </thead>
         <tbody>
+            @php $no = ($pembelians->currentPage()-1) * $pembelians->perPage() + 1; @endphp
             @forelse($pembelians as $beli)
                 @foreach($beli->details as $detail)
                 @php 
@@ -63,19 +65,19 @@
                 @endphp
                 <tr class="border-b border-gray-200 hover:bg-gray-50 transition text-sm">
                     <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">
-                        {{ ($pembelians->currentPage()-1) * $pembelians->perPage() + $loop->parent->iteration }}
-                    </td>
-                    <td class="py-3 px-5 text-center text-gray-800 font-medium border-r border-gray-100">
-                        {{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d-m-Y') }}
-                    </td>
-                    <td class="py-3 px-5 text-center text-green-700 font-bold uppercase border-r border-gray-100">
-                        {{ $beli->supplier->nama_suplier ?? '-' }}
+                        {{ $no++ }}
                     </td>
                     <td class="py-3 px-5 text-center text-gray-800 font-bold uppercase border-r border-gray-100">
                         {{ $detail->obat->nama_obat ?? '-' }}
                     </td>
-                    <td class="py-3 px-5 text-center text-red-600 font-bold border-r border-gray-100">
+                    <td class="py-3 px-5 text-center text-gray-800 font-medium border-r border-gray-100">
+                        {{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d-m-Y') }}
+                    </td>
+                    <td class="py-3 px-5 text-center text-gray-900 font-bold border-r border-gray-100">
                         {{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('d-m-Y') }}
+                    </td>
+                    <td class="py-3 px-5 text-center text-gray-900 font-bold uppercase border-r border-gray-100">
+                        {{ $beli->supplier->nama_suplier ?? '-' }}
                     </td>
                     <td class="py-3 px-5 text-center border-r border-gray-100 font-bold">
                         {{ $detail->qty }}
@@ -83,7 +85,10 @@
                     <td class="py-3 px-5 text-center border-r border-gray-100 font-medium">
                         Rp{{ number_format($detail->harga_beli, 0, ',', '.') }}
                     </td>
-                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold text-green-700">
+                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold text-gray-900">
+                        Rp{{ number_format($detail->obat->harga_jual ?? 0, 0, ',', '.') }}
+                    </td>
+                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold text-gray-900">
                         Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
                     </td>
                     <td class="py-3 px-6 flex justify-center items-center gap-1">
@@ -121,7 +126,7 @@
                 @endforeach
             @empty
             <tr>
-                <td colspan="9" class="py-12 text-center text-gray-400 italic">Belum ada riwayat pengadaan stok dari supplier.</td>
+                <td colspan="10" class="py-12 text-center text-gray-400 italic">Belum ada riwayat pengadaan stok dari supplier.</td>
             </tr>
             @endforelse
         </tbody>
@@ -156,180 +161,7 @@
     </div>
 </div>
 
-{{-- ===== MODAL EDIT STOK MASUK ===== --}}
-<div id="modalEditStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeEditModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
-        <!-- Header -->
-        <div class="bg-green-600 px-6 py-4 flex items-center justify-between text-white text-center">
-            <h3 class="font-bold text-xl uppercase tracking-widest w-full">Edit Penerimaan Stok</h3>
-            <button onclick="closeEditModal()" class="absolute right-5 text-green-100 hover:text-white transition text-3xl font-light">&times;</button>
-        </div>
-
-        <form action="" method="POST" id="formEditStok" onsubmit="event.preventDefault(); showSuccessAnimation('formEditStok', 'Data Berhasil Diperbarui!');">
-            @csrf
-            @method('PUT')
-            
-            <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-                <!-- Data Header -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Terima -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima</label>
-                        <input type="date" name="tgl_pembelian" id="edit_tgl_pembelian" required
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Nama Supplier -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier</label>
-                        <input list="supplier_list" name="nama_suplier" id="edit_nama_suplier" required placeholder="Ketik nama supplier..."
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                    </div>
-                </div>
-
-                <!-- Nama Barang -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
-                    <select name="id_obat" id="edit_id_obat" required class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 appearance-none shadow-sm cursor-pointer">
-                        @foreach($obats as $obat)
-                            @if(($obat->kategori->nama_kategori ?? '') !== 'CEK')
-                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Detail Barang -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Kadaluarsa -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
-                        <input type="date" name="tgl_expired" id="edit_tgl_expired" required
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Barang Masuk (Qty) -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk</label>
-                        <input type="number" name="qty" id="edit_qty" min="1" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-600 shadow-sm">
-                    </div>
-                </div>
-
-                <!-- Harga Beli -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
-                        <input type="number" name="harga_beli" id="edit_harga_beli" min="0" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-gray-800 shadow-sm">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
-                <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
-                    Update Riwayat
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-{{-- ===== MODAL STOK MASUK (SUPPLIER) ===== --}}
-<div id="modalStokMasuk" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeModalStokMasuk()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
-        <!-- Header -->
-        <div class="bg-green-600 px-6 py-4 flex items-center justify-between text-white text-center">
-            <h3 class="font-bold text-xl uppercase tracking-widest w-full">Penerimaan Stok (Supplier)</h3>
-            <button onclick="closeModalStokMasuk()" class="absolute right-5 text-green-100 hover:text-white transition text-3xl font-light">&times;</button>
-        </div>
-
-        <form action="{{ route('pembelian.store') }}" method="POST" id="formStokMasuk" onsubmit="event.preventDefault(); showSuccessAnimation('formStokMasuk', 'Stok Berhasil Ditambahkan!');">
-            @csrf
-            {{-- Hidden Fields for System Requirements --}}
-            <input type="hidden" name="no_faktur" id="restock_no_faktur">
-            <input type="hidden" name="items[0][no_batch]" id="restock_no_batch">
-
-            <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-                <!-- Data Header -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Terima -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima</label>
-                        <input type="date" name="tgl_pembelian" required value="{{ date('Y-m-d') }}"
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Nama Supplier -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier</label>
-                        <input list="supplier_list" name="nama_suplier" required placeholder="Ketik nama supplier..."
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                        <datalist id="supplier_list">
-                            @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->nama_suplier }}">
-                            @endforeach
-                        </datalist>
-                    </div>
-                </div>
-
-                <!-- Nama Barang -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
-                    <select name="items[0][id_obat]" id="restock_id_obat" required class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 appearance-none shadow-sm cursor-pointer">
-                        <option value="">-- Pilih Barang / Obat --</option>
-                        @foreach($obats as $obat)
-                            @if(($obat->kategori->nama_kategori ?? '') !== 'CEK')
-                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- Detail Barang -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Kadaluarsa -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
-                        <input type="date" name="items[0][tgl_expired]" required
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Barang Masuk (Qty) -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk</label>
-                        <input type="number" name="items[0][qty]" min="1" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-600 shadow-sm">
-                    </div>
-                </div>
-
-                <!-- Harga Beli -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
-                        <input type="number" name="items[0][harga_beli]" min="0" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-gray-800 shadow-sm">
-                    </div>
-                </div>
-
-                <p class="text-[10px] text-gray-400 italic text-center pt-2">
-                    * Penambahan stok ini akan otomatis memperbarui data stok utama dan laporan kadaluarsa.
-                </p>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
-                <button type="button" onclick="closeModalStokMasuk()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Simpan Stok Masuk
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+{{-- Modals extracted to partials at the end of file --}}
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
 <div id="modalSukses" class="fixed inset-0 z-[110] hidden items-center justify-center">
@@ -367,6 +199,31 @@
     @keyframes drawCircle { to { stroke-dashoffset: 0; } }
     @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
+
+@include('pembelian.partials.modal_edit')
+@include('pembelian.partials.modal_add_stock')
+
+{{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
+<div id="modalHapusPembelian" class="fixed inset-0 z-[110] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeletePembelian()"></div>
+    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden">
+        <div class="bg-green-600 py-3 text-center">
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm">Konfirmasi Hapus</h4>
+        </div>
+        <div class="px-6 pt-6 pb-4 text-center">
+            <p class="text-base font-semibold text-gray-800 mb-2">
+                Hapus Riwayat ini?
+            </p>
+            <p class="text-[11px] text-gray-500 leading-relaxed italic">
+                * PERHATIAN: Penghapusan rincian ini akan menghapus batch stok terkait secara permanen.
+            </p>
+        </div>
+        <div class="flex gap-3 px-6 pb-6 mt-2">
+            <button type="button" onclick="closeDeletePembelian()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">Batal</button>
+            <button type="button" onclick="executeDeletePembelian()" class="flex-1 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition uppercase tracking-wider">Ya, Hapus</button>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -411,6 +268,7 @@
         document.getElementById('edit_tgl_expired').value = tglExp;
         document.getElementById('edit_qty').value = qty;
         document.getElementById('edit_harga_beli').value = hargaBeli;
+        document.getElementById('edit_tambah_stok').value = '';
 
         // Show Modal
         document.getElementById('modalEditStok').classList.remove('hidden');
@@ -460,25 +318,3 @@
     }
 </script>
 @endpush
-
-{{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
-<div id="modalHapusPembelian" class="fixed inset-0 z-[110] hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeletePembelian()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden">
-        <div class="bg-green-600 py-3 text-center">
-            <h4 class="text-white font-bold uppercase tracking-widest text-sm">Konfirmasi Hapus</h4>
-        </div>
-        <div class="px-6 pt-6 pb-4 text-center">
-            <p class="text-base font-semibold text-gray-800 mb-2">
-                Hapus Riwayat ini?
-            </p>
-            <p class="text-[11px] text-gray-500 leading-relaxed italic">
-                * PERHATIAN: Penghapusan rincian ini akan menghapus batch stok terkait secara permanen.
-            </p>
-        </div>
-        <div class="flex gap-3 px-6 pb-6 mt-2">
-            <button type="button" onclick="closeDeletePembelian()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">Batal</button>
-            <button type="button" onclick="executeDeletePembelian()" class="flex-1 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition uppercase tracking-wider">Ya, Hapus</button>
-        </div>
-    </div>
-</div>

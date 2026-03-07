@@ -167,6 +167,8 @@ class PembelianController extends Controller
             'nama_suplier' => 'required|string|max:255',
             'tgl_expired' => 'required|date',
             'qty' => 'required|integer|min:1',
+            'tambah_stok' => 'nullable|integer|min:0',
+            'harga_beli' => 'required|numeric|min:0',
         ]);
 
         try {
@@ -184,31 +186,48 @@ class PembelianController extends Controller
             ]);
 
             // 3. Update Detail & Stok Batch
-            // Asumsi: 1 Pembelian dari form ini hanya punya 1 detail (untuk simplisitas edit per baris)
             $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->first();
             if ($detail) {
+                $qtyLama = $detail->qty;
+                $tambahStok = $request->tambah_stok ?? 0;
+                $newQtyTotal = $request->qty + $tambahStok;
+
                 $detail->update([
                     'id_obat' => $request->id_obat,
-                    'qty' => $request->qty,
+                    'qty' => $newQtyTotal,
+                    'harga_beli' => $request->harga_beli,
+                    'subtotal' => $newQtyTotal * $request->harga_beli,
                 ]);
 
                 // Update Stok Batch
                 $batch = StokBatch::where('id_pembelian', $pembelian->id)->first();
                 if ($batch) {
-                    $batch->update([
-                        'id_obat' => $request->id_obat,
-                        'tgl_expired' => $request->tgl_expired,
-                        'stok_awal' => $request->qty,
-                        'stok_sisa' => $request->qty, // Reset sisa ke qty baru (simpel)
-                    ]);
+                    // Jika ada tambah_stok, kita tambahkan ke sisa yang ada
+                    // Jika tidak ada tambah_stok (hanya edit qty awal), kita sesuaikan sisa berdasarkan selisih
+                    if ($tambahStok > 0) {
+                        $batch->stok_awal = $newQtyTotal;
+                        $batch->stok_sisa += $tambahStok;
+                    } else {
+                        // Jika mereka merubah angka Qty Masuk secara manual, kita sesuaikan sisa
+                        $selisih = $request->qty - $qtyLama;
+                        $batch->stok_awal = $request->qty;
+                        $batch->stok_sisa += $selisih;
+                    }
+
+                    $batch->id_obat = $request->id_obat;
+                    $batch->tgl_expired = $request->tgl_expired;
+                    $batch->save();
                 }
             }
+
+            // Sync total_bayar header
+            $pembelian->total_bayar = $pembelian->details->sum('subtotal');
+            $pembelian->save();
 
             DB::commit();
             return redirect()->route('pembelian.index')->with('success', 'Riwayat stok berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Gagal update riwayat pembelian: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal memperbarui riwayat: ' . $e->getMessage());
         }
     }
