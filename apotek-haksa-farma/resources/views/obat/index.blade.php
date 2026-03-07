@@ -4,7 +4,6 @@
 <!-- Header title area -->
 <div class="mb-8 text-center flex flex-col items-center">
     <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2">DATA & STOK OBAT</h2>
-    <p class="text-sm text-gray-500">Kelola seluruh data obat dan pantau stok secara real-time</p>
 </div>
 
 {{-- Flash Message --}}

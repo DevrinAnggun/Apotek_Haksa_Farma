@@ -4,7 +4,6 @@
 {{-- Header --}}
 <div class="mb-8 text-center flex flex-col items-center">
     <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2">DATA KADALUARSA</h2>
-    <p class="text-sm text-gray-500">Data obat yang sudah kadaluarsa atau H-7 (≤ 7 hari lagi) dari data stok</p>
 </div>
 
 {{-- Alert Success --}}

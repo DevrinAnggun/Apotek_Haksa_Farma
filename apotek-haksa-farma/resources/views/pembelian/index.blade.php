@@ -4,12 +4,8 @@
 <!-- Header title area -->
 <div class="mb-8 text-center flex flex-col items-center">
     <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2 flex items-center gap-3">
-        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-        </svg>
         STOK SUPPLIER
     </h2>
-    <p class="text-sm text-gray-500 italic">Manajemen pengadaan stok barang dari supplier</p>
 </div>
 
 {{-- Flash Message --}}
