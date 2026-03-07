@@ -22,14 +22,23 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
     
     <!-- Card: Data Barang → Emerald -->
-    <a href="{{ route('obat.index') }}" class="block bg-emerald-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between">
-        <div>
-            <div class="text-4xl font-extrabold mb-1">{{ number_format($totalDataBarang ?? 0, 0, ',', '.') }}</div>
-            <div class="text-emerald-100 font-semibold text-lg tracking-wide uppercase">Data Barang & Stok</div>
+    <a href="{{ route('obat.index') }}" class="block bg-emerald-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-2">
+                <svg class="w-7 h-7 text-emerald-100 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </div>
+            <div class="text-3xl font-extrabold mb-1">{{ number_format($totalDataBarang ?? 0, 0, ',', '.') }}</div>
+            <div class="text-emerald-100 font-semibold text-base tracking-wide uppercase">Data Barang & Stok</div>
         </div>
-        <div class="flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
+        <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
             Lihat Data &amp; Stok <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
+        <!-- bg icon abstrak -->
+        <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
     </a>
     
     <!-- Card: Transaksi Penjualan → Indigo -->
@@ -46,55 +55,70 @@
             Buka Kasir <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <!-- bg icon abstrak -->
-        <svg class="absolute -bottom-4 -right-4 w-24 h-24 text-white opacity-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
+        <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
     </a>
     
     <!-- Card: Stok Supplier → Green -->
     <a href="{{ route('obat.index', ['#supplier-table']) }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
-            <div class="text-3xl font-extrabold mb-2 break-all">Rp. {{ number_format($totalRestockBulanIni ?? 0, 0, ',', '.') }}</div>
-            <div class="text-green-100 font-semibold text-lg tracking-wide uppercase">Stok Supplier</div>
+            <div class="flex items-center justify-between mb-2">
+                <svg class="w-7 h-7 text-green-100 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <div class="text-2xl font-extrabold mb-1 break-all">Rp. {{ number_format($totalRestockBulanIni ?? 0, 0, ',', '.') }}</div>
+            <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Stok Supplier</div>
         </div>
         <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
             Lihat Stok Masuk <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <!-- bg icon abstrak -->
-        <svg class="absolute -bottom-4 -right-4 w-24 h-24 text-white opacity-10 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+        <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
             <path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM10 4h4v3h-4V4zm10 16H4V9h16v11z"/>
         </svg>
     </a>
 
     <!-- Card: Barang Kadaluarsa → Orange -->
-    <a href="{{ route('kadaluarsa.index') }}" class="block bg-orange-500 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer overflow-hidden relative h-44 flex flex-col justify-between">
+    <a href="{{ route('kadaluarsa.index') }}" class="block bg-orange-500 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer overflow-hidden relative group h-44 flex flex-col justify-between">
         <div class="relative z-10">
+            <div class="flex items-center justify-between mb-2">
+                <svg class="w-7 h-7 text-orange-100 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
             <div class="text-4xl font-extrabold mb-1">{{ number_format($jumlahObatKadaluarsa ?? 0, 0, ',', '.') }}</div>
-            <div class="text-orange-50 font-semibold text-lg tracking-wide uppercase">Barang Kadaluarsa</div>
+            <div class="text-orange-50 font-semibold text-base tracking-wide uppercase">Barang Kadaluarsa</div>
         </div>
         <div class="flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition relative z-10">
             Lihat Data Kadaluarsa <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <!-- bg icon abstrak -->
-        <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+        <svg class="absolute -bottom-4 -right-4 w-32 h-32 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
     </a>
 
     <!-- Card: Semua Penjualan (Rupiah) → Purple -->
-    <a href="{{ route('laporan.penjualan') }}" class="block bg-purple-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer relative overflow-hidden h-44 flex flex-col justify-between">
+    <a href="{{ route('laporan.penjualan') }}" class="block bg-purple-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer relative overflow-hidden group h-44 flex flex-col justify-between">
         <div class="relative z-10">
-            <div class="text-3xl font-extrabold mb-2 break-all">Rp. {{ number_format($totalSemuaPenjualan ?? 0, 0, ',', '.') }}</div>
-            <div class="text-purple-100 font-semibold text-lg tracking-wide uppercase">Semua Penjualan</div>
+            <div class="flex items-center justify-between mb-2">
+                <svg class="w-7 h-7 text-purple-100 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <div class="text-2xl font-extrabold mb-1 break-all">Rp. {{ number_format($totalSemuaPenjualan ?? 0, 0, ',', '.') }}</div>
+            <div class="text-purple-100 font-semibold text-base tracking-wide uppercase">Semua Penjualan</div>
         </div>
         <div class="flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition relative z-10">
             Lihat Data Penjualan <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <!-- Abstract BG Decoration -->
-        <svg class="absolute -bottom-4 -right-4 w-24 h-24 text-white opacity-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
+        <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
     </a>
 
     <!-- Card: Unduh Laporan → Blue -->
     <div onclick="openReportModal()" class="block bg-blue-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer overflow-hidden relative group h-44 flex flex-col justify-between">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
-                <svg class="w-7 h-7 text-blue-200 opacity-80 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4m-4 4l-4-4m4 4l4-4m-5 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <svg class="w-7 h-7 text-blue-200 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4m-4 4l-4-4m4 4l4-4m-5 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
             <div class="text-blue-100 font-semibold text-lg tracking-wide uppercase">Unduh Laporan</div>
         </div>
@@ -102,7 +126,7 @@
             Pilih Opsi <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </div>
         <!-- Abstract BG Decoration -->
-        <svg class="absolute -bottom-2 -right-2 w-20 h-20 text-white opacity-10" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.001 8.001 0 0117.748 8H12V2.252z"/></svg>
+        <svg class="absolute -bottom-2 -right-2 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.001 8.001 0 0117.748 8H12V2.252z"/></svg>
     </div>
 
 </div>

@@ -6,6 +6,8 @@ use App\Models\StokBatch;
 use App\Models\Obat;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KadaluarsaController extends Controller
 {
@@ -16,9 +18,17 @@ class KadaluarsaController extends Controller
     {
         // Tampilkan obat yang memiliki batch SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
         $batasHari = Carbon::now()->addDays(7);
+        $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->get();
 
-        // Group by id_obat agar tidak double di tabel
-        $kadaluarsas = StokBatch::select(
+        return view('kadaluarsa.index', compact('kadaluarsas', 'batasHari'));
+    }
+
+    /**
+     * Helper untuk query data kadaluarsa agar konsisten antara index & cetak PDF
+     */
+    private function getKadaluarsaQuery($batasHari)
+    {
+        return StokBatch::select(
                 'id_obat',
                 DB::raw('SUM(stok_sisa) as total_sisa'),
                 DB::raw('MIN(tgl_expired) as earliest_expired')
@@ -32,10 +42,21 @@ class KadaluarsaController extends Controller
             ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasHari)
             ->groupBy('id_obat')
-            ->orderBy('earliest_expired', 'asc')
-            ->get();
+            ->orderBy('earliest_expired', 'asc');
+    }
 
-        return view('kadaluarsa.index', compact('kadaluarsas'));
+    /**
+     * Mengekspor data kadaluarsa ke PDF
+     */
+    public function cetakPdf()
+    {
+        $batasHari = Carbon::now()->addDays(7);
+        $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->get();
+
+        $pdf = Pdf::loadView('kadaluarsa.pdf', compact('kadaluarsas', 'batasHari'));
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->download('Laporan_Data_Kadaluarsa_' . date('d_m_Y') . '.pdf');
     }
 
     /**
