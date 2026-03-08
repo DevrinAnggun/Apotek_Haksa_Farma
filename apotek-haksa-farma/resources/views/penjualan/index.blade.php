@@ -426,7 +426,7 @@
         </div>
         <div class="flex gap-3 px-6 pb-6">
             <button type="button" onclick="closeDelete()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
-            <button type="button" onclick="executeDelete()" class="flex-1 py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+            <button type="button" onclick="executeDelete()" class="flex-1 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
         </div>
     </div>
 </div>

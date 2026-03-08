@@ -166,34 +166,34 @@
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
 
         {{-- Header Modal --}}
-        <div class="bg-green-700 px-6 py-4 flex items-center justify-between">
+        <div class="bg-green-700 px-6 py-4 relative flex items-center justify-center">
             <h3 class="text-white font-bold text-lg">Detail Obat</h3>
-            <button onclick="tutupDetail()" class="text-white hover:text-green-200 text-2xl font-light leading-none">&times;</button>
+            <button onclick="tutupDetail()" class="absolute right-5 text-white hover:text-green-200 text-2xl font-light leading-none">&times;</button>
         </div>
 
         {{-- Konten --}}
         <div class="p-6">
             <div class="border border-gray-200 rounded-lg overflow-hidden">
-                <table class="w-full text-sm">
+                <table class="w-full text-sm text-left">
                     <tbody>
                         <tr class="border-b border-gray-100">
                             <td class="py-3 px-5 font-semibold text-gray-700 w-44">Nama Barang</td>
-                            <td class="py-3 px-2 text-gray-700 w-4">:</td>
+                            <td class="py-3 px-2 text-gray-700 w-4 text-center">:</td>
                             <td id="d-nama" class="py-3 px-5 font-bold text-gray-900 uppercase"></td>
                         </tr>
                         <tr class="border-b border-gray-100">
                             <td class="py-3 px-5 font-semibold text-gray-700">Kategori</td>
-                            <td class="py-3 px-2 text-gray-700">:</td>
+                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
                             <td id="d-kategori" class="py-3 px-5 font-bold text-gray-900 uppercase"></td>
                         </tr>
                         <tr class="border-b border-gray-100">
                             <td class="py-3 px-5 font-semibold text-gray-700">Stok</td>
-                            <td class="py-3 px-2 text-gray-700">:</td>
+                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
                             <td id="d-stok" class="py-3 px-5 font-bold text-gray-900"></td>
                         </tr>
                         <tr>
                             <td class="py-3 px-5 font-semibold text-gray-700">Tanggal Kadaluarsa</td>
-                            <td class="py-3 px-2 text-gray-700">:</td>
+                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
                             <td id="d-tgl" class="py-3 px-5 font-bold text-gray-900"></td>
                         </tr>
                     </tbody>

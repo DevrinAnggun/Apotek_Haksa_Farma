@@ -257,7 +257,7 @@
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal">
         <!-- Header -->
         <div class="bg-green-800 px-6 py-4 flex items-center justify-between text-white">
-            <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Barang</h3>
+            <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Obat</h3>
             <button onclick="closeEditModal()" class="absolute right-5 text-gray-200 hover:text-white text-3xl font-light leading-none">&times;</button>
         </div>
         <!-- Body -->
@@ -335,7 +335,7 @@
             <button type="button" onclick="closeHapusModal()" class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
             <form id="formHapus" action="" method="POST" class="flex-1">
                 @csrf @method('DELETE')
-                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
             </form>
         </div>
     </div>
@@ -359,7 +359,7 @@
             <button type="button" onclick="closeHapusModal()" class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
             <form id="formHapus" action="" method="POST" class="flex-1">
                 @csrf @method('DELETE')
-                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                <button type="button" onclick="showSuccessAnimation('formHapus', 'Data Berhasil Dihapus!')" class="w-full py-2.5 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
             </form>
         </div>
     </div>
