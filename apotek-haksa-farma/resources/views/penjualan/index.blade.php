@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="mb-8 text-center flex flex-col items-center">
-    <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase">HALAMAN PENJUALAN</h2>
+    <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase">DATA PENJUALAN</h2>
 </div>
 
 <!-- Toolbar Filter dan Export -->
