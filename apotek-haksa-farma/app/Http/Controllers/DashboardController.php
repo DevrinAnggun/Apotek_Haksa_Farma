@@ -68,7 +68,7 @@ class DashboardController extends Controller
         // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED)
         $obatSudahExpired = StokBatch::with('obat')
             ->where('stok_sisa', '>', 0) // Karena stok belum dibuang ke tong / retur, sistem masih ngebaca fisiknya ada di apotek
-            ->whereDate('tgl_expired', '<', Carbon::now()) // Tanggal tgl_expired lebih KECIL dari hari ini (Masa lalu)
+            ->whereDate('tgl_expired', '<=', Carbon::now()) // Tanggal tgl_expired lebih KECIL atau SAMA DENGAN hari ini
             ->get();
 
         // 5. Variabel Tambahan Untuk Desain Dashboard (Data Barang & Semua Penjualan)

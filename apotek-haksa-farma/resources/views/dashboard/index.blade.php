@@ -59,7 +59,7 @@
     </a>
     
     <!-- Card: Stok Supplier → Green -->
-    <a href="{{ route('obat.index', ['#supplier-table']) }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
+    <a href="{{ route('supplier.index') }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
                 <svg class="w-7 h-7 text-green-100 opacity-90 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

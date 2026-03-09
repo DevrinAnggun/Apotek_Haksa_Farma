@@ -3,7 +3,7 @@
 @section('content')
 <!-- Header title area -->
 <div class="mb-8 text-center flex flex-col items-center">
-    <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2">DATA & STOK OBAT</h2>
+    <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2">DATA OBAT</h2>
 </div>
 
 {{-- Flash Message --}}
