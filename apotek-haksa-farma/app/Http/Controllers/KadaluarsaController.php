@@ -18,7 +18,7 @@ class KadaluarsaController extends Controller
     {
         // Tampilkan obat yang memiliki batch SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
         $batasHari = Carbon::now()->addDays(7);
-        $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->get();
+        $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->paginate(10);
 
         return view('kadaluarsa.index', compact('kadaluarsas', 'batasHari'));
     }

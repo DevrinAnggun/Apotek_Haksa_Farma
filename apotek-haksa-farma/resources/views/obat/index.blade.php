@@ -64,45 +64,45 @@
 
     <!-- Table Data (Obat) -->
     <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse min-w-max">
+        <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
             <thead>
-                <tr class="border-b border-gray-300">
-                    <th class="py-3 px-4 font-bold text-gray-800 text-center w-16 relative">No<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-40 relative">Harga<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-28 relative">Satuan<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-24 relative">Stok<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-24 relative text-xs">Terjual<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-40 relative">Tgl Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                    <th class="py-3 px-6 font-bold text-gray-800 text-center w-28">Aksi</th>
+                <tr class="bg-gray-100">
+                    <th class="py-4 px-4 font-bold text-gray-800 text-center w-16 border border-gray-300 uppercase text-xs tracking-wider">No</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Nama Barang</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-40 border border-gray-300 uppercase text-xs tracking-wider">Harga</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-28 border border-gray-300 uppercase text-xs tracking-wider">Satuan</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Stok</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Terjual</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-40 border border-gray-300 uppercase text-xs tracking-wider">Tgl Kadaluarsa</th>
+                    <th class="py-4 px-6 font-bold text-gray-800 text-center w-28 border border-gray-300 uppercase text-xs tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($obats as $index => $obat)
-                <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
-                    <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">{{ $index + 1 }}</td>
-                    <td class="py-3 px-6 text-center text-gray-800 font-medium uppercase border-r border-gray-100">{{ $obat->nama_obat }}</td>
-                    <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}</td>
-                    <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100">
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="py-3 px-4 text-center text-gray-800 font-medium border border-gray-300">{{ $index + 1 }}</td>
+                    <td class="py-3 px-6 text-center text-gray-800 font-medium uppercase border border-gray-300">{{ $obat->nama_obat }}</td>
+                    <td class="py-3 px-6 text-center text-gray-800 font-medium border border-gray-300">Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}</td>
+                    <td class="py-3 px-6 text-center text-gray-800 font-medium border border-gray-300">
                         @if($obat->satuan)
                             {{ $obat->satuan->nama_satuan }}
                         @else
                             <span class="text-gray-400 font-semibold">—</span>
                         @endif
                     </td>
-                    <td class="py-3 px-6 text-center text-gray-800 font-medium border-r border-gray-100 font-bold {{ $obat->total_stok < 5 && ($obat->kategori->nama_kategori ?? '') !== 'CEK' ? 'text-red-500' : 'text-gray-800' }}">
+                    <td class="py-3 px-6 text-center text-gray-800 font-medium border border-gray-300 font-bold {{ $obat->total_stok < 5 && ($obat->kategori->nama_kategori ?? '') !== 'CEK' ? 'text-red-500' : 'text-gray-800' }}">
                         @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
                             <span class="text-gray-400 font-semibold">—</span>
                         @else
                             {{ $obat->total_stok }}
                         @endif
                     </td>
-                    <td class="py-3 px-6 text-center text-gray-800 border-r border-gray-100">
+                    <td class="py-3 px-6 text-center text-gray-800 border border-gray-300">
                         <span class="bg-green-50 text-green-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-green-100">
                             {{ $obat->total_terjual ?? 0 }}
                         </span>
                     </td>
-                    <td class="py-3 px-6 text-center border-r border-gray-100">
+                    <td class="py-3 px-6 text-center border border-gray-300">
                         @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
                             <span class="text-gray-400 font-semibold">—</span>
                         @elseif($obat->tanggal_kadaluarsa)
@@ -113,36 +113,38 @@
                             <span class="text-gray-400 font-semibold">—</span>
                         @endif
                     </td>
-                    <td class="py-3 px-6 flex justify-center items-center gap-1">
-                        <!-- Tombol Edit (buka modal edit) -->
-                        <button type="button"
-                            data-id="{{ $obat->id }}"
-                            data-nama="{{ $obat->nama_obat }}"
-                            data-id-kategori="{{ $obat->id_kategori }}"
-                            data-harga-jual="{{ $obat->harga_jual }}"
-                            data-stok="{{ $obat->total_stok }}"
-                            data-id-satuan="{{ $obat->id_satuan }}"
-                            data-kode-obat="{{ $obat->kode_obat }}"
-                            data-harga-beli="{{ $obat->harga_beli }}"
-                            data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
-                            onclick="openEditModal(this)"
-                            class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition shadow-sm"
-                            title="Edit">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        </button>
+                    <td class="py-3 px-6 border border-gray-300">
+                        <div class="flex justify-center items-center gap-1">
+                            <!-- Tombol Edit (buka modal edit) -->
+                            <button type="button"
+                                data-id="{{ $obat->id }}"
+                                data-nama="{{ $obat->nama_obat }}"
+                                data-id-kategori="{{ $obat->id_kategori }}"
+                                data-harga-jual="{{ $obat->harga_jual }}"
+                                data-stok="{{ $obat->total_stok }}"
+                                data-id-satuan="{{ $obat->id_satuan }}"
+                                data-kode-obat="{{ $obat->kode_obat }}"
+                                data-harga-beli="{{ $obat->harga_beli }}"
+                                data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
+                                onclick="openEditModal(this)"
+                                class="bg-green-600 hover:bg-green-700 text-white p-1.5 rounded transition shadow-sm"
+                                title="Edit">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
 
-                        <!-- Tombol Hapus (buka modal konfirmasi) -->
-                        <button type="button"
-                            onclick="openHapusModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}')"
-                            class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm"
-                            title="Hapus">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
+                            <!-- Tombol Hapus (buka modal konfirmasi) -->
+                            <button type="button"
+                                onclick="openHapusModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}')"
+                                class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm"
+                                title="Hapus">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="py-6 text-center text-gray-500 italic">Tidak ada data obat pada kategori ini.</td>
+                    <td colspan="8" class="py-6 text-center text-gray-500 italic border border-gray-300">Tidak ada data obat pada kategori ini.</td>
                 </tr>
                 @endforelse
             </tbody>

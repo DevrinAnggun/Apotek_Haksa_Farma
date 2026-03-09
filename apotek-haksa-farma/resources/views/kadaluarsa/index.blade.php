@@ -44,34 +44,16 @@
 
 {{-- Tabel Data Kadaluarsa --}}
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse min-w-max">
+    <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
         <thead>
-            <tr class="border-b border-gray-300">
-                <th class="py-3 px-4 font-bold text-gray-800 text-center w-14 relative">
-                    No
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 relative">
-                    Nama Obat
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-32 relative">
-                    Stok Sisa
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-40 relative">
-                    Tgl Kadaluarsa
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-24 relative">
-                    Terjual
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-32 relative">
-                    Status
-                    <div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div>
-                </th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-28">Aksi</th>
+            <tr class="bg-gray-100">
+                <th class="py-4 px-4 font-bold text-gray-800 text-center w-14 border border-gray-300 uppercase text-xs tracking-wider">No</th>
+                <th class="py-4 px-5 font-bold text-gray-800 border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Stok Sisa</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-40 border border-gray-300 uppercase text-xs tracking-wider">Tgl Kadaluarsa</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Terjual</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Status</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-28 border border-gray-300 uppercase text-xs tracking-wider">Aksi</th>
             </tr>
         </thead>
         <tbody id="kadaluarsaTableBody">
@@ -94,30 +76,29 @@
                     $rowClass    = $diffDays <= 7 ? 'bg-red-50' : 'bg-orange-50';
                 }
             @endphp
-            <tr class="border-b border-gray-200 hover:bg-gray-50 transition {{ $rowClass }} kadaluarsa-row"
-                data-nama="{{ strtolower($item->obat->nama_obat ?? '') }}">
-                <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">{{ $index + 1 }}</td>
-                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border-r border-gray-100">
+            <tr class="hover:bg-gray-100 transition {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 7 ? 'bg-red-50' : 'bg-orange-50') }}">
+                <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ ($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage() + $index + 1 }}</td>
+                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300">
                     {{ $item->obat->nama_obat ?? '—' }}
                     <span class="text-xs font-normal text-gray-400 block normal-case">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
                 </td>
-                <td class="py-3 px-5 text-center font-bold border-r border-gray-100 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
+                <td class="py-3 px-5 text-center font-bold border border-gray-300 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
                     {{ number_format($item->total_sisa, 0, ',', '.') }}
                 </td>
-                <td class="py-3 px-5 text-center border-r border-gray-100">
+                <td class="py-3 px-5 text-center border border-gray-300">
                     <span class="font-semibold {{ $diffDays < 0 ? 'text-red-600' : 'text-gray-800' }}">
                         {{ $expired->format('d-m-Y') }}
                     </span>
                 </td>
-                <td class="py-3 px-5 text-center border-r border-gray-100">
+                <td class="py-3 px-5 text-center border border-gray-300">
                     <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
                         {{ $item->obat->total_terjual ?? 0 }}
                     </span>
                 </td>
-                <td class="py-3 px-5 text-center border-r border-gray-100">
+                <td class="py-3 px-5 text-center border border-gray-300">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">{{ $statusLabel }}</span>
                 </td>
-                <td class="py-3 px-5">
+                <td class="py-3 px-5 border border-gray-300">
                     <div class="flex items-center justify-center gap-1">
                         {{-- Tombol Lihat Detail (trigger modal) --}}
                         <button type="button" title="Lihat Detail"
@@ -146,7 +127,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="py-10 text-center">
+                <td colspan="7" class="py-10 text-center border border-gray-300">
                     <div class="flex flex-col items-center gap-2">
                         <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-7.</p>
                     </div>
@@ -155,6 +136,11 @@
             @endforelse
         </tbody>
     </table>
+</div>
+
+<!-- Pagination Links -->
+<div class="mt-6">
+    {{ $kadaluarsas->links() }}
 </div>
 
 {{-- ========== MODAL DETAIL OBAT ========== --}}

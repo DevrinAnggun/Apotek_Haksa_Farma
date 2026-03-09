@@ -87,42 +87,18 @@
         </h3>
     
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-max">
+            <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
                 <thead>
-                    <tr class="border-b border-gray-300">
-                        <th class="py-3 px-3 font-bold text-gray-800 text-center w-12 relative">
-                            No
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-32 relative">
-                            Tanggal
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center relative">
-                            Nama Obat
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-24 relative">
-                            Satuan
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-20 relative text-blue-600">
-                            Stok
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-32 relative">
-                            Harga
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-2 font-bold text-gray-800 text-center w-12 relative">
-                            Qty
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-36 relative">
-                            Total
-                            <div class="absolute right-0 top-3 bottom-1 border-r border-gray-200"></div>
-                        </th>
-                        <th class="py-3 px-4 font-bold text-gray-800 text-center w-24">Aksi</th>
+                    <tr class="bg-gray-100">
+                        <th class="py-4 px-3 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">No</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Satuan</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-20 border border-gray-300 uppercase text-xs tracking-wider">Sisa Stok</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Harga</th>
+                        <th class="py-4 px-2 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">Qty</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-36 border border-gray-300 uppercase text-xs tracking-wider">Total</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,18 +116,18 @@
                             });
                         @endphp
                         @foreach($penjualan->details as $detail)
-                            <tr class="border-b border-gray-100 hover:bg-gray-50 transition text-sm">
-                                <td class="py-2 px-3 text-center font-medium text-gray-800 border-r border-gray-50">{{ $no++ }}</td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center whitespace-nowrap">
+                            <tr class="hover:bg-gray-50 transition text-sm">
+                                <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">{{ $no++ }}</td>
+                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center whitespace-nowrap">
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
                                     <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center uppercase tracking-wide">
+                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center uppercase tracking-wide">
                                     {{ $detail->obat->nama_obat ?? '-' }}
                                     <span class="text-[10px] text-gray-400 block font-normal normal-case">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</span>
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border-r border-gray-50 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
-                                <td class="py-2 px-3 text-center border-r border-gray-50">
+                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
+                                <td class="py-2 px-3 text-center border border-gray-300">
                                     @if(($detail->obat->kategori->nama_kategori ?? '') === 'CEK')
                                         <span class="text-gray-400 font-semibold">—</span>
                                     @else
@@ -160,12 +136,12 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="py-2 px-3 text-center font-medium text-gray-800 border-r border-gray-50">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
-                                <td class="py-2 px-2 text-center border-r border-gray-50">
-                                    <span class="bg-gray-200 text-black px-2 py-0.5 rounded font-bold text-xs">{{ $detail->qty }}</span>
+                                <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
+                                <td class="py-2 px-2 text-center border border-gray-300">
+                                    <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold text-xs border border-blue-100">{{ $detail->qty }}</span>
                                 </td>
-                                <td class="py-2 px-3 text-center font-bold text-gray-800 border-r border-gray-50">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
-                                <td class="py-2 px-3 text-center flex items-center justify-center gap-1">
+                                <td class="py-2 px-3 text-center font-bold text-gray-900 border border-gray-300">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                                <td class="py-2 px-3 text-center border border-gray-300">
                                     {{-- Tombol Lihat Struk --}}
                                     <button type="button" 
                                         onclick='showStruk({
@@ -201,7 +177,7 @@
                         @endforeach
                     @empty
                         <tr>
-                            <td colspan="9" class="py-8 text-center text-gray-400 italic">Belum ada data penjualan pada rentang tanggal ini.</td>
+                            <td colspan="9" class="py-8 text-center text-gray-400 italic border border-gray-300">Belum ada data penjualan pada rentang tanggal ini.</td>
                         </tr>
                     @endforelse
                 </tbody>

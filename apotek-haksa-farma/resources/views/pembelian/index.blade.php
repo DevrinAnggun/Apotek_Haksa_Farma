@@ -49,19 +49,19 @@
 
 {{-- ===== TABEL RIWAYAT STOK MASUK ===== --}}
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse min-w-max">
+    <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
         <thead>
-            <tr class="border-b border-gray-300">
-                <th class="py-3 px-4 font-bold text-gray-800 text-center w-16 relative">No<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">Nama Barang<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Tgl Terima<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-44">Tgl Kadaluarsa<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative">Supplier<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center w-20 relative">Qty<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-32">Harga Beli<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-32">Harga Jual<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-5 font-bold text-gray-800 text-center relative w-40">Subtotal<div class="absolute right-0 top-3 bottom-2 border-r border-gray-200"></div></th>
-                <th class="py-3 px-6 font-bold text-gray-800 text-center w-28">Aksi</th>
+            <tr class="bg-gray-100">
+                <th class="py-4 px-4 font-bold text-gray-800 text-center w-16 border border-gray-300 uppercase text-xs tracking-wider">No</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Nama Barang</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-40">Tgl Terima</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-44">Tgl Kadaluarsa</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Supplier</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-20">Qty</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-32">Harga Beli</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-32">Harga Jual</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-40">Subtotal</th>
+                <th class="py-4 px-6 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-28">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -71,35 +71,36 @@
                 @php 
                     $batch = $detail->obat->stokBatches()->where('id_pembelian', $beli->id)->first();
                 @endphp
-                <tr class="border-b border-gray-200 hover:bg-gray-50 transition text-sm">
-                    <td class="py-3 px-4 text-center text-gray-800 font-medium border-r border-gray-100">
+                <tr class="hover:bg-gray-50 transition text-sm">
+                    <td class="py-3 px-4 text-center text-gray-800 font-medium border border-gray-300">
                         {{ $no++ }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-800 font-bold uppercase border-r border-gray-100">
+                    <td class="py-3 px-5 text-center text-gray-800 font-bold uppercase border border-gray-300">
                         {{ $detail->obat->nama_obat ?? '-' }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-800 font-medium border-r border-gray-100">
+                    <td class="py-3 px-5 text-center text-gray-800 font-medium border border-gray-300">
                         {{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d-m-Y') }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-900 font-bold border-r border-gray-100">
+                    <td class="py-3 px-5 text-center text-gray-900 font-bold border border-gray-300">
                         {{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('d-m-Y') }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-900 font-bold uppercase border-r border-gray-100">
+                    <td class="py-3 px-5 text-center text-gray-900 font-bold uppercase border border-gray-300">
                         {{ $beli->supplier->nama_suplier ?? '-' }}
                     </td>
-                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold">
+                    <td class="py-3 px-5 text-center border border-gray-300 font-bold">
                         {{ $detail->qty }}
                     </td>
-                    <td class="py-3 px-5 text-center border-r border-gray-100 font-medium">
+                    <td class="py-3 px-5 text-center border border-gray-300 font-medium">
                         Rp{{ number_format($detail->harga_beli, 0, ',', '.') }}
                     </td>
-                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold text-gray-900">
+                    <td class="py-3 px-5 text-center border border-gray-300 font-bold text-gray-900">
                         Rp{{ number_format($detail->obat->harga_jual ?? 0, 0, ',', '.') }}
                     </td>
-                    <td class="py-3 px-5 text-center border-r border-gray-100 font-bold text-gray-900">
+                    <td class="py-3 px-5 text-center border border-gray-300 font-bold text-gray-900">
                         Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
                     </td>
-                    <td class="py-3 px-6 flex justify-center items-center gap-1">
+                    <td class="py-3 px-6 border border-gray-300">
+                        <div class="flex justify-center items-center gap-1">
                         <!-- Tombol Riwayat -->
                         <button type="button"
                             onclick="openRiwayatModal('{{ $detail->id }}', '{{ $detail->obat->nama_obat ?? '' }}')"
@@ -137,7 +138,7 @@
                 @endforeach
             @empty
             <tr>
-                <td colspan="10" class="py-12 text-center text-gray-400 italic">Belum ada riwayat pengadaan stok dari supplier.</td>
+                <td colspan="10" class="py-12 text-center text-gray-400 italic border border-gray-300">Belum ada riwayat pengadaan stok dari supplier.</td>
             </tr>
             @endforelse
         </tbody>
