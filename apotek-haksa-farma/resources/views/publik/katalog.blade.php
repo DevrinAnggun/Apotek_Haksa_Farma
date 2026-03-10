@@ -222,28 +222,27 @@
             <h3 id="d-nama" class="font-extrabold text-gray-800 uppercase text-base leading-snug mb-3"></h3>
 
             <div class="space-y-2 text-sm">
-                {{-- Kegunaan (Deskripsi) --}}
-                <div id="d-deskripsi-wrap" class="flex justify-between items-start py-2 border-b border-gray-100 hidden">
-                    <span class="text-gray-500 font-medium shrink-0 mr-2">Deskripsi Obat</span>
-                    <span id="d-deskripsi" class="font-semibold text-gray-700 text-right text-xs"></span>
-                </div>
+                {{-- Harga --}}
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
                     <span class="text-gray-500 font-medium">Harga</span>
                     <span id="d-harga" class="font-extrabold text-green-700 text-base"></span>
                 </div>
+                {{-- Satuan --}}
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
                     <span class="text-gray-500 font-medium">Satuan</span>
                     <span id="d-satuan" class="font-semibold text-gray-700"></span>
                 </div>
+                {{-- Stok --}}
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
                     <span class="text-gray-500 font-medium">Stok</span>
                     <span id="d-stok" class="font-semibold"></span>
                 </div>
-                {{-- Usia --}}
-                <div id="d-usia-wrap" class="flex justify-between items-center py-2 border-b border-gray-100 hidden">
-                    <span class="text-gray-500 font-medium">Usia</span>
-                    <span id="d-usia" class="font-semibold text-gray-700 text-right text-xs"></span>
+                {{-- Deskripsi Obat --}}
+                <div id="d-deskripsi-wrap" class="flex justify-between items-start py-2 border-b border-gray-100 hidden">
+                    <span class="text-gray-500 font-medium shrink-0 mr-2">Deskripsi Obat</span>
+                    <span id="d-deskripsi" class="font-semibold text-gray-700 text-right text-xs"></span>
                 </div>
+                {{-- Kegunaan --}}
                 <div id="d-cara-wrap" class="flex justify-between items-start py-2 hidden">
                     <span class="text-gray-500 font-medium shrink-0 mr-2">Kegunaan</span>
                     <span id="d-cara" class="font-semibold text-gray-700 text-right text-xs"></span>
@@ -306,12 +305,14 @@
         // Usia (Dosis)
         const usiaWrap = document.getElementById('d-usia-wrap');
         const usiaEl   = document.getElementById('d-usia');
-        if (dosisMin || dosisMax) {
-            const txt = (dosisMin && dosisMax) ? dosisMin + ' – ' + dosisMax : (dosisMin || dosisMax);
-            usiaEl.textContent = txt;
-            usiaWrap.classList.remove('hidden');
-        } else {
-            usiaWrap.classList.add('hidden');
+        if (usiaWrap && usiaEl) {
+            if (dosisMin || dosisMax) {
+                const txt = (dosisMin && dosisMax) ? dosisMin + ' – ' + dosisMax : (dosisMin || dosisMax);
+                usiaEl.textContent = txt;
+                usiaWrap.classList.remove('hidden');
+            } else {
+                usiaWrap.classList.add('hidden');
+            }
         }
 
         // Cara Pakai
