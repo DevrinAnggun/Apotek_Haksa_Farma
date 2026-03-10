@@ -1,3 +1,67 @@
+{{--  MODAL TAMBAH BARANG (Standard for Data Obat Page) --}}
+<div id="modalTambah" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTambahModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal flex flex-col">
+        <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
+            <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Tambah Barang</h3>
+            <button onclick="closeTambahModal()" class="absolute right-5 text-gray-100 hover:text-white text-3xl font-light leading-none">&times;</button>
+        </div>
+        <div class="px-8 pt-2 pb-8 overflow-y-auto max-h-[75vh]">
+            <form id="formTambah" action="{{ route('obat.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+                <input type="hidden" name="kode_obat" id="tambah_kode_obat">
+                <input type="hidden" name="harga_beli" value="0">
+                
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kategori</label>
+                    <select name="id_kategori" id="tambah_id_kategori" onchange="toggleCekFields('tambah')" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none shadow-sm cursor-pointer uppercase text-sm">
+                        <option value="" class="normal-case">-- Pilih Kategori --</option>
+                        @foreach($kategoris as $kat)
+                            <option value="{{ $kat->id }}" data-nama="{{ $kat->nama_kategori }}">{{ $kat->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Obat</label>
+                    <input type="text" name="nama_obat" required placeholder="Contoh: OB HERBAL SYR 60ML" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 uppercase text-sm">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Harga Jual</label>
+                        <input type="number" name="harga_jual" min="0" required placeholder="Rp" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                    </div>
+                    <div class="space-y-1" id="tambah_stok_wrapper">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Stok Awal</label>
+                        <input type="number" name="stok" id="tambah_field_stok" min="0" placeholder="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 items-start">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Satuan</label>
+                        <select name="id_satuan" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none shadow-sm text-sm">
+                            <option value="">-- Pilih --</option>
+                            @foreach($satuans as $sat)
+                                <option value="{{ $sat->id }}">{{ $sat->nama_satuan }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-1 flex flex-col" id="tambah_expired_wrapper">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kadaluarsa</label>
+                        <input type="date" name="expired_date" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-600 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
+            <button type="button" onclick="closeTambahModal()" class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition uppercase tracking-wider">Batal</button>
+            <button type="button" onclick="showSuccessAnimation('formTambah', 'Data Berhasil Ditambahkan!')" class="px-8 py-2.5 text-sm font-extrabold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition uppercase tracking-wider">Simpan</button>
+        </div>
+    </div>
+</div>
+
 {{--  MODAL TAMBAH KATALOG PRODUK (Specific for Katalog Page) --}}
 <div id="modalTambahKatalog" class="fixed inset-0 z-50 hidden flex items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTambahKatalogModal()"></div>
@@ -146,6 +210,7 @@
                     </div>
                 </div>
 
+                @if(request()->routeIs('obat.katalog'))
                 <div class="space-y-4 pt-4 border-t border-gray-50">
                     <div class="space-y-1">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Deskripsi Obat</label>
@@ -162,6 +227,7 @@
                         <input type="file" name="gambar" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
                     </div>
                 </div>
+                @endif
             </form>
         </div>
         <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
@@ -313,8 +379,11 @@
         document.getElementById('edit_expired_date').value = d.expiredDate;
         document.getElementById('edit_id_kategori').value = d.idKategori;
         document.getElementById('edit_id_satuan').value = d.idSatuan;
-        document.getElementById('edit_deskripsi').value = d.deskripsi || '';
-        document.getElementById('edit_cara_pakai').value = d.caraPakai || '';
+        const editDeskripsi = document.getElementById('edit_deskripsi');
+        if (editDeskripsi) editDeskripsi.value = d.deskripsi || '';
+        
+        const editCaraPakai = document.getElementById('edit_cara_pakai');
+        if (editCaraPakai) editCaraPakai.value = d.caraPakai || '';
         toggleCekFields('edit');
         document.getElementById('modalEdit').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
