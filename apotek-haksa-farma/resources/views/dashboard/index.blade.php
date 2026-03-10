@@ -134,7 +134,7 @@
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
 <div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-modal">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ showMonthly: false }">
         <!-- Header -->
         <div class="bg-blue-600 px-6 py-5 flex items-center justify-between text-white">
             <div class="flex items-center gap-3">
@@ -145,33 +145,56 @@
                     <h3 class="font-bold text-lg leading-tight uppercase tracking-wide text-white">Unduh Laporan</h3>
                 </div>
             </div>
-            <button onclick="closeReportModal()" class="text-blue-100 hover:text-white transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <button onclick="closeReportModal()" class="text-blue-100 hover:text-white transition text-2xl leading-none">&times;</button>
         </div>
 
         <div class="p-6">
             <!-- Pilihan Cepat -->
-            <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="grid grid-cols-2 gap-3 mb-6">
                 <!-- Harian -->
                 <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-d'), 'end_date' => date('Y-m-d')]) }}" target="_blank"
-                   class="flex flex-col items-center justify-center p-5 bg-green-50 rounded-xl border-2 border-green-100 hover:border-green-500 hover:shadow-md transition-all group">
-                    <div class="bg-green-100 p-3 rounded-full mb-3 text-green-600 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                   class="flex flex-col items-center justify-center p-4 bg-green-50 rounded-xl border-2 border-green-100 hover:border-green-500 hover:shadow-md transition-all group">
+                    <div class="bg-green-100 p-2.5 rounded-full mb-2 text-green-600 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
-                    <span class="font-bold text-green-700 text-sm">Laporan Perhari</span>
-                    <span class="text-[10px] text-green-500 mt-0.5 uppercase tracking-wide">Hari Ini</span>
+                    <span class="font-bold text-green-700 text-[11px] uppercase">Hari Ini</span>
                 </a>
                 
-                <!-- Bulanan -->
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-01'), 'end_date' => date('Y-m-t')]) }}" target="_blank"
-                   class="flex flex-col items-center justify-center p-5 bg-blue-50 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:shadow-md transition-all group">
-                    <div class="bg-blue-100 p-3 rounded-full mb-3 text-blue-600 group-hover:scale-110 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <!-- Toggle Bulanan -->
+                <button type="button" @click="showMonthly = !showMonthly"
+                   class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group"
+                   :class="showMonthly ? 'bg-blue-600 border-blue-600 shadow-lg scale-105' : 'bg-blue-50 border-blue-100 hover:border-blue-500'">
+                    <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
+                         :class="showMonthly ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
-                    <span class="font-bold text-blue-700 text-sm">Laporan Bulanan</span>
-                    <span class="text-[10px] text-blue-500 mt-0.5 uppercase tracking-wide">Bulan Ini</span>
-                </a>
+                    <span class="font-bold text-[11px] uppercase" :class="showMonthly ? 'text-white' : 'text-blue-700'">Bulanan</span>
+                </button>
+            </div>
+
+            <!-- Download Per Bulan (Hidden by default) -->
+            <div x-show="showMonthly" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
+                <header class="flex items-center gap-2 mb-3">
+                    <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
+                </header>
+                <div class="flex items-center gap-2">
+                    <select id="dash_month" class="flex-1 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        @for($m=1; $m<=12; $m++)
+                            <option value="{{ $m }}" {{ date('m') == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                            </option>
+                        @endfor
+                    </select>
+                    <select id="dash_year" class="w-20 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        @for($y=2026; $y<=2040; $y++)
+                            <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    <button type="button" onclick="downloadDashMonthly()"
+                        class="bg-blue-600 hover:bg-black text-white p-2 rounded-lg transition shadow flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Filter Custom -->
@@ -220,6 +243,17 @@
         document.getElementById('reportModal').classList.add('hidden');
         document.getElementById('reportModal').classList.remove('flex');
         document.body.style.overflow = '';
+    }
+    function downloadDashMonthly() {
+        const m = document.getElementById('dash_month').value;
+        const y = document.getElementById('dash_year').value;
+        
+        // Calculate first and last day of selected month
+        const startDate = `${y}-${m.padStart(2, '0')}-01`;
+        const lastDay = new Date(y, m, 0).getDate();
+        const endDate = `${y}-${m.padStart(2, '0')}-${lastDay}`;
+        
+        window.open(`{{ route('laporan.cetak_pdf') }}?start_date=${startDate}&end_date=${endDate}`, '_blank');
     }
 </script>
 

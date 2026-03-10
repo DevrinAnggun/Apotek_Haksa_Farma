@@ -18,23 +18,23 @@
             <input type="date" name="end_date" value="{{ $endDate }}" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600">
         </div>
         <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded text-sm transition shadow-sm w-full sm:w-auto">
-            Filter Data
+            Filter
         </button>
     </form>
 
     <!-- Tombol Tambah Transaksi & Export Laporan -->
-    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto mt-3 md:mt-0">
+    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
         <!-- Ke Halaman Tambah Transaksi Kasir -->
-        <a href="{{ route('kasir.pos') }}" class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded shadow-sm transition w-full text-center sm:w-auto text-sm">
+        <a href="{{ route('kasir.pos') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded shadow-sm transition w-full text-center sm:w-auto text-sm uppercase">
             + Tambah Transaksi
         </a>
         
-        <!-- Dropdown Cetak Laporan Harian / Bulanan -->
+        <!-- Dropdown Cetak Laporan -->
         <div class="relative inline-block text-left w-full sm:w-auto" x-data="{ open: false }">
             <div>
-                <button type="button" @click="open = !open" @click.away="open = false" class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded shadow-sm transition flex items-center justify-center gap-2 w-full sm:w-auto text-sm">
+                <button type="button" @click="open = !open" @click.away="open = false" class="bg-gray-800 hover:bg-black text-white font-medium py-1.5 px-4 rounded shadow-sm transition flex items-center justify-center gap-2 w-full sm:w-auto text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Penjualan
+                    Export Laporan
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
             </div>
@@ -47,24 +47,27 @@
                  x-transition:leave="transition ease-in duration-75" 
                  x-transition:leave-start="transform opacity-100 scale-100" 
                  x-transition:leave-end="transform opacity-0 scale-95" 
-                 class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 py-1" style="display: none;">
+                 class="origin-top-right absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 py-2 border border-gray-100" style="display: none;">
                 
-                <!-- Laporan Harian (Hari ini saja) -->
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => \Carbon\Carbon::today()->format('Y-m-d'), 'end_date' => \Carbon\Carbon::today()->format('Y-m-d')]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    Laporan Harian (Hari Ini)
-                </a>
-                
-                <!-- Laporan Bulanan (30 hari terakhir) -->
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => \Carbon\Carbon::now()->subDays(30)->format('Y-m-d'), 'end_date' => \Carbon\Carbon::today()->format('Y-m-d')]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2 border-t border-gray-100">
-                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Laporan Bulanan
-                </a>
+                <div class="px-4 py-2 border-b border-gray-50 mb-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Pilih Format Cetak
+                </div>
 
-                <!-- Opsi Sesuai Filter -->
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 border-t border-gray-100 bg-gray-50 font-medium">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                    Cetak Sesuai Filter
+                <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-d'), 'end_date' => date('Y-m-d')]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Laporan Hari Ini
+                </a>
+                
+                <button type="button" @click="open = false; openMonthModal()" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Laporan Bulanan...
+                </button>
+
+                <div class="border-t border-gray-50 my-1"></div>
+
+                <a href="{{ route('laporan.cetak_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-900 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 bg-gray-50 font-bold">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    Cetak Hasil Filter
                 </a>
             </div>
         </div>
@@ -297,6 +300,29 @@
 </style>
 
 <script>
+    function openMonthModal() {
+        document.getElementById('monthModal').classList.remove('hidden');
+        document.getElementById('monthModal').classList.add('flex');
+    }
+    function closeMonthModal() {
+        document.getElementById('monthModal').classList.add('hidden');
+        document.getElementById('monthModal').classList.remove('flex');
+    }
+    function filterByMonth() {
+        const m = document.getElementById('modal_month').value;
+        const y = document.getElementById('modal_year').value;
+        window.location.href = `{{ route('laporan.penjualan') }}?month=${m}&year=${y}`;
+    }
+    function downloadMonthPdf() {
+        const m = document.getElementById('modal_month').value;
+        const y = document.getElementById('modal_year').value;
+        const startDate = `${y}-${m.padStart(2, '0')}-01`;
+        const lastDay = new Date(y, m, 0).getDate();
+        const endDate = `${y}-${m.padStart(2, '0')}-${lastDay}`;
+        window.open(`{{ route('laporan.cetak_pdf') }}?start_date=${startDate}&end_date=${endDate}`, '_blank');
+    }
+
+    // Modal show/hide logic (existing for detail)
     function showStruk(data) {
         const modal = document.getElementById('modalStruk');
         const container = document.getElementById('struk-items');
@@ -432,3 +458,73 @@
 </style>
 
 @endsection
+
+@section('modals')
+    {{-- Modal Pilih Bulan --}}
+    <div id="monthModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeMonthModal()"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-visible border border-gray-100 flex flex-col" x-data="{ 
+            month: '{{ date('n') }}', 
+            year: '{{ date('Y') }}',
+            openM: false,
+            openY: false,
+            months: [
+                {val: '1', label: 'Januari'}, {val: '2', label: 'Februari'}, {val: '3', label: 'Maret'},
+                {val: '4', label: 'April'}, {val: '5', label: 'Mei'}, {val: '6', label: 'Juni'},
+                {val: '7', label: 'Juli'}, {val: '8', label: 'Agustus'}, {val: '9', label: 'September'},
+                {val: '10', label: 'Oktober'}, {val: '11', label: 'November'}, {val: '12', label: 'Desember'}
+            ],
+            years: Array.from({length: 15}, (v, i) => 2026 + i)
+        }">
+            <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white shrink-0">
+                <h3 class="font-bold uppercase tracking-wider text-sm">Pilih Bulan Laporan</h3>
+                <button onclick="closeMonthModal()" class="text-white/80 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    {{-- Custom Month Selector --}}
+                    <div class="relative">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Bulan</label>
+                        <button @click="openM = !openM; openY = false" type="button" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm flex items-center justify-between hover:border-blue-400 transition">
+                            <span x-text="months.find(m => m.val == month).label"></span>
+                            <svg class="w-4 h-4 text-gray-400 transition" :class="openM ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div x-show="openM" @click.away="openM = false" class="absolute left-0 right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl z-[110] max-h-48 overflow-y-auto py-1 animate-fadeInDown">
+                            <template x-for="m in months" :key="m.val">
+                                <div @click="month = m.val; openM = false" class="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition text-gray-700 font-medium" :class="month == m.val ? 'bg-blue-50 text-blue-600 font-bold' : ''">
+                                    <span x-text="m.label"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    {{-- Custom Year Selector --}}
+                    <div class="relative">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Tahun</label>
+                        <button @click="openY = !openY; openM = false" type="button" class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm flex items-center justify-between hover:border-blue-400 transition">
+                            <span x-text="year"></span>
+                            <svg class="w-4 h-4 text-gray-400 transition" :class="openY ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div x-show="openY" @click.away="openY = false" class="absolute left-0 right-0 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl z-[110] max-h-48 overflow-y-auto py-1 animate-fadeInDown">
+                            <template x-for="y in years" :key="y">
+                                <div @click="year = y; openY = false" class="px-4 py-2 text-sm hover:bg-blue-50 cursor-pointer transition text-gray-700 font-medium" :class="year == y ? 'bg-blue-50 text-blue-600 font-bold' : ''">
+                                    <span x-text="y"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Hidden inputs for JS functions to use --}}
+                <input type="hidden" id="modal_month" :value="month">
+                <input type="hidden" id="modal_year" :value="year">
+
+                <div class="flex flex-col gap-2">
+                    <button onclick="downloadMonthPdf()" class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition shadow-lg flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Download PDF Laporan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>

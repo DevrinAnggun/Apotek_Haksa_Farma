@@ -21,9 +21,17 @@ class LaporanController extends Controller
         $defaultStart = $firstSale ? \Carbon\Carbon::parse($firstSale->tgl_penjualan)->format('Y-m-d') : Carbon::now()->subDays(30)->format('Y-m-d');
         $defaultEnd   = $lastSale ? \Carbon\Carbon::parse($lastSale->tgl_penjualan)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
 
-        // Gunakan input user jika ada, jika tidak ada (klik "Lihat Semua"), jangan filter database
+        // Ambil input user
         $startDate = $request->input('start_date');
         $endDate   = $request->input('end_date');
+        $month     = $request->input('month');
+        $year      = $request->input('year');
+
+        // Jika filter bulanan digunakan (shortcut)
+        if ($month && $year) {
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth()->format('Y-m-d');
+            $endDate   = Carbon::createFromDate($year, $month, 1)->endOfMonth()->format('Y-m-d');
+        }
 
         $query = Penjualan::has('details')->with(['user', 'details.obat.kategori', 'details.obat.satuan']);
 
@@ -32,7 +40,7 @@ class LaporanController extends Controller
                   ->whereDate('tgl_penjualan', '<=', $endDate);
         }
 
-        $totalPendapatan = $query->sum('total_harga'); // Total of all filtered records
+        $totalPendapatan = $query->sum('total_harga'); 
         $penjualans = $query->latest('tgl_penjualan')->paginate(10)->withQueryString();
 
         // Untuk input field di view, tampilkan tanggal yang sedang aktif atau default

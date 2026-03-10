@@ -79,9 +79,18 @@
             </thead>
             <tbody>
                 @forelse($obats as $index => $obat)
-                <tr class="hover:bg-gray-50 transition">
+                @php 
+                    $isExpired = $obat->tanggal_kadaluarsa && \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast();
+                    $rowClass = $isExpired ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50';
+                @endphp
+                <tr class="{{ $rowClass }} transition">
                     <td class="py-3 px-4 text-center text-gray-800 font-medium border border-gray-300">{{ $index + 1 }}</td>
-                    <td class="py-3 px-6 text-center text-gray-800 font-medium uppercase border border-gray-300">{{ $obat->nama_obat }}</td>
+                    <td class="py-3 px-6 text-center border border-gray-300">
+                        <span class="font-bold uppercase {{ $isExpired ? 'text-red-600' : 'text-gray-800' }}">{{ $obat->nama_obat }}</span>
+                        @if($isExpired)
+                            <span class="text-[10px] text-red-500 block font-bold uppercase mt-0.5 animate-pulse">! KADALUARSA !</span>
+                        @endif
+                    </td>
                     <td class="py-3 px-6 text-center text-gray-800 font-medium border border-gray-300">Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}</td>
                     <td class="py-3 px-6 text-center text-gray-800 font-medium border border-gray-300">
                         @if($obat->satuan)
@@ -106,7 +115,7 @@
                         @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
                             <span class="text-gray-400 font-semibold">—</span>
                         @elseif($obat->tanggal_kadaluarsa)
-                            <span class="font-medium {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-500 font-bold' : 'text-gray-800' }}">
+                            <span class="font-medium {{ $isExpired ? 'text-red-600 font-bold' : 'text-gray-800' }}">
                                 {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d-m-Y') }}
                             </span>
                         @else

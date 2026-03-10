@@ -52,12 +52,20 @@
                 </thead>
                 <tbody id="obatTableBody">
                     @forelse($obats as $obat)
-                    @php $stok = $obat->total_stok; @endphp
-                    <tr class="border-b border-gray-100 hover:bg-green-50 transition obat-row"
+                    @php 
+                        $stok = $obat->total_stok; 
+                        $isExpired = $obat->tanggal_kadaluarsa && \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast();
+                        $rowClass = $isExpired ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-green-50';
+                    @endphp
+                    <tr class="border-b border-gray-100 transition obat-row {{ $rowClass }}"
                         data-nama="{{ strtolower($obat->nama_obat) }}"
                         data-kode="{{ strtolower($obat->kode_obat) }}">
                         <td class="py-2.5 px-2 text-center text-gray-400 font-medium">{{ $loop->iteration }}</td>
-                        <td class="py-2.5 px-2 font-medium text-gray-800 uppercase tracking-wide">{{ $obat->nama_obat }}
+                        <td class="py-2.5 px-2 font-medium tracking-wide">
+                            <span class="font-bold uppercase {{ $isExpired ? 'text-red-600' : 'text-gray-800' }}">{{ $obat->nama_obat }}</span>
+                            @if($isExpired)
+                                <span class="text-[10px] text-red-500 block font-bold uppercase mt-0.5">! KADALUARSA !</span>
+                            @endif
                             <span class="text-xs text-gray-400 block capitalize font-normal">{{ strtolower($obat->kategori->nama_kategori ?? '-') }} · {{ strtolower($obat->satuan->nama_satuan ?? '-') }}</span>
                         </td>
                         <td class="py-2.5 px-2 text-center">
@@ -73,12 +81,14 @@
                             Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}
                         </td>
                         <td class="py-2.5 px-2 text-center">
-                            @if($stok > 0)
+                            @if($stok > 0 && !$isExpired)
                             <button type="button"
                                 onclick="tambahKeKeranjang({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}', {{ $obat->harga_jual }}, {{ $stok }})"
                                 class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
                                 + Tambah
                             </button>
+                            @elseif($isExpired)
+                            <span class="text-xs text-red-600 font-bold uppercase">Expired</span>
                             @else
                             <span class="text-xs text-red-400 font-medium">Habis</span>
                             @endif
@@ -199,6 +209,7 @@
         });
 
         list.innerHTML = html;
+        list.scrollTop = list.scrollHeight;
         updateTotals();
     }
 
