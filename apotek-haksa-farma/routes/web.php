@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         
         Route::resource('kategori', KategoriController::class);
         Route::resource('supplier', SupplierController::class);
+        Route::get('/obat/katalog', [ObatController::class, 'katalogAdmin'])->name('obat.katalog');
         Route::resource('obat', ObatController::class);
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);

@@ -224,7 +224,7 @@
             <div class="space-y-2 text-sm">
                 {{-- Kegunaan (Deskripsi) --}}
                 <div id="d-deskripsi-wrap" class="flex justify-between items-start py-2 border-b border-gray-100 hidden">
-                    <span class="text-gray-500 font-medium shrink-0 mr-2">Kegunaan</span>
+                    <span class="text-gray-500 font-medium shrink-0 mr-2">Deskripsi Obat</span>
                     <span id="d-deskripsi" class="font-semibold text-gray-700 text-right text-xs"></span>
                 </div>
                 <div class="flex justify-between items-center py-2 border-b border-gray-100">
@@ -245,7 +245,7 @@
                     <span id="d-usia" class="font-semibold text-gray-700 text-right text-xs"></span>
                 </div>
                 <div id="d-cara-wrap" class="flex justify-between items-start py-2 hidden">
-                    <span class="text-gray-500 font-medium shrink-0 mr-2">Cara Pakai</span>
+                    <span class="text-gray-500 font-medium shrink-0 mr-2">Kegunaan</span>
                     <span id="d-cara" class="font-semibold text-gray-700 text-right text-xs"></span>
                 </div>
             </div>

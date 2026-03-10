@@ -256,7 +256,7 @@
 <div id="modalHapusPembelian" class="fixed inset-0 z-[110] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeletePembelian()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden">
-        <div class="bg-green-600 py-3 text-center">
+        <div class="bg-red-600 py-3 text-center">
             <h4 class="text-white font-bold uppercase tracking-widest text-sm">Konfirmasi Hapus</h4>
         </div>
         <div class="px-6 pt-6 pb-4 text-center">
@@ -269,7 +269,7 @@
         </div>
         <div class="flex gap-3 px-6 pb-6 mt-2">
             <button type="button" onclick="closeDeletePembelian()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">Batal</button>
-            <button type="button" onclick="executeDeletePembelian()" class="flex-1 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition uppercase tracking-wider">Ya, Hapus</button>
+            <button type="button" onclick="executeDeletePembelian()" class="flex-1 py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition uppercase tracking-wider">Ya, Hapus</button>
         </div>
     </div>
 </div>

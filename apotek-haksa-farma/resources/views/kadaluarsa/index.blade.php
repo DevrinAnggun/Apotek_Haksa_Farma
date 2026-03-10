@@ -192,22 +192,25 @@
 
 
 {{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
-<div id="modalHapus" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="tutupHapus()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4">
-        {{-- Pesan --}}
-        <div class="px-6 pt-6 pb-4 text-center">
-            <p class="text-base font-semibold text-gray-800 mb-2">
-                Yakin ingin menghapus <span id="hapusNamaObat" class="text-red-700"></span>?
-            </p>
-            <p class="text-sm text-gray-500">Data yang dihapus tidak dapat dikembalikan.</p>
+<div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="tutupHapus()"></div>
+    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-[320px] mx-4 overflow-hidden animate-modal">
+        <div class="bg-red-600 py-3 text-center">
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
         </div>
-        {{-- Tombol --}}
-        <div class="flex gap-3 px-6 pb-6">
+        <div class="px-6 pt-8 pb-4 text-center">
+            <p class="text-base font-bold text-gray-800 mb-2 leading-relaxed">
+                Yakin ingin menghapus <span id="hapusNamaObat" class="text-red-600"></span>?
+            </p>
+            <p class="text-[11px] text-gray-500 italic leading-relaxed">
+                Data yang dihapus tidak dapat dikembalikan.
+            </p>
+        </div>
+        <div class="flex gap-3 px-6 pb-8 mt-4">
             <button type="button" onclick="tutupHapus()"
-                class="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
+                class="flex-1 py-2.5 text-xs font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition uppercase tracking-widest">Batal</button>
             <button type="button" id="btnKonfirmasiHapus" onclick="konfirmasiHapus()"
-                class="flex-1 py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+                class="flex-1 py-2.5 text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition uppercase tracking-widest">Ya, Hapus</button>
         </div>
     </div>
 </div>

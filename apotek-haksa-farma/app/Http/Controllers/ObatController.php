@@ -17,8 +17,6 @@ class ObatController extends Controller
 {
     public function index(Request $request)
     {
-        // Fitur with() adalah best practice Eager Loading di Laravel, 
-        // fungsinya mencegah masalah "N+1 Query" agar database tidak lemot saat meload ribuan baris relasi.
         $query = Obat::with(['kategori', 'satuan'])
                      ->withSum('penjualanDetails as total_terjual', 'qty');
 
@@ -32,20 +30,33 @@ class ObatController extends Controller
             $query->where('id_kategori', $request->kategori);
         }
 
-        // Paginate obats: 10 per page as requested by user
         $obats = $query->paginate(10)->withQueryString();
-        
-        // Paginate purchases history as well
-        $pembelians = Pembelian::with(['supplier', 'user'])
-                               ->latest()
-                               ->paginate(5, ['*'], 'page_pembelian')
-                               ->withQueryString();
-
-        // Load kategoris for the tabs
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
         
         return view('obat.index', compact('obats', 'kategoris', 'satuans'));
+    }
+
+    public function katalogAdmin(Request $request)
+    {
+        $query = Obat::with(['kategori', 'satuan'])
+                     ->withSum('penjualanDetails as total_terjual', 'qty');
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('nama_obat', 'like', "%{$search}%")
+                  ->orWhere('kode_obat', 'like', "%{$search}%");
+        }
+
+        if ($request->has('kategori') && $request->kategori != '') {
+            $query->where('id_kategori', $request->kategori);
+        }
+
+        $obats = $query->paginate(12)->withQueryString();
+        $kategoris = Kategori::all();
+        $satuans   = Satuan::all();
+        
+        return view('obat.katalog', compact('obats', 'kategoris', 'satuans'));
     }
 
     public function create()
@@ -65,6 +76,8 @@ class ObatController extends Controller
             'harga_jual'  => 'required|integer|min:0',
             'stok'        => 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
+            'deskripsi'   => 'nullable|string',
+            'cara_pakai'  => 'nullable|string',
         ]);
 
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
@@ -91,7 +104,7 @@ class ObatController extends Controller
             ]);
         }
 
-        return redirect()->route('obat.index')->with('success', 'Master Data Obat berhasil ditambahkan!');
+        return redirect()->back()->with('success', 'Data Obat berhasil ditambahkan!');
     }
 
     public function edit(Obat $obat)
@@ -110,6 +123,8 @@ class ObatController extends Controller
             'harga_jual'  => 'required|integer|min:0',
             'stok'        => 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
+            'deskripsi'   => 'nullable|string',
+            'cara_pakai'  => 'nullable|string',
         ]);
 
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
@@ -157,7 +172,7 @@ class ObatController extends Controller
              }
         }
 
-        return redirect()->route('obat.index')->with('success', 'Data Obat berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Data Obat berhasil diperbarui!');
     }
 
     public function destroy(Obat $obat)
@@ -167,6 +182,6 @@ class ObatController extends Controller
             unlink(public_path($obat->gambar));
         }
         $obat->delete();
-        return redirect()->route('obat.index')->with('success', 'Data Obat berhasil dihapus!');
+        return redirect()->back()->with('success', 'Data Obat berhasil dihapus!');
     }
 }

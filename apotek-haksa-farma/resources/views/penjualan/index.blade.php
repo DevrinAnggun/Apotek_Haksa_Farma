@@ -422,16 +422,19 @@
 {{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
 <div id="modalHapus" class="fixed inset-0 z-[110] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDelete()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4">
-        <div class="px-6 pt-6 pb-4 text-center">
-            <p class="text-base font-semibold text-gray-800 mb-2">
-                Hapus Transaksi ini?
-            </p>
-            <p class="text-xs text-gray-500">Stok barang pada transaksi ini akan dikembalikan ke data stok.</p>
+    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden animate-modal">
+        <div class="bg-red-600 py-3 text-center">
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
         </div>
-        <div class="flex gap-3 px-6 pb-6">
-            <button type="button" onclick="closeDelete()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition">Batal</button>
-            <button type="button" onclick="executeDelete()" class="flex-1 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition">Ya, Hapus</button>
+        <div class="px-6 pt-6 pb-4 text-center">
+            <p class="text-base font-semibold text-gray-800 mb-2">Hapus Transaksi ini?</p>
+            <p class="text-[11px] text-gray-500 italic leading-relaxed">
+                Stok barang pada transaksi ini akan dikembalikan ke data stok.
+            </p>
+        </div>
+        <div class="flex gap-3 px-6 pb-6 mt-2">
+            <button type="button" onclick="closeDelete()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">BATAL</button>
+            <button type="button" onclick="executeDelete()" class="flex-1 py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition uppercase tracking-wider">YA, HAPUS</button>
         </div>
     </div>
 </div>
