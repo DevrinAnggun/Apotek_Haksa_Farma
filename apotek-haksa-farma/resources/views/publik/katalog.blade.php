@@ -157,37 +157,17 @@
                     data-cara-pakai="{{ $obat->cara_pakai ?? '' }}"
                     onclick="bukaDetailObat(this)">
         
-                    @switch($obat->id)
-                        @case(4)
-                            <img src="{{ asset('images/obat/tolakangin.png') }}" alt="{{ $obat->tolakangin }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(6)
-                            <img src="{{ asset('images/obat/panadol.jpg') }}" alt="{{ $obat->panadol }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(7)
-                            <img src="{{ asset('images/obat/bisolvon.jpg') }}" alt="{{ $obat->bisolvon }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(9)
-                            <img src="{{ asset('images/obat/teh-china.jpg') }}" alt="{{ $obat->teh_china }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(10)
-                            <img src="{{ asset('images/obat/vitamin-c.jpg') }}" alt="{{ $obat->vitamin_c }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(11)
-                            <img src="{{ asset('images/obat/masker.jpg') }}" alt="{{ $obat->masker }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(12)
-                            <img src="{{ asset('images/obat/teh-sari.jpg') }}" alt="{{ $obat->teh_sari }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @case(13)
-                            <img src="{{ asset('images/obat/latex.webp') }}" alt="{{ $obat->latex }}" class="w-full h-32 object-contain group-hover:scale-105 transition-transform duration-300">
-                            @break
-                        @default
-                            {{-- Produk belum punya foto --}}
-                            <div class="bg-gradient-to-br from-green-50 to-green-100 w-full h-32 flex items-center justify-center">
-                                <svg class="w-10 h-10 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                    {{-- Foto Obat --}}
+                    <div class="h-32 flex items-center justify-center overflow-hidden">
+                        @if($obat->gambar)
+                            <img src="{{ asset($obat->gambar) }}" alt="{{ $obat->nama_obat }}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
+                        @else
+                            {{-- Placeholder jika tidak ada foto --}}
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 w-full h-full flex items-center justify-center">
+                                <svg class="w-10 h-10 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                             </div>
-                    @endswitch
+                        @endif
+                    </div>
                     {{-- Hover overlay --}}
                     <div class="absolute inset-0 bg-green-700/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center pointer-events-none">
                         <span class="bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded-full">Lihat Detail</span>

@@ -70,6 +70,13 @@ class ObatController extends Controller
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
 
+        // Handle Image Upload
+        if ($request->hasFile('gambar')) {
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('uploads/obat'), $imageName);
+            $obatData['gambar'] = 'uploads/obat/' . $imageName;
+        }
+
         $obat = Obat::create($obatData);
 
         // Inject initial stok directly to StokBatch table if user filled it
@@ -107,6 +114,16 @@ class ObatController extends Controller
 
         $obatData = $request->except(['stok', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
+
+        // Handle Image Update
+        if ($request->hasFile('gambar')) {
+            if ($obat->gambar && file_exists(public_path($obat->gambar))) {
+                unlink(public_path($obat->gambar));
+            }
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('uploads/obat'), $imageName);
+            $obatData['gambar'] = 'uploads/obat/' . $imageName;
+        }
 
         $obat->update($obatData);
 

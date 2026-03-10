@@ -17,6 +17,7 @@ use App\Http\Controllers\PembelianController; // Import PembelianController
 // ===== HALAMAN PUBLIK USER (tanpa login) =====
 Route::get('/publik/katalog', [PublicController::class, 'katalog'])->name('publik.katalog');
 Route::get('/publik/artikel', [PublicController::class, 'artikel'])->name('publik.artikel');
+Route::get('/publik/artikel/{slug}', [PublicController::class, 'bacaArtikel'])->name('publik.artikel.detail');
 Route::get('/publik/kontak',  [PublicController::class, 'kontak'])->name('publik.kontak');
 
 
@@ -52,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/penjualan/pdf', [LaporanController::class, 'cetakPdf'])->name('laporan.cetak_pdf');
         Route::get('/laporan/pembelian/pdf', [PembelianController::class, 'cetakPdf'])->name('pembelian.cetak_pdf');
         Route::delete('/penjualan/{penjualan}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
+        // Content Management
+        Route::resource('artikel', \App\Http\Controllers\ArtikelController::class);
+        Route::get('/pengaturan', [\App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan.index');
+        Route::post('/pengaturan', [\App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.update');
     });
 
     // Admin & Kasir Bisa Transaksi

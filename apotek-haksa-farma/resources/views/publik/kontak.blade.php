@@ -19,12 +19,16 @@
 
             {{-- Peta Google Maps --}}
             <div class="h-64 md:h-auto min-h-[280px] bg-gray-200 relative">
+                @if($settings['kontak_maps'] ?? false)
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.234817!2d109.6960!3d-7.4024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMjQnMDUuNC"
+                    src="{{ $settings['kontak_maps'] }}"
                     width="100%" height="100%" style="border:0; min-height:280px;" allowfullscreen=""
                     loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                     class="w-full h-full object-cover">
                 </iframe>
+                @else
+                <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm italic">Peta belum dikonfigurasi</div>
+                @endif
             </div>
 
             {{-- Info Kontak --}}
@@ -40,9 +44,7 @@
                     <div>
                         <p class="font-bold text-gray-800 mb-1">Alamat</p>
                         <p class="text-sm text-gray-600 leading-relaxed">
-                            Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo,<br>
-                            Kec. Purwareja Klampok,<br>
-                            Kab. Banjarnegara, Jawa Tengah 53474
+                            {!! nl2br(e($settings['kontak_alamat'] ?? 'Alamat belum diatur')) !!}
                         </p>
                     </div>
                 </div>
@@ -56,23 +58,11 @@
                     </div>
                     <div>
                         <p class="font-bold text-gray-800 mb-1">WhatsApp</p>
-                        <a href="https://wa.me/6208xxxxx" class="text-sm text-green-700 hover:underline font-medium">08xxxxxxxxx</a>
-                        <p class="text-xs text-gray-400 mt-0.5">Hanya WhatsApp (tidak ada telepon)</p>
-                        <p class="text-xs text-gray-400">Senin – Sabtu, 08:00 – 20:00 WIB</p>
-                    </div>
-                </div>
-
-                {{-- Instagram --}}
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg class="w-5 h-5 text-green-700" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <p class="font-bold text-gray-800 mb-1">Instagram</p>
-                        <a href="#" class="text-sm text-green-700 hover:underline font-medium">@haksafarma</a>
-                        <p class="text-xs text-gray-400 mt-0.5">Ikuti kami untuk info promo terbaru</p>
+                        @php $wa = str_replace(['-', ' '], '', $settings['kontak_telepon'] ?? ''); @endphp
+                        <a href="https://wa.me/{{ preg_replace('/^0/', '62', $wa) }}" class="text-sm text-green-700 hover:underline font-bold">
+                            {{ $settings['kontak_telepon'] ?? 'Belum diatur' }}
+                        </a>
+                        <p class="text-[10px] text-gray-400 mt-0.5">Jam Operasional Terlampir</p>
                     </div>
                 </div>
 
@@ -85,7 +75,9 @@
                     </div>
                     <div>
                         <p class="font-bold text-gray-800 mb-1">Email</p>
-                        <a href="mailto:info@haksafarma.com" class="text-sm text-green-700 hover:underline font-medium">info@haksafarma.com</a>
+                        <a href="mailto:{{ $settings['kontak_email'] ?? '' }}" class="text-sm text-green-700 hover:underline font-medium">
+                            {{ $settings['kontak_email'] ?? 'Belum diatur' }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -102,23 +94,20 @@
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             @php
-                $jadwals = [
-                    ['hari' => 'Senin',   'buka' => '08:00', 'tutup' => '20:00', 'aktif' => true],
-                    ['hari' => 'Selasa',  'buka' => '08:00', 'tutup' => '20:00', 'aktif' => true],
-                    ['hari' => 'Rabu',    'buka' => '08:00', 'tutup' => '20:00', 'aktif' => true],
-                    ['hari' => 'Kamis',   'buka' => '08:00', 'tutup' => '20:00', 'aktif' => true],
-                    ['hari' => 'Jumat',   'buka' => '08:00', 'tutup' => '20:00', 'aktif' => true],
-                    ['hari' => 'Sabtu',   'buka' => '08:00', 'tutup' => '17:00', 'aktif' => true],
-                    ['hari' => 'Minggu',  'buka' => '-',     'tutup' => '-',     'aktif' => false],
-                ];
+                $haris = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
             @endphp
-            @foreach($jadwals as $j)
-            <div class="flex items-center justify-between px-4 py-2.5 rounded-lg {{ $j['aktif'] ? 'bg-green-50' : 'bg-red-50' }}">
-                <span class="font-semibold {{ $j['aktif'] ? 'text-gray-700' : 'text-gray-400' }}">{{ $j['hari'] }}</span>
-                <span class="{{ $j['aktif'] ? 'text-green-700 font-bold' : 'text-red-400 font-medium' }}">
-                    {{ $j['aktif'] ? $j['buka'].' – '.$j['tutup'].' WIB' : 'Tutup' }}
-                </span>
-            </div>
+            @foreach($haris as $hari)
+                @php 
+                    $key = 'jam_buka_' . strtolower($hari);
+                    $waktu = $settings[$key] ?? '08:00 - 20:00 WIB';
+                    $isTutup = strtolower($waktu) === 'tutup' || $waktu === '-';
+                @endphp
+                <div class="flex items-center justify-between px-4 py-2.5 rounded-lg {{ !$isTutup ? 'bg-green-50' : 'bg-red-50' }}">
+                    <span class="font-semibold {{ !$isTutup ? 'text-gray-700' : 'text-gray-400' }}">{{ $hari }}</span>
+                    <span class="{{ !$isTutup ? 'text-green-700 font-bold' : 'text-red-400 font-medium' }}">
+                        {{ $waktu }}
+                    </span>
+                </div>
             @endforeach
         </div>
     </div>
