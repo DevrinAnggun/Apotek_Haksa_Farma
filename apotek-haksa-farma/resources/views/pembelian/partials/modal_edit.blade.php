@@ -1,5 +1,35 @@
 {{-- ===== MODAL EDIT STOK MASUK ===== --}}
-<div id="modalEditStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+<div id="modalEditStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center"
+    x-data="{ 
+        openObat: false, 
+        searchObat: '', 
+        selectedObatId: '', 
+        selectedObatName: '-- Pilih Barang / Obat --',
+        obats: [
+            @foreach($obats as $obat)
+                { id: '{{ $obat->id }}', name: '{{ strtoupper($obat->nama_obat) }}' },
+            @endforeach
+        ],
+        selectObat(id, name) {
+            this.selectedObatId = id;
+            this.selectedObatName = name;
+            this.openObat = false;
+            this.searchObat = '';
+        },
+        initFromId(id) {
+            if(!id) {
+                this.selectedObatId = '';
+                this.selectedObatName = '-- Pilih Barang / Obat --';
+                return;
+            }
+            const found = this.obats.find(o => o.id == id);
+            if(found) {
+                this.selectedObatId = found.id;
+                this.selectedObatName = found.name;
+            }
+        }
+    }"
+    @set-edit-obat.window="initFromId($event.detail.id)">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
         <!-- Header -->
@@ -29,16 +59,36 @@
                     </div>
                 </div>
 
-                <!-- Nama Barang -->
-                <div>
+                <!-- Nama Barang (Searchable Dropdown) -->
+                <div class="relative">
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
-                    <select name="id_obat" id="edit_id_obat" required class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 appearance-none shadow-sm cursor-pointer">
-                        @foreach($obats as $obat)
-                            @if(($obat->kategori->nama_kategori ?? '') !== 'CEK')
-                                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
-                            @endif
-                        @endforeach
-                    </select>
+                    <button type="button" @click="openObat = !openObat" 
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm flex justify-between items-center focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 shadow-sm">
+                        <span x-text="selectedObatName"></span>
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    
+                    <div x-show="openObat" @click.away="openObat = false" x-transition
+                        class="absolute z-[110] mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden animate-modal">
+                        <div class="p-2 border-b border-gray-100 bg-gray-50">
+                            <input type="text" x-model="searchObat" placeholder="Cari nama obat..." 
+                                class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-green-500 outline-none uppercase font-bold">
+                        </div>
+                        <ul class="max-h-60 overflow-y-auto py-1">
+                            <template x-for="obat in obats.filter(o => o.name.includes(searchObat.toUpperCase()))" :key="obat.id">
+                                <li @click="selectObat(obat.id, obat.name)" 
+                                    class="px-4 py-2.5 text-xs font-bold uppercase text-gray-700 hover:bg-green-50 hover:text-green-700 cursor-pointer transition flex items-center justify-between">
+                                    <span x-text="obat.name"></span>
+                                    <svg x-show="selectedObatId == obat.id" class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                </li>
+                            </template>
+                            <li x-show="obats.filter(o => o.name.includes(searchObat.toUpperCase())).length === 0" class="px-4 py-3 text-xs text-gray-400 italic text-center">
+                                Obat tidak ditemukan...
+                            </li>
+                        </ul>
+                    </div>
+                    {{-- Hidden Input for original logic --}}
+                    <input type="hidden" name="id_obat" id="edit_id_obat" x-model="selectedObatId" required>
                 </div>
 
                 <!-- Detail Barang -->

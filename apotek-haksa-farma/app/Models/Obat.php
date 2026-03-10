@@ -53,12 +53,28 @@ class Obat extends Model
 
     public function getTanggalKadaluarsaAttribute()
     {
-        $batch = $this->stokBatches()->where('stok_sisa', '>', 0)->orderBy('tgl_expired', 'asc')->first();
-        if ($batch) {
-            return $batch->tgl_expired;
+        // 1. Prioritaskan stok yang BELUM kadaluarsa
+        $validBatch = $this->stokBatches()
+            ->where('stok_sisa', '>', 0)
+            ->where('tgl_expired', '>=', date('Y-m-d'))
+            ->orderBy('tgl_expired', 'asc')
+            ->first();
+
+        if ($validBatch) {
+            return $validBatch->tgl_expired;
         }
         
-        // Fallback jika tidak ada stok sisa tapi ada batch 
+        // 2. Jika semua stok sisa sudah kadaluarsa, ambil yang paling mendekati sekarang
+        $expiredBatch = $this->stokBatches()
+            ->where('stok_sisa', '>', 0)
+            ->orderBy('tgl_expired', 'asc')
+            ->first();
+
+        if ($expiredBatch) {
+            return $expiredBatch->tgl_expired;
+        }
+
+        // 3. Fallback jika tidak ada stok sisa sama sekali
         $anyBatch = $this->stokBatches()->orderBy('tgl_expired', 'asc')->first();
         return $anyBatch ? $anyBatch->tgl_expired : null;
     }

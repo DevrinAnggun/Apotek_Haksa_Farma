@@ -36,10 +36,6 @@ class PembelianController extends Controller
      */
     public function create()
     {
-        // Pada praktek nyatanya, Anda perlu mengirim data Supplier dan Obat ke Dropdown view
-        // $suppliers = \App\Models\Supplier::all();
-        // $obats = \App\Models\Obat::all();
-        // return view('pembelian.create', compact('suppliers', 'obats'));
         return view('pembelian.create');
     }
 
@@ -51,7 +47,7 @@ class PembelianController extends Controller
         // 1. Validasi Input Array Request
         $request->validate([
             'nama_suplier' => 'required|string|max:255',
-            'no_faktur' => 'required|string|max:100', // Relaxed unique check for flexibility if needed, or keep if strict
+            'no_faktur' => 'required|string|max:100',
             'tgl_pembelian' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.id_obat' => 'required|exists:obats,id',
@@ -62,31 +58,27 @@ class PembelianController extends Controller
             'items.*.harga_jual' => 'required|integer|min:0',
         ]);
 
-        // Mulai Database Transaction untuk keamanan aliran data
-        // Jika salah satu proses (misal: generate batch gagal), maka seluruh penyimpanan dari header hingga detail akan dibatalkan (Rollback) otomatis.
         try {
-            // A. Cari atau Buat Supplier Berdasarkan Nama
+            DB::beginTransaction();
+
             $supplier = \App\Models\Supplier::firstOrCreate(
                 ['nama_suplier' => strtoupper($request->nama_suplier)]
             );
 
             $totalBayar = 0;
 
-            // 2. Simpan Header: Tabel Pembelian
             $pembelian = Pembelian::create([
                 'id_suplier' => $supplier->id,
-                'id_user' => auth()->id(), // Diisi oleh ID Akun Admin yang Login
+                'id_user' => auth()->id(),
                 'no_faktur' => $request->no_faktur,
                 'tgl_pembelian' => $request->tgl_pembelian,
-                'total_bayar' => 0, // Inisiasi nilai awal, nanti akan diupdate setelah looping kalkulasi item
+                'total_bayar' => 0,
             ]);
 
-            // 3. Looping untuk Simpan Detail dan Generate Batch
             foreach ($request->items as $item) {
                 $subtotal = $item['qty'] * $item['harga_beli'];
                 $totalBayar += $subtotal;
 
-                // A. Simpan Rincian Pembelian: Tabel DetailPembelian
                 $detail = DetailPembelian::create([
                     'id_pembelian' => $pembelian->id,
                     'id_obat' => $item['id_obat'],
@@ -95,18 +87,15 @@ class PembelianController extends Controller
                     'subtotal' => $subtotal,
                 ]);
 
-                // B. **GENERATE STOK BATCH**: Tabel StokBatch (Kunci Core Sistem)
-                // Di sinilah stok secara fisik dicatat riwayat kadaluarsanya.
                 StokBatch::create([
                     'id_obat' => $item['id_obat'],
                     'id_pembelian' => $pembelian->id,
                     'no_batch' => $item['no_batch'],
                     'tgl_expired' => $item['tgl_expired'],
-                    'stok_awal' => $item['qty'], // Stok dasar awal saat diterima
-                    'stok_sisa' => $item['qty'], // Sisa stok (awalnya sama dengan qty pembelian)
+                    'stok_awal' => $item['qty'],
+                    'stok_sisa' => $item['qty'],
                 ]);
                 
-                // B2. Log Riwayat Stok Masuk Awal
                 RiwayatStokMasuk::create([
                     'id_pembelian_detail' => $detail->id,
                     'id_obat' => $item['id_obat'],
@@ -116,30 +105,22 @@ class PembelianController extends Controller
                     'keterangan' => 'Penerimaan Stok Awal'
                 ]);
 
-                // C. Update Harga Beli dasar & Harga Jual obat di Master Data Obat
                 \App\Models\Obat::where('id', $item['id_obat'])->update([
                     'harga_beli' => $item['harga_beli'],
                     'harga_jual' => $item['harga_jual']
                 ]);
             }
 
-            // 4. Update Ulang Total Pembayaran pada Tabel Utama (Header)
             $pembelian->update(['total_bayar' => $totalBayar]);
-
-            // 5. Finalisasi Sukses dan Simpan ke Server Permanen (Commit)
             DB::commit();
 
             return redirect()->route('pembelian.index')
                 ->with('success', 'Penerimaan Stok Berhasil Disimpan!');
 
         } catch (\Exception $e) {
-            // Jika terjadi kesalahan baris kode / trigger query gagal di loop manapun, Cancel semuanya (Rollback)
             DB::rollBack();
-            Log::error('Gagal saat menyimpan data Penerimaan Barang (Pembelian): ' . $e->getMessage());
-
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan sistem saat menyimpan nota: ' . $e->getMessage());
+            Log::error('Gagal saat menyimpan data Penerimaan Barang: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }
     }
 
@@ -148,7 +129,6 @@ class PembelianController extends Controller
      */
     public function cetakPdf(Request $request)
     {
-        // Default start date (misal 3 bulan terakhir jika tidak filter)
         $startDate = $request->input('start_date', Carbon::now()->subMonths(3)->format('Y-m-d'));
         $endDate   = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
@@ -190,18 +170,15 @@ class PembelianController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Update Supplier
             $supplier = \App\Models\Supplier::firstOrCreate(
                 ['nama_suplier' => strtoupper($request->nama_suplier)]
             );
 
-            // 2. Update Pembelian Header
             $pembelian->update([
                 'id_suplier' => $supplier->id,
                 'tgl_pembelian' => $request->tgl_pembelian,
             ]);
 
-            // 3. Update Detail & Stok Batch
             $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->first();
             if ($detail) {
                 $qtyLama = $detail->qty;
@@ -215,27 +192,21 @@ class PembelianController extends Controller
                     'subtotal' => $newQtyTotal * $request->harga_beli,
                 ]);
 
-                // Update Stok Batch
                 $batch = StokBatch::where('id_pembelian', $pembelian->id)->first();
                 if ($batch) {
-                    // Jika ada tambah_stok, kita tambahkan ke sisa yang ada
-                    // Jika tidak ada tambah_stok (hanya edit qty awal), kita sesuaikan sisa berdasarkan selisih
                     if ($tambahStok > 0) {
                         $batch->stok_awal = $newQtyTotal;
                         $batch->stok_sisa += $tambahStok;
                     } else {
-                        // Jika mereka merubah angka Qty Masuk secara manual, kita sesuaikan sisa
                         $selisih = $request->qty - $qtyLama;
                         $batch->stok_awal = $request->qty;
                         $batch->stok_sisa += $selisih;
                     }
-
                     $batch->id_obat = $request->id_obat;
                     $batch->tgl_expired = $request->tgl_expired;
                     $batch->save();
                 }
 
-                // Log Riwayat jika ada tambah_stok baru
                 if ($tambahStok > 0) {
                     RiwayatStokMasuk::create([
                         'id_pembelian_detail' => $detail->id,
@@ -247,7 +218,6 @@ class PembelianController extends Controller
                     ]);
                 }
 
-                // Update Master Harga Obat
                 $obat = \App\Models\Obat::find($request->id_obat);
                 if ($obat) {
                     $obat->update([
@@ -257,7 +227,6 @@ class PembelianController extends Controller
                 }
             }
 
-            // Sync total_bayar header
             $pembelian->total_bayar = $pembelian->details->sum('subtotal');
             $pembelian->save();
 
@@ -277,21 +246,14 @@ class PembelianController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Hapus Riwayat Stok Masuk yang terkait dengan detail pembelian ini
             $detailIds = DetailPembelian::where('id_pembelian', $pembelian->id)->pluck('id');
             RiwayatStokMasuk::whereIn('id_pembelian_detail', $detailIds)->delete();
 
-            // 2. Hapus Stok Batch yang terkait dengan pembelian ini
             StokBatch::where('id_pembelian', $pembelian->id)->delete();
-
-            // 3. Hapus Detail Pembelian
             DetailPembelian::where('id_pembelian', $pembelian->id)->delete();
-
-            // 4. Hapus Data Utama Pembelian
             $pembelian->delete();
 
             DB::commit();
-
             return redirect()->back()->with('success', 'Riwayat stok masuk berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();

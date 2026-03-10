@@ -6,38 +6,41 @@
 </div>
 
 <!-- Toolbar Filter dan Export -->
-<div class="bg-gray-50 border border-gray-200 rounded-lg p-5 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-    <!-- Filter Berdasarkan Tanggal -->
-    <form action="{{ route('laporan.penjualan') }}" method="GET" class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-        <div class="flex items-center gap-2">
-            <label class="text-sm font-medium text-gray-700">Dari:</label>
-            <input type="date" name="start_date" value="{{ $startDate }}" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600">
-        </div>
-        <div class="flex items-center gap-2">
-            <label class="text-sm font-medium text-gray-700">Sampai:</label>
-            <input type="date" name="end_date" value="{{ $endDate }}" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600">
-        </div>
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded text-sm transition shadow-sm w-full sm:w-auto">
-            Filter
-        </button>
-    </form>
-
-    <!-- Tombol Tambah Transaksi & Export Laporan -->
-    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-        <!-- Ke Halaman Tambah Transaksi Kasir -->
-        <a href="{{ route('kasir.pos') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded shadow-sm transition w-full text-center sm:w-auto text-sm uppercase">
-            + Tambah Transaksi
-        </a>
-        
-        <!-- Dropdown Cetak Laporan -->
-        <div class="relative inline-block text-left w-full sm:w-auto" x-data="{ open: false }">
-            <div>
-                <button type="button" @click="open = !open" @click.away="open = false" class="bg-gray-800 hover:bg-black text-white font-medium py-1.5 px-4 rounded shadow-sm transition flex items-center justify-center gap-2 w-full sm:w-auto text-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Export Laporan
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
+<div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 mb-6">
+    <div class="flex items-center justify-between gap-4">
+        <!-- Filter Berdasarkan Tanggal -->
+        <form action="{{ route('laporan.penjualan') }}" method="GET" class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold text-gray-600 uppercase">Dari:</span>
+                <input type="date" name="start_date" value="{{ $startDate }}" 
+                    class="border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-500 transition shadow-sm font-bold bg-white h-[40px]">
             </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold text-gray-600 uppercase">Sampai:</span>
+                <input type="date" name="end_date" value="{{ $endDate }}" 
+                    class="border border-gray-300 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-green-500 transition shadow-sm font-bold bg-white h-[40px]">
+            </div>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold px-4 rounded-lg text-xs transition shadow-sm h-[40px] uppercase whitespace-nowrap">
+                Filter
+            </button>
+        </form>
+        
+        <!-- Tombol Tambah Transaksi & Export Laporan -->
+        <div class="flex items-center gap-2">
+            <!-- Ke Halaman Tambah Transaksi Kasir -->
+            <a href="{{ route('kasir.pos') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold px-4 rounded-lg shadow-sm transition h-[40px] text-xs uppercase flex items-center justify-center whitespace-nowrap">
+                + Tambah Transaksi
+            </a>
+            
+            <!-- Dropdown Cetak Laporan -->
+            <div class="relative inline-block text-left" x-data="{ open: false }">
+                <div>
+                    <button type="button" @click="open = !open" @click.away="open = false" class="bg-gray-800 hover:bg-black text-white font-bold px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-xs uppercase h-[40px] whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Export Laporan
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                </div>
 
             <!-- Panel Dropdown AlpineJS -->
             <div x-show="open" 

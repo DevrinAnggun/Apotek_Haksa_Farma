@@ -115,6 +115,7 @@
                             data-id-pembelian="{{ $beli->id }}"
                             data-id-detail="{{ $detail->id }}"
                             data-id-obat="{{ $detail->id_obat }}"
+                            data-nama-obat="{{ $detail->obat->nama_obat ?? '' }}"
                             data-tgl-pembelian="{{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('Y-m-d') }}"
                             data-nama-suplier="{{ $beli->supplier->nama_suplier ?? '' }}"
                             data-tgl-expired="{{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('Y-m-d') }}"
@@ -291,6 +292,10 @@
         document.getElementById('formStokMasuk').reset();
         document.getElementById('restock_no_faktur').value = 'INV-RESTOCK-' + now;
         document.getElementById('restock_no_batch').value = 'BATCH-TEMP-' + now;
+        
+        // Reset Alpine searchable dropdown state
+        window.dispatchEvent(new CustomEvent('reset-restock'));
+        
         document.getElementById('modalStokMasuk').classList.remove('hidden');
         document.getElementById('modalStokMasuk').classList.add('flex');
         document.body.style.overflow = 'hidden';
@@ -363,6 +368,10 @@
 
         // Populate Fields
         document.getElementById('edit_id_obat').value = idObat;
+        
+        // Notify Alpine to update its internal state for the searchable dropdown
+        window.dispatchEvent(new CustomEvent('set-edit-obat', { detail: { id: idObat } }));
+        
         document.getElementById('edit_tgl_pembelian').value = tglBeli;
         document.getElementById('edit_nama_suplier').value = supplier;
         document.getElementById('edit_tgl_expired').value = tglExp;
