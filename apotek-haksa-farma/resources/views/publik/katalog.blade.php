@@ -5,11 +5,45 @@
 
 @section('content')
 
-{{-- Header --}}
-<div class="bg-gradient-to-br from-green-700 to-green-900 py-12 text-center text-white">
-    <h1 class="text-3xl font-extrabold tracking-wide mb-2 uppercase">Katalog Produk</h1>
-    <p class="text-green-200 text-sm">Temukan obat dan kebutuhan kesehatan Anda dengan harga terjangkau</p>
+{{-- Swiper CSS --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+{{-- Header Slider --}}
+<div class="relative group">
+    <div class="swiper mySwiper h-[220px] md:h-[320px]">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide relative">
+                <img src="{{ asset('images/slider/slide1.jpg') }}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white px-4">
+                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-2 uppercase drop-shadow-lg text-center">Apotek Haksa Farma</h1>
+                    <p class="text-green-100 text-xs md:text-base font-medium drop-shadow-md text-center">Melayani dengan Sepenuh Hati untuk Kesehatan Anda</p>
+                </div>
+            </div>
+            <div class="swiper-slide relative">
+                <img src="{{ asset('images/slider/slide2.png') }}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white px-4">
+                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-wide mb-2 uppercase drop-shadow-lg text-center">Katalog Produk</h1>
+                    <p class="text-green-100 text-xs md:text-base font-medium drop-shadow-md text-center">Temukan kebutuhan kesehatan Anda dengan harga terjangkau</p>
+                </div>
+            </div>
+        </div>
+        {{-- Navigation --}}
+        <div class="swiper-button-next !text-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="swiper-button-prev !text-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        {{-- Pagination --}}
+        <div class="swiper-pagination"></div>
+    </div>
 </div>
+
+<style>
+    .swiper-pagination-bullet-active {
+        background: #16a34a !important;
+    }
+    .swiper-button-next:after, .swiper-button-prev:after {
+        font-size: 20px !important;
+        font-weight: bold;
+    }
+</style>
 
 <div class="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row gap-8">
     
@@ -201,7 +235,24 @@
 </style>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
+    var swiper = new Swiper(".mySwiper", {
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+
     function openPublicDetail(obat) {
         document.getElementById('detail_nama').textContent = 'Detail: ' + obat.nama_obat;
         document.getElementById('detail_nama_h4').textContent = obat.nama_obat;

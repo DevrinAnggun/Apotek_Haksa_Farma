@@ -4,33 +4,30 @@
 @section('meta_desc', $artikel->ringkasan)
 
 @section('content')
-{{-- Hero/Header Section --}}
-<div class="bg-gradient-to-br from-green-700 to-green-900 py-16 text-center text-white relative overflow-hidden">
+{{-- Header Section --}}
+<div class="bg-white border-b border-gray-100 py-16 text-center text-gray-800 relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 relative z-10">
-        <span class="inline-block bg-green-600/30 backdrop-blur-sm border border-green-500/30 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
+        <span class="inline-block bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
             {{ $artikel->kategori ?? 'Kesehatan' }}
         </span>
-        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 leading-tight">
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 leading-tight text-gray-900">
             {{ $artikel->judul }}
         </h1>
-        <div class="flex items-center justify-center gap-4 text-green-200 text-xs font-semibold">
+        <div class="flex items-center justify-center gap-4 text-gray-400 text-xs font-semibold">
             <span class="flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 {{ $artikel->tanggal_publish ? $artikel->tanggal_publish->format('d F Y') : '' }}
             </span>
-            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+            <span class="w-1.5 h-1.5 bg-gray-200 rounded-full"></span>
             <span>Oleh Admin Haksa Farma</span>
         </div>
     </div>
-    {{-- Design elements --}}
-    <div class="absolute top-0 right-0 w-64 h-64 bg-green-600/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-    <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
 </div>
 
 <div class="max-w-4xl mx-auto px-4 py-12">
     
     {{-- Main Content --}}
-    <div class="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100 p-6 md:p-12 -mt-20 relative z-20">
+    <div class="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100 p-6 md:p-12 relative z-20">
         
         {{-- Cover Image --}}
         @if($artikel->gambar)

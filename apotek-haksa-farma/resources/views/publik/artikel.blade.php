@@ -6,9 +6,9 @@
 @section('content')
 
 {{-- Header --}}
-<div class="bg-gradient-to-br from-green-700 to-green-900 py-12 text-center text-white">
-    <h1 class="text-3xl font-extrabold tracking-wide mb-2">Artikel Kesehatan</h1>
-    <p class="text-green-200 text-sm">Tips dan informasi seputar kesehatan dari Apotek Haksa Farma</p>
+<div class="bg-white border-b border-gray-100 py-10 text-center">
+    <h1 class="text-3xl font-extrabold tracking-wide mb-2 text-gray-800 uppercase">Artikel Kesehatan</h1>
+    <p class="text-gray-400 text-sm font-medium">Tips dan informasi seputar kesehatan dari Apotek Haksa Farma</p>
 </div>
 
 <div class="max-w-6xl mx-auto px-4 py-10">

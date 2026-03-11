@@ -6,9 +6,9 @@
 @section('content')
 
 {{-- Header --}}
-<div class="bg-gradient-to-br from-green-700 to-green-900 py-14 text-center text-white">
-    <h1 class="text-3xl font-extrabold tracking-wide mb-2">Kontak Kami</h1>
-    <p class="text-green-200 text-sm">Kami siap membantu kebutuhan kesehatan Anda</p>
+<div class="bg-white border-b border-gray-100 py-10 text-center">
+    <h1 class="text-3xl font-extrabold tracking-wide mb-2 text-gray-800 uppercase">Kontak Kami</h1>
+    <p class="text-gray-400 text-sm font-medium">Kami siap membantu kebutuhan kesehatan Anda</p>
 </div>
 
 <div class="max-w-5xl mx-auto px-4 py-12">
