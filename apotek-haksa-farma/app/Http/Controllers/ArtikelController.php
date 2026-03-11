@@ -9,13 +9,10 @@ class ArtikelController extends Controller
     public function index()
     {
         $artikels = \App\Models\Artikel::orderBy('created_at', 'desc')->get();
-        return view('artikel.index', compact('artikels'));
+        return view('publik.artikel_admin', compact('artikels'));
     }
 
-    public function create()
-    {
-        return view('artikel.create');
-    }
+    // These are integrated into the index view via modals
 
     public function store(Request $request)
     {
@@ -41,11 +38,6 @@ class ArtikelController extends Controller
         return redirect()->route('artikel.index')->with('success', 'Artikel berhasil ditambahkan.');
     }
 
-    public function edit($id)
-    {
-        $artikel = \App\Models\Artikel::findOrFail($id);
-        return view('artikel.edit', compact('artikel'));
-    }
 
     public function update(Request $request, $id)
     {

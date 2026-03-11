@@ -56,7 +56,7 @@ class ObatController extends Controller
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
         
-        return view('obat.katalog', compact('obats', 'kategoris', 'satuans'));
+        return view('publik.katalog_admin', compact('obats', 'kategoris', 'satuans'));
     }
 
     public function create()

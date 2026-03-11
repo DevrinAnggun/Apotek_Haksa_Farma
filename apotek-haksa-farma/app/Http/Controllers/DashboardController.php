@@ -65,10 +65,11 @@ class DashboardController extends Controller
             ->orderBy('tgl_expired', 'asc') // Urutkan dari yang sisa waktu paling mepet ke hari ini
             ->get();
             
-        // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED)
+        // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-7)
+        $batasKadaluarsa = Carbon::now()->addDays(7);
         $obatSudahExpired = StokBatch::with('obat')
             ->where('stok_sisa', '>', 0) // Karena stok belum dibuang ke tong / retur, sistem masih ngebaca fisiknya ada di apotek
-            ->whereDate('tgl_expired', '<=', Carbon::now()) // Tanggal tgl_expired lebih KECIL atau SAMA DENGAN hari ini
+            ->whereDate('tgl_expired', '<=', $batasKadaluarsa) // Tanggal tgl_expired lebih KECIL atau SAMA DENGAN batas 7 hari
             ->get();
 
         // 5. Variabel Tambahan Untuk Desain Dashboard (Data Barang & Semua Penjualan)
