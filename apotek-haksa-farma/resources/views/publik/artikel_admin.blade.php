@@ -38,7 +38,7 @@
         <div class="absolute top-4 right-4 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
             <button type="button" 
                 onclick="openEditArtikelModal({{ json_encode($artikel) }})"
-                class="p-2.5 bg-white text-blue-600 rounded-xl shadow-lg hover:bg-blue-600 hover:text-white transition-all">
+                class="p-2.5 bg-white text-green-600 rounded-xl shadow-lg hover:bg-green-600 hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
             </button>
             <form action="{{ route('artikel.destroy', $artikel->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel ini?')">
@@ -148,7 +148,7 @@
 <div id="modalEditArtikel" class="fixed inset-0 z-50 hidden flex items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditArtikelModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden animate-modal flex flex-col">
-        <div class="bg-blue-700 px-6 py-4 flex items-center justify-between text-white">
+        <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Artikel</h3>
             <button onclick="closeEditArtikelModal()" class="absolute right-5 text-gray-100 hover:text-white text-3xl font-light">&times;</button>
         </div>
@@ -159,11 +159,11 @@
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Judul Artikel</label>
-                            <input type="text" name="judul" id="edit_judul" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition shadow-sm font-medium">
+                            <input type="text" name="judul" id="edit_judul" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori</label>
-                            <select name="kategori" id="edit_kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition shadow-sm font-medium">
+                            <select name="kategori" id="edit_kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                                 <option value="Edukasi">Edukasi</option>
                                 <option value="Tips Kesehatan">Tips Kesehatan</option>
                                 <option value="Keamanan">Keamanan</option>
@@ -174,24 +174,28 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Gambar Utama</label>
-                        <div class="border-2 border-dashed border-gray-200 rounded-2xl h-44 flex flex-col items-center justify-center hover:border-blue-400 transition relative overflow-hidden group">
+                        <div class="border-2 border-dashed border-gray-200 rounded-2xl h-44 flex flex-col items-center justify-center hover:border-green-400 transition relative overflow-hidden group">
                             <input type="file" name="gambar" accept="image/*" onchange="previewImage(event, 'preview-edit')" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                            <img id="preview-edit" class="absolute inset-0 w-full h-full object-cover">
+                            <div id="placeholder-edit" class="text-center">
+                                <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Ganti Foto</p>
+                            </div>
+                            <img id="preview-edit" class="absolute inset-0 w-full h-full object-cover hidden">
                         </div>
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Ringkasan</label>
-                    <textarea name="ringkasan" id="edit_ringkasan" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition shadow-sm"></textarea>
+                    <textarea name="ringkasan" id="edit_ringkasan" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm"></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Isi Lengkap</label>
-                    <textarea name="konten" id="edit_konten" rows="8" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition shadow-sm font-serif"></textarea>
+                    <textarea name="konten" id="edit_konten" rows="8" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-serif"></textarea>
                 </div>
             </div>
             <div class="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-100 bg-gray-50">
                 <button type="button" onclick="closeEditArtikelModal()" class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700">Batal</button>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Perbarui Artikel</button>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Perbarui Artikel</button>
             </div>
         </form>
     </div>
@@ -201,7 +205,9 @@
     function previewImage(event, targetId) {
         const reader = new FileReader();
         const preview = document.getElementById(targetId);
-        const placeholder = document.getElementById('placeholder-create');
+        const placeholderId = targetId === 'preview-create' ? 'placeholder-create' : 'placeholder-edit';
+        const placeholder = document.getElementById(placeholderId);
+        
         reader.onload = function() {
             preview.src = reader.result;
             preview.classList.remove('hidden');
@@ -228,11 +234,14 @@
         document.getElementById('edit_konten').value = artikel.konten;
         
         const preview = document.getElementById('preview-edit');
+        const placeholder = document.getElementById('placeholder-edit');
         if(artikel.gambar) {
             preview.src = `/${artikel.gambar}`;
             preview.classList.remove('hidden');
+            if(placeholder) placeholder.classList.add('hidden');
         } else {
             preview.classList.add('hidden');
+            if(placeholder) placeholder.classList.remove('hidden');
         }
 
         document.getElementById('modalEditArtikel').classList.remove('hidden');

@@ -165,9 +165,9 @@
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
 
         {{-- Header Modal --}}
-        <div class="bg-green-700 px-6 py-4 relative flex items-center justify-center">
+        <div class="bg-blue-700 px-6 py-4 relative flex items-center justify-center">
             <h3 class="text-white font-bold text-lg">Detail Obat</h3>
-            <button onclick="tutupDetail()" class="absolute right-5 text-white hover:text-green-200 text-2xl font-light leading-none">&times;</button>
+            <button onclick="tutupDetail()" class="absolute right-5 text-white hover:text-blue-200 text-2xl font-light leading-none">&times;</button>
         </div>
 
         {{-- Konten --}}

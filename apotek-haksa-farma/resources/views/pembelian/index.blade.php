@@ -166,22 +166,22 @@
     </div>
     <div class="flex gap-2">
         @if($pembelians->onFirstPage())
-            <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed">
-                &#9664; Back
+            <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed flex items-center">
+                <span class="bg-gray-300 text-white w-5 h-5 flex items-center justify-center rounded mr-2">&#9664;</span> Back
             </span>
         @else
-            <a href="{{ $pembelians->previousPageUrl() }}" class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md">
-                &#9664; Back
+            <a href="{{ $pembelians->previousPageUrl() }}" class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md flex items-center">
+                <span class="bg-green-500 text-white w-5 h-5 flex items-center justify-center rounded mr-2">&#9664;</span> Back
             </a>
         @endif
 
         @if($pembelians->hasMorePages())
-            <a href="{{ $pembelians->nextPageUrl() }}" class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md">
-                Next &#9654;
+            <a href="{{ $pembelians->nextPageUrl() }}" class="px-5 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest transition shadow-md flex items-center">
+                Next <span class="bg-green-500 text-white w-5 h-5 flex items-center justify-center rounded ml-2">&#9654;</span>
             </a>
         @else
-            <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed">
-                Next &#9654;
+            <span class="px-5 py-2 bg-gray-100 text-gray-400 rounded-lg text-xs font-bold uppercase tracking-widest cursor-not-allowed flex items-center">
+                Next <span class="bg-gray-300 text-white w-5 h-5 flex items-center justify-center rounded ml-2">&#9654;</span>
             </span>
         @endif
     </div>
@@ -358,15 +358,15 @@
                 </div>
 
                 <!-- Tambah Stok Baru (Optional) -->
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-2">
-                    <label class="block text-xs font-bold text-blue-600 mb-2 uppercase tracking-widest text-left flex items-center gap-2">
+                <div class="bg-green-50 p-4 rounded-xl border border-green-100 mt-2">
+                    <label class="block text-xs font-bold text-green-600 mb-2 uppercase tracking-widest text-left flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Tambah Stok Baru (Opsional)
                     </label>
                     <input type="number" name="tambah_stok" id="edit_tambah_stok" min="0" placeholder="0"
-                        class="w-full bg-white border border-blue-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-bold text-blue-700 shadow-sm"
+                        class="w-full bg-white border border-green-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-700 shadow-sm"
                         title="Isi jika ada stok masuk baru untuk item ini tanpa merubah data awal">
-                    <p class="text-[10px] text-blue-400 italic mt-1 font-medium">* Stok ini akan ditambahkan ke jumlah yang sudah ada.</p>
+                    <p class="text-[10px] text-green-400 italic mt-1 font-medium">* Stok ini akan ditambahkan ke jumlah yang sudah ada.</p>
                 </div>
             </div>
 
@@ -538,7 +538,7 @@
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeRiwayatModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
         <!-- Header -->
-        <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white text-center">
+        <div class="bg-blue-700 px-6 py-4 flex items-center justify-between text-white text-center">
             <h3 class="font-bold text-lg uppercase tracking-widest w-full">Riwayat Stok: <span id="riwayat_nama_obat">--</span></h3>
             <button onclick="closeRiwayatModal()" class="absolute right-5 text-blue-100 hover:text-white transition text-3xl font-light">&times;</button>
         </div>
@@ -647,7 +647,7 @@
                     body.innerHTML += `
                         <tr class="border-b border-gray-100 text-center">
                             <td class="p-3 text-gray-600">${formattedDate} <br> <span class="text-[10px] text-gray-400">${formattedTime} WIB</span></td>
-                            <td class="p-3 font-bold text-green-600">+${item.qty_masuk}</td>
+                            <td class="p-3 font-bold text-blue-600">+${item.qty_masuk}</td>
                             <td class="p-3 text-gray-700 font-medium">Rp${new Intl.NumberFormat('id-ID').format(item.harga_beli)}</td>
                             <td class="p-3 text-gray-500 italic text-[11px]">${item.keterangan || '-'}</td>
                         </tr>

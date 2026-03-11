@@ -7,24 +7,11 @@
     <!-- Tailwind CSS (CDN for quick MVP prototyping) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        green: {
-                            50:  '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            300: '#86efac',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                        }
-                    },
                     fontFamily: {
                         sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                     }
@@ -32,10 +19,10 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f7fafc; }
-        .sidebar-active { background-color: #dcfce7; color: #15803d; border-left: 4px solid #16a34a; font-weight: 600; }
+        .sidebar-active { background-color: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; font-weight: 600; }
         .sidebar-link { transition: all 0.2s ease-in-out; }
         .sidebar-link:hover:not(.sidebar-active) { background-color: #f3f4f6; color: #16a34a; }
     </style>
