@@ -50,7 +50,10 @@ class Obat extends Model
 
     public function getTotalStokAttribute()
     {
-        return $this->stokBatches()->sum('stok_sisa');
+        // Hanya hitung stok yang BELUM kadaluarsa
+        return $this->stokBatches()
+            ->where('tgl_expired', '>=', date('Y-m-d'))
+            ->sum('stok_sisa');
     }
 
     public function getTanggalKadaluarsaAttribute()

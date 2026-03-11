@@ -18,7 +18,16 @@ class ObatController extends Controller
     public function index(Request $request)
     {
         $query = Obat::with(['kategori', 'satuan'])
-                     ->withSum('penjualanDetails as total_terjual', 'qty');
+                     ->withSum('penjualanDetails as total_terjual', 'qty')
+                     // Hanya tampilkan obat yang:
+                     // 1. Belum punya batch sama sekali (baru)
+                     // 2. ATAU punya batch yang BELUM kadaluarsa
+                     ->where(function($q) {
+                         $q->whereDoesntHave('stokBatches')
+                           ->orWhereHas('stokBatches', function($sq) {
+                               $sq->where('tgl_expired', '>=', date('Y-m-d'));
+                           });
+                     });
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -41,6 +50,9 @@ class ObatController extends Controller
     {
         $query = Obat::whereHas('kategori', function($q) {
                         $q->where('nama_kategori', '!=', 'CEK');
+                     })
+                     ->whereHas('stokBatches', function($q) {
+                        $q->where('tgl_expired', '>=', date('Y-m-d'));
                      })
                      ->with(['kategori', 'satuan'])
                      ->withSum('penjualanDetails as total_terjual', 'qty');
