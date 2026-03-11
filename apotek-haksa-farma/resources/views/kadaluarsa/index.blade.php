@@ -8,18 +8,27 @@
 
 {{-- Alert Success --}}
 @if(session('success'))
-<div id="alert-success" class="mb-4 flex justify-between items-center bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg text-sm font-medium">
-    <span>{{ session('success') }}</span>
-    <button onclick="dismissAlert('alert-success')" class="text-green-400 hover:text-green-700 font-bold text-lg">&times;</button>
-</div>
+    <div id="flash-success" class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-xl mb-6 shadow-sm flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="bg-green-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <span class="font-bold text-sm">{{ session('success') }}</span>
+        </div>
+        <button onclick="dismissAlert('flash-success')" class="text-green-500 hover:text-green-700 transition font-bold text-xl leading-none">&times;</button>
+    </div>
 @endif
 
-{{-- Alert Error --}}
 @if(session('error'))
-<div id="alert-error" class="mb-4 flex justify-between items-center bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
-    <span>{{ session('error') }}</span>
-    <button onclick="dismissAlert('alert-error')" class="text-red-400 hover:text-red-700 font-bold text-lg">&times;</button>
-</div>
+    <div id="flash-error" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-xl mb-6 shadow-sm flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="bg-red-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </div>
+            <span class="font-bold text-sm">{{ session('error') }}</span>
+        </div>
+        <button onclick="dismissAlert('flash-error')" class="text-red-500 hover:text-red-700 transition font-bold text-xl leading-none">&times;</button>
+    </div>
 @endif
 
 {{-- Toolbar --}}
@@ -87,7 +96,11 @@
                 </td>
                 <td class="py-3 px-5 text-center border border-gray-300">
                     <span class="font-semibold {{ $diffDays < 0 ? 'text-red-600' : 'text-gray-800' }}">
-                        {{ $expired->format('d-m-Y') }}
+                        @if($item->obat->kategori && strtoupper($item->obat->kategori->nama_kategori) === 'CEK')
+                            <span class="text-gray-400 font-normal">-</span>
+                        @else
+                            {{ $expired->format('d-m-Y') }}
+                        @endif
                     </span>
                 </td>
                 <td class="py-3 px-5 text-center border border-gray-300">

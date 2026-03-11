@@ -23,7 +23,7 @@
                 <a href="{{ route('publik.katalog') }}" 
                    class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition {{ !request('kategori') ? 'bg-green-600 text-white shadow-md' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
                    <span>Semua Produk</span>
-                   <span class="{{ !request('kategori') ? 'bg-white/20' : 'bg-gray-100' }} px-2 py-0.5 rounded-md text-[10px]">{{ \App\Models\Obat::count() }}</span>
+                   <span class="{{ !request('kategori') ? 'bg-white/20' : 'bg-gray-100' }} px-2 py-0.5 rounded-md text-[10px]">{{ \App\Models\Obat::whereHas('kategori', fn($q) => $q->where('nama_kategori', '!=', 'CEK'))->count() }}</span>
                 </a>
                 @foreach($kategoris as $kat)
                 <a href="{{ route('publik.katalog', ['kategori' => $kat->id]) }}" 

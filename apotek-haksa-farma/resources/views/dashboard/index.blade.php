@@ -10,12 +10,15 @@
 </div>
 
 <!-- Welcome Notification Banner -->
-<div id="welcome-banner" class="flex justify-between items-center bg-green-50 border border-green-200 p-4 rounded-lg shadow-sm mb-8 transition-opacity duration-300">
-    <div class="text-gray-700">
-        <span class="font-bold text-green-800">Halo {{ auth()->user()->nama ?? 'Admin' }},</span> Selamat Datang di Website Apotek Haksa Farma
+<div id="welcome-banner" class="flex justify-between items-center bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-sm mb-8 transition-opacity duration-300">
+    <div class="flex items-center">
+        <div class="text-sm border-l-0">
+            <span class="font-bold text-green-800">Halo {{ auth()->user()->nama ?? 'Admin' }},</span> 
+            <span class="text-green-700">Selamat Datang di Website Apotek Haksa Farma</span>
+        </div>
     </div>
     <!-- Close cross -->
-    <button onclick="dismissAlert('welcome-banner')" class="text-gray-400 hover:text-green-800 focus:outline-none ml-4 text-xl font-bold">&times;</button>
+    <button onclick="dismissAlert('welcome-banner')" class="text-green-500 hover:text-green-800 focus:outline-none ml-4 text-xl font-bold">&times;</button>
 </div>
 
 <!-- Grid System for all cards -->

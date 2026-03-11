@@ -188,19 +188,30 @@
             <div class="px-6 py-5 overflow-y-auto max-h-[75vh]">
 
                 @if(session('success'))
-                    <div id="modal-success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4 text-sm">
-                        {{ session('success') }}
-                        <button onclick="dismissAlert('modal-success-alert')" class="absolute top-0 bottom-0 right-0 px-4">&times;</button>
+                    <div id="modal-success-alert" class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-xl mb-4 shadow-sm flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="bg-green-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="font-bold text-xs">{{ session('success') }}</span>
+                        </div>
+                        <button onclick="dismissAlert('modal-success-alert')" class="text-green-500 hover:text-green-700 transition font-bold text-lg leading-none">&times;</button>
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div id="modal-error-alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 text-sm">
-                        <ul class="list-disc ml-5 space-y-1">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                    <div id="modal-error-alert" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-xl mb-4 shadow-sm flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="bg-red-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </div>
+                            <div class="text-xs font-bold">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        </div>
+                        <button onclick="dismissAlert('modal-error-alert')" class="text-red-500 hover:text-red-700 transition font-bold text-lg leading-none">&times;</button>
                     </div>
                 @endif
 

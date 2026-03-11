@@ -19,10 +19,12 @@
 @if(session('success'))
     <div id="flash-success" class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-xl mb-8 shadow-sm flex items-center justify-between">
         <div class="flex items-center">
-            <svg class="w-5 h-5 mr-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            <span class="font-medium">{{ session('success') }}</span>
+            <div class="bg-green-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            <span class="font-bold text-sm">{{ session('success') }}</span>
         </div>
-        <button onclick="dismissAlert('flash-success')" class="text-green-500 hover:text-green-700 font-bold text-xl leading-none">&times;</button>
+        <button onclick="dismissAlert('flash-success')" class="text-green-500 hover:text-green-700 transition font-bold text-xl leading-none">&times;</button>
     </div>
 @endif
 
@@ -37,7 +39,7 @@
                 <a href="{{ route('obat.katalog') }}" 
                    class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition {{ !request('kategori') ? 'bg-green-600 text-white shadow-md' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
                    <span>Semua Produk</span>
-                   <span class="{{ !request('kategori') ? 'bg-white/20' : 'bg-gray-100' }} px-2 py-0.5 rounded-md text-[10px]">{{ \App\Models\Obat::count() }}</span>
+                   <span class="{{ !request('kategori') ? 'bg-white/20' : 'bg-gray-100' }} px-2 py-0.5 rounded-md text-[10px]">{{ \App\Models\Obat::whereHas('kategori', fn($q) => $q->where('nama_kategori', '!=', 'CEK'))->count() }}</span>
                 </a>
                 @foreach($kategoris as $kat)
                 <a href="{{ route('obat.katalog', ['kategori' => $kat->id]) }}" 

@@ -39,13 +39,18 @@ class ObatController extends Controller
 
     public function katalogAdmin(Request $request)
     {
-        $query = Obat::with(['kategori', 'satuan'])
+        $query = Obat::whereHas('kategori', function($q) {
+                        $q->where('nama_kategori', '!=', 'CEK');
+                     })
+                     ->with(['kategori', 'satuan'])
                      ->withSum('penjualanDetails as total_terjual', 'qty');
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where('nama_obat', 'like', "%{$search}%")
+            $query->where(function($q) use ($search) {
+                $q->where('nama_obat', 'like', "%{$search}%")
                   ->orWhere('kode_obat', 'like', "%{$search}%");
+            });
         }
 
         if ($request->has('kategori') && $request->kategori != '') {
@@ -53,7 +58,9 @@ class ObatController extends Controller
         }
 
         $obats = $query->paginate(12)->withQueryString();
-        $kategoris = Kategori::all();
+
+        // Exclude 'CEK' from filter options
+        $kategoris = Kategori::where('nama_kategori', '!=', 'CEK')->get();
         $satuans   = Satuan::all();
         
         return view('publik.katalog_admin', compact('obats', 'kategoris', 'satuans'));

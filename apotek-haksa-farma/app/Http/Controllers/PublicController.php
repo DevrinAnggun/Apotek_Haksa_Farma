@@ -13,7 +13,12 @@ class PublicController extends Controller
      */
     public function katalog(Request $request)
     {
-        $query = Obat::with(['kategori', 'satuan', 'stokBatches']);
+        // Query Dasar: Hanya ambil obat yang kategorinya BUKAN 'CEK'
+        $query = Obat::whereHas('kategori', function($q) {
+                        $q->where('nama_kategori', '!=', 'CEK');
+                     })
+                     ->with(['kategori', 'satuan', 'stokBatches'])
+                     ->withSum('stokBatches as total_stok', 'stok_sisa');
 
         // Filter pencarian
         if ($request->filled('search')) {
@@ -26,7 +31,11 @@ class PublicController extends Controller
         }
 
         $obats    = $query->orderBy('nama_obat')->paginate(12)->withQueryString();
-        $kategoris = Kategori::orderBy('nama_kategori')->get();
+
+        // Ambil kategori untuk sidebar (Kecuali 'CEK')
+        $kategoris = Kategori::where('nama_kategori', '!=', 'CEK')
+                             ->orderBy('nama_kategori')
+                             ->get();
 
         return view('publik.katalog', compact('obats', 'kategoris'));
     }

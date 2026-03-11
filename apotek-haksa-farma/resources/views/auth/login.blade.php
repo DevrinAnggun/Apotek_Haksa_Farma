@@ -39,14 +39,26 @@
         </div>
 
         @if(session('error'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <span class="block sm:inline">{{ session('error') }}</span>
+            <div id="login-error" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-3 rounded-lg mb-4 shadow-sm flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="bg-red-500 rounded-full p-1 mr-2 flex items-center justify-center">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </div>
+                    <span class="text-xs font-bold">{{ session('error') }}</span>
+                </div>
+                <button onclick="this.parentElement.style.display='none'" class="text-red-500 hover:text-red-700 font-bold text-lg leading-none">&times;</button>
             </div>
         @endif
 
         @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
+            <div id="login-success" class="bg-green-50 border-l-4 border-green-500 text-green-800 p-3 rounded-lg mb-4 shadow-sm flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="bg-green-500 rounded-full p-1 mr-2 flex items-center justify-center">
+                        <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <span class="text-xs font-bold">{{ session('success') }}</span>
+                </div>
+                <button onclick="this.parentElement.style.display='none'" class="text-green-500 hover:text-green-700 font-bold text-lg leading-none">&times;</button>
             </div>
         @endif
 
