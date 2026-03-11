@@ -53,7 +53,7 @@
         <thead>
             <tr class="bg-gray-100">
                 <th class="py-4 px-4 font-bold text-gray-800 text-center w-16 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Nama Barang</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Barang</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-40">Tgl Terima</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-44">Tgl Kadaluarsa</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Supplier</th>
@@ -75,7 +75,7 @@
                     <td class="py-3 px-4 text-center text-gray-800 font-medium border border-gray-300">
                         {{ $no++ }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-800 font-bold uppercase border border-gray-300">
+                    <td class="py-3 px-5 text-left text-gray-800 font-bold uppercase border border-gray-300">
                         {{ $detail->obat->nama_obat ?? '-' }}
                     </td>
                     <td class="py-3 px-5 text-center text-gray-800 font-medium border border-gray-300">

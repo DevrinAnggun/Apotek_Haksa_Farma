@@ -97,8 +97,8 @@
                 <thead>
                     <tr class="bg-gray-100">
                         <th class="py-4 px-3 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-left w-32 border border-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
+                        <th class="py-4 px-4 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Satuan</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-center w-20 border border-gray-300 uppercase text-xs tracking-wider">Sisa Stok</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Harga</th>
@@ -124,11 +124,11 @@
                         @foreach($penjualan->details as $detail)
                             <tr class="hover:bg-gray-50 transition text-sm">
                                 <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">{{ $no++ }}</td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center whitespace-nowrap">
+                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left whitespace-nowrap">
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
                                     <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center uppercase tracking-wide">
+                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left uppercase tracking-wide">
                                     {{ $detail->obat->nama_obat ?? '-' }}
                                     <span class="text-[10px] text-gray-400 block font-normal normal-case">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</span>
                                 </td>

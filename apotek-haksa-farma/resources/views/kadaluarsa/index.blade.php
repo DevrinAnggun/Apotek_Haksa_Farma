@@ -48,7 +48,7 @@
         <thead>
             <tr class="bg-gray-100">
                 <th class="py-4 px-4 font-bold text-gray-800 text-center w-14 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                <th class="py-4 px-5 font-bold text-gray-800 border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Stok Sisa</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center w-40 border border-gray-300 uppercase text-xs tracking-wider">Tgl Kadaluarsa</th>
                 <th class="py-4 px-5 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Terjual</th>
@@ -78,7 +78,7 @@
             @endphp
             <tr class="hover:bg-gray-100 transition {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 7 ? 'bg-red-50' : 'bg-orange-50') }}">
                 <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ ($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage() + $index + 1 }}</td>
-                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300">
+                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300 text-left">
                     {{ $item->obat->nama_obat ?? '—' }}
                     <span class="text-xs font-normal text-gray-400 block normal-case">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
                 </td>
