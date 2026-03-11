@@ -5,7 +5,7 @@
 
 @section('content')
 {{-- Header Section --}}
-<div class="bg-white border-b border-gray-100 py-16 text-center text-gray-800 relative overflow-hidden">
+<div class="bg-white border-b border-gray-100 pt-16 pb-12 text-center text-gray-800 relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 relative z-10">
         <span class="inline-block bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
             {{ $artikel->kategori ?? 'Kesehatan' }}
@@ -24,15 +24,17 @@
     </div>
 </div>
 
-<div class="max-w-4xl mx-auto px-4 py-12">
+<div class="max-w-4xl mx-auto px-4 -mt-8 md:-mt-10">
     
     {{-- Main Content --}}
-    <div class="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100 p-6 md:p-12 relative z-20">
+    <div class="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100 p-6 md:px-12 md:pb-12 md:pt-6 relative z-20">
         
         {{-- Cover Image --}}
         @if($artikel->gambar)
-            <div class="rounded-2xl overflow-hidden mb-10 shadow-lg">
-                <img src="{{ asset($artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-auto object-cover max-h-[500px]">
+            <div class="flex justify-center mb-10">
+                <div class="rounded-2xl overflow-hidden shadow-md border border-gray-50 max-w-md w-full">
+                    <img src="{{ asset($artikel->gambar) }}" alt="{{ $artikel->judul }}" class="w-full h-auto max-h-[250px] object-cover">
+                </div>
             </div>
         @endif
 
