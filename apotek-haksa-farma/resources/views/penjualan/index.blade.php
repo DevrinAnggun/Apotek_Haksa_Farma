@@ -471,9 +471,9 @@
             ],
             years: Array.from({length: 15}, (v, i) => 2026 + i)
         }">
-            <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white shrink-0">
+            <div class="bg-gray-800 px-6 py-5 flex items-center justify-between text-white shrink-0 rounded-t-2xl">
                 <h3 class="font-bold uppercase tracking-wider text-sm">Pilih Bulan Laporan</h3>
-                <button onclick="closeMonthModal()" class="text-white/80 hover:text-white text-2xl">&times;</button>
+                <button onclick="closeMonthModal()" class="text-white/80 hover:text-white text-2xl transition">&times;</button>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-2 gap-4 mb-8">

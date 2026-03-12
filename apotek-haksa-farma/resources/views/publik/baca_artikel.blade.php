@@ -7,7 +7,7 @@
 {{-- Header Section --}}
 <div class="bg-white border-b border-gray-100 pt-16 pb-12 text-center text-gray-800 relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 relative z-10">
-        <span class="inline-block bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
+        <span class="inline-block bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
             {{ $artikel->kategori ?? 'Kesehatan' }}
         </span>
         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-4 leading-tight text-gray-900">
@@ -27,7 +27,7 @@
 <div class="max-w-4xl mx-auto px-4 -mt-8 md:-mt-10">
     
     {{-- Main Content --}}
-    <div class="bg-white rounded-3xl shadow-xl shadow-green-900/5 border border-gray-100 p-6 md:px-12 md:pb-12 md:pt-6 relative z-20">
+    <div class="bg-white rounded-3xl shadow-xl shadow-slate-900/5 border border-gray-100 p-6 md:px-12 md:pb-12 md:pt-6 relative z-20">
         
         {{-- Cover Image --}}
         @if($artikel->gambar)
@@ -40,19 +40,19 @@
 
         {{-- Abstract/Summary --}}
         @if($artikel->ringkasan)
-            <div class="border-l-4 border-green-500 pl-6 mb-10 italic text-gray-600 text-sm leading-relaxed">
+            <div class="border-l-4 border-gray-800 bg-gray-50 pl-6 py-3 mb-10 italic text-gray-600 text-sm leading-relaxed rounded-r-xl">
                 "{{ $artikel->ringkasan }}"
             </div>
         @endif
 
         {{-- Content --}}
-        <div class="prose prose-green max-w-none text-gray-700 leading-loose text-xs space-y-6">
+        <div class="prose prose-slate max-w-none text-gray-700 leading-loose text-xs space-y-6">
             {!! nl2br(e($artikel->konten)) !!}
         </div>
 
         {{-- Share & Footer --}}
         <div class="mt-16 pt-10 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <a href="{{ route('publik.artikel') }}" class="flex items-center gap-2 text-green-700 font-bold text-sm hover:gap-3 transition-all">
+            <a href="{{ route('publik.artikel') }}" class="flex items-center gap-2 text-slate-800 font-bold text-sm hover:gap-3 transition-all">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 Kembali ke Daftar Artikel
             </a>
@@ -60,11 +60,11 @@
             <div class="flex items-center gap-3">
                 <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Bagikan:</span>
                 <button onclick="copyToClipboard(this)" 
-                        class="flex items-center gap-2 bg-gray-50 hover:bg-green-600 hover:text-white text-gray-400 px-4 py-2 rounded-full transition-all duration-300 group">
+                        class="flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full hover:bg-black transition-all duration-300 group shadow-lg shadow-gray-200">
                     <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                     </svg>
-                    <span id="copy-btn-text" class="text-[10px] font-bold uppercase tracking-wider">Salin Tautan</span>
+                    <span id="copy-btn-text" class="text-[11px] font-bold uppercase tracking-wider text-white">Salin Tautan</span>
                 </button>
             </div>
         </div>
