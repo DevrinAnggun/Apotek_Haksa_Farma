@@ -94,7 +94,7 @@
 
         <div class="flex items-center justify-end pt-8 border-t border-gray-100 mt-10">
             <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-xl shadow-lg shadow-green-200 transition-all transform hover:-translate-y-0.5">
-                Simpan Perubahan Pengaturan
+                Simpan Perubahan
             </button>
         </div>
     </form>

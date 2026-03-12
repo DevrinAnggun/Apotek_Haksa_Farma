@@ -8,7 +8,7 @@
     </div>
     <button type="button" onclick="openCreateArtikelModal()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-green-200 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        Tulis Artikel Baru
+        Artikel Baru
     </button>
 </div>
 
@@ -41,12 +41,11 @@
                 class="p-2.5 bg-white text-green-600 rounded-xl shadow-lg hover:bg-green-600 hover:text-white transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
             </button>
-            <form action="{{ route('artikel.destroy', $artikel->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel ini?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="p-2.5 bg-white text-red-600 rounded-xl shadow-lg hover:bg-red-600 hover:text-white transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
-            </form>
+            <button type="button" 
+                onclick="openDeleteModal('{{ route('artikel.destroy', $artikel->id) }}')"
+                class="p-2.5 bg-white text-red-600 rounded-xl shadow-lg hover:bg-red-600 hover:text-white transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
         </div>
 
         {{-- Image --}}
@@ -201,6 +200,33 @@
     </div>
 </div>
 
+{{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
+<div id="modalHapusArtikel" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-[320px] mx-4 overflow-hidden animate-modal">
+        <div class="bg-red-600 py-3 text-center">
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
+        </div>
+        <div class="px-6 pt-8 pb-4 text-center">
+            <p class="text-base font-bold text-gray-800 mb-2 leading-relaxed">
+                Hapus Artikel ini?
+            </p>
+            <p class="text-[11px] text-gray-500 italic leading-relaxed">
+                Data yang dihapus tidak dapat dikembalikan.
+            </p>
+        </div>
+        <div class="flex gap-3 px-6 pb-8 mt-4">
+            <button type="button" onclick="closeDeleteModal()"
+                class="flex-1 py-2.5 text-xs font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition uppercase tracking-widest">BATAL</button>
+            <form id="formDeleteArtikel" action="" method="POST" class="flex-1">
+                @csrf @method('DELETE')
+                <button type="submit"
+                    class="w-full py-2.5 text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition uppercase tracking-widest">YA, HAPUS</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     function previewImage(event, targetId) {
         const reader = new FileReader();
@@ -249,6 +275,23 @@
     }
     function closeEditArtikelModal() {
         document.getElementById('modalEditArtikel').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    /* ===== DELETE MODAL LOGIC ===== */
+    function openDeleteModal(actionUrl) {
+        const modal = document.getElementById('modalHapusArtikel');
+        const form = document.getElementById('formDeleteArtikel');
+        form.action = actionUrl;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('modalHapusArtikel');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
         document.body.style.overflow = '';
     }
 </script>
