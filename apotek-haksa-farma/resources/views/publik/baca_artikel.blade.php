@@ -10,7 +10,7 @@
         <span class="inline-block bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-[0.2em] mb-4">
             {{ $artikel->kategori ?? 'Kesehatan' }}
         </span>
-        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 leading-tight text-gray-900">
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight mb-4 leading-tight text-gray-900">
             {{ $artikel->judul }}
         </h1>
         <div class="flex items-center justify-center gap-4 text-gray-400 text-xs font-semibold">
@@ -40,13 +40,13 @@
 
         {{-- Abstract/Summary --}}
         @if($artikel->ringkasan)
-            <div class="border-l-4 border-green-500 pl-6 mb-10 italic text-gray-600 text-lg leading-relaxed">
+            <div class="border-l-4 border-green-500 pl-6 mb-10 italic text-gray-600 text-sm leading-relaxed">
                 "{{ $artikel->ringkasan }}"
             </div>
         @endif
 
         {{-- Content --}}
-        <div class="prose prose-green max-w-none text-gray-700 leading-loose text-base space-y-6">
+        <div class="prose prose-green max-w-none text-gray-700 leading-loose text-xs space-y-6">
             {!! nl2br(e($artikel->konten)) !!}
         </div>
 
@@ -59,19 +59,39 @@
             
             <div class="flex items-center gap-3">
                 <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Bagikan:</span>
-                <div class="flex gap-2">
-                    <button class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-green-600 hover:text-white transition">
-                        <span class="text-xs">FB</span>
-                    </button>
-                    <button class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-green-600 hover:text-white transition">
-                        <span class="text-xs">WA</span>
-                    </button>
-                </div>
+                <button onclick="copyToClipboard(this)" 
+                        class="flex items-center gap-2 bg-gray-50 hover:bg-green-600 hover:text-white text-gray-400 px-4 py-2 rounded-full transition-all duration-300 group">
+                    <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                    </svg>
+                    <span id="copy-btn-text" class="text-[10px] font-bold uppercase tracking-wider">Salin Tautan</span>
+                </button>
             </div>
         </div>
     </div>
 
 </div>
+
+<script>
+    function copyToClipboard(btn) {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            const textSpan = document.getElementById('copy-btn-text');
+            const originalText = textSpan.innerText;
+            
+            // UI Feedback
+            textSpan.innerText = 'Tersalin!';
+            btn.classList.add('bg-green-600', 'text-white');
+            btn.classList.remove('bg-gray-50', 'text-gray-400');
+            
+            setTimeout(() => {
+                textSpan.innerText = originalText;
+                btn.classList.remove('bg-green-600', 'text-white');
+                btn.classList.add('bg-gray-50', 'text-gray-400');
+            }, 2000);
+        });
+    }
+</script>
 
 <style>
     /* Subtle typography improvements */
