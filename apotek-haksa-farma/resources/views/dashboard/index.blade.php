@@ -69,7 +69,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
-            <div class="text-2xl font-extrabold mb-1 break-all">Rp. {{ number_format($totalRestockBulanIni ?? 0, 0, ',', '.') }}</div>
             <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Stok Supplier</div>
         </div>
         <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
@@ -125,7 +124,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
             </div>
-            <div class="text-blue-100 font-semibold text-lg tracking-wide uppercase">Unduh Laporan</div>
+            <div class="text-blue-100 font-semibold text-base tracking-wide uppercase">Unduh Laporan</div>
         </div>
         <div class="flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition relative z-10">
             Buka Menu Laporan <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -139,7 +138,7 @@
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
 <div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ showMonthly: false }">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ reportType: 'penjualan', showMonthly: false }">
         <!-- Header -->
         <div class="bg-blue-600 px-6 py-5 flex items-center justify-between text-white">
             <div class="flex items-center gap-3">
@@ -154,80 +153,119 @@
         </div>
 
         <div class="p-6">
-            <!-- Pilihan Cepat -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <!-- Harian -->
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-d'), 'end_date' => date('Y-m-d')]) }}" target="_blank"
-                   class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:shadow-md transition-all group">
-                    <div class="bg-blue-100 p-2.5 rounded-full mb-2 text-blue-600 group-hover:scale-110 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <span class="font-bold text-blue-700 text-[11px] uppercase">Hari Ini</span>
-                </a>
-                
-                <!-- Toggle Bulanan -->
-                <button type="button" @click="showMonthly = !showMonthly"
-                   class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group"
-                   :class="showMonthly ? 'bg-blue-600 border-blue-600 shadow-lg scale-105' : 'bg-blue-50 border-blue-100 hover:border-blue-500'">
-                    <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
-                         :class="showMonthly ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    </div>
-                    <span class="font-bold text-[11px] uppercase" :class="showMonthly ? 'text-white' : 'text-blue-700'">Bulanan</span>
-                </button>
-            </div>
-
-            <!-- Download Per Bulan (Hidden by default) -->
-            <div x-show="showMonthly" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
-                <header class="flex items-center gap-2 mb-3">
-                    <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
-                </header>
-                <div class="flex items-center gap-2">
-                    <select id="dash_month" class="flex-1 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @for($m=1; $m<=12; $m++)
-                            <option value="{{ $m }}" {{ date('m') == $m ? 'selected' : '' }}>
-                                {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                            </option>
-                        @endfor
-                    </select>
-                    <select id="dash_year" class="w-20 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        @for($y=2026; $y<=2040; $y++)
-                            <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
-                    <button type="button" onclick="downloadDashMonthly()"
-                        class="bg-blue-600 hover:bg-black text-white p-2 rounded-lg transition shadow flex items-center justify-center">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <!-- Pilihan Tipe Laporan -->
+            <div class="mb-6">
+                <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2 ml-1 tracking-widest">Pilih Tipe Laporan</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="reportType = 'penjualan'" 
+                            :class="reportType === 'penjualan' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                            class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
+                        Penjualan
+                    </button>
+                    <button @click="reportType = 'pembelian'" 
+                            :class="reportType === 'pembelian' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                            class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
+                        Stok Masuk
+                    </button>
+                    <button @click="reportType = 'kadaluarsa'" 
+                            :class="reportType === 'kadaluarsa' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                            class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
+                        Kadaluarsa
                     </button>
                 </div>
             </div>
 
-            <!-- Filter Custom -->
-            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                <header class="flex items-center gap-2 mb-4">
-                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                    <span class="text-sm font-bold text-gray-700 uppercase tracking-wider">Filter Tanggal Spesifik</span>
-                </header>
-
-                <form action="{{ route('laporan.cetak_pdf') }}" method="GET" target="_blank" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-1 ml-1 tracking-widest">Dari</label>
-                            <input type="date" name="start_date" required value="{{ date('Y-m-d') }}"
-                                class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            <div x-show="reportType !== 'kadaluarsa'" x-transition>
+                <!-- Pilihan Cepat -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <!-- Harian -->
+                    <button type="button" @click="downloadQuick('daily', reportType)"
+                       class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:shadow-md transition-all group">
+                        <div class="bg-blue-100 p-2.5 rounded-full mb-2 text-blue-600 group-hover:scale-110 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
-                        <div>
-                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-1 ml-1 tracking-widest">Sampai</label>
-                            <input type="date" name="end_date" required value="{{ date('Y-m-d') }}"
-                                class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                        </div>
-                    </div>
-                    <button type="submit" 
-                        class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Export PDF
+                        <span class="font-bold text-blue-700 text-[11px] uppercase">Hari Ini</span>
                     </button>
-                </form>
+                    
+                    <!-- Toggle Bulanan -->
+                    <button type="button" @click="showMonthly = !showMonthly"
+                       class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group"
+                       :class="showMonthly ? 'bg-blue-600 border-blue-600 shadow-lg scale-105' : 'bg-blue-50 border-blue-100 hover:border-blue-500'">
+                        <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
+                             :class="showMonthly ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <span class="font-bold text-[11px] uppercase" :class="showMonthly ? 'text-white' : 'text-blue-700'">Bulanan</span>
+                    </button>
+                </div>
+
+                <!-- Download Per Bulan (Hidden by default) -->
+                <div x-show="showMonthly" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
+                    <header class="flex items-center gap-2 mb-3">
+                        <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
+                    </header>
+                    <div class="flex items-center gap-2">
+                        <select id="dash_month" class="flex-1 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            @for($m=1; $m<=12; $m++)
+                                <option value="{{ $m }}" {{ date('m') == $m ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                                </option>
+                            @endfor
+                        </select>
+                        <select id="dash_year" class="w-20 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            @for($y=2026; $y<=2040; $y++)
+                                <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                        <button type="button" @click="downloadDashMonthly(reportType)"
+                            class="bg-blue-600 hover:bg-black text-white p-2 rounded-lg transition shadow flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Custom -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                    <header class="flex items-center gap-2 mb-4">
+                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        <span class="text-sm font-bold text-gray-700 uppercase tracking-wider">Filter Tanggal Spesifik</span>
+                    </header>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] text-gray-400 font-bold uppercase mb-1 ml-1 tracking-widest">Dari</label>
+                                <input type="date" id="cust_start" required value="{{ date('Y-m-d') }}"
+                                    class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-400 font-bold uppercase mb-1 ml-1 tracking-widest">Sampai</label>
+                                <input type="date" id="cust_end" required value="{{ date('Y-m-d') }}"
+                                    class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            </div>
+                        </div>
+                        <button type="button" @click="downloadCustom(reportType)"
+                            class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Export PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bagian Kadaluarsa (Hanya tombol langsung) -->
+            <div x-show="reportType === 'kadaluarsa'" x-transition class="animate-fadeIn">
+                <div class="bg-orange-50 rounded-2xl p-8 border-2 border-orange-100 flex flex-col items-center text-center">
+                    <div class="bg-orange-100 p-4 rounded-full mb-4 text-orange-600">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h4 class="font-extrabold text-orange-800 uppercase tracking-widest mb-2">Laporan Kadaluarsa</h4>
+                    <p class="text-xs text-orange-600 mb-6 leading-relaxed">Unduh daftar semua obat yang telah kadaluarsa atau mendekati masa kadaluarsa (H-7).</p>
+                    <a href="{{ route('kadaluarsa.pdf') }}" target="_blank"
+                       class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 uppercase tracking-widest text-xs text-center">
+                        Unduh Laporan Sekarang
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -249,16 +287,28 @@
         document.getElementById('reportModal').classList.remove('flex');
         document.body.style.overflow = '';
     }
-    function downloadDashMonthly() {
+    function downloadDashMonthly(type) {
         const m = document.getElementById('dash_month').value;
         const y = document.getElementById('dash_year').value;
-        
-        // Calculate first and last day of selected month
         const startDate = `${y}-${m.padStart(2, '0')}-01`;
         const lastDay = new Date(y, m, 0).getDate();
         const endDate = `${y}-${m.padStart(2, '0')}-${lastDay}`;
         
-        window.open(`{{ route('laporan.cetak_pdf') }}?start_date=${startDate}&end_date=${endDate}`, '_blank');
+        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        window.open(`${route}?start_date=${startDate}&end_date=${endDate}`, '_blank');
+    }
+
+    function downloadQuick(mode, type) {
+        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        const date = new Date().toISOString().split('T')[0];
+        window.open(`${route}?start_date=${date}&end_date=${date}`, '_blank');
+    }
+
+    function downloadCustom(type) {
+        const s = document.getElementById('cust_start').value;
+        const e = document.getElementById('cust_end').value;
+        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        window.open(`${route}?start_date=${s}&end_date=${e}`, '_blank');
     }
 </script>
 
