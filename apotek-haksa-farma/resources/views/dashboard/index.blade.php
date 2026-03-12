@@ -33,7 +33,7 @@
                 </svg>
             </div>
             <div class="text-3xl font-extrabold mb-1">{{ number_format($totalDataBarang ?? 0, 0, ',', '.') }}</div>
-            <div class="text-emerald-100 font-semibold text-base tracking-wide uppercase">Data Barang & Stok</div>
+            <div class="text-emerald-100 font-semibold text-base tracking-wide uppercase">Data Obat</div>
         </div>
         <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
             Lihat Data &amp; Stok <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

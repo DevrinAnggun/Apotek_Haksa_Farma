@@ -26,8 +26,12 @@ class PenjualanController extends Controller
      */
     public function create()
     {
-        // Load medicines with positive stock to display in POS
-        $obats = Obat::all(); 
+        // Hanya tampilkan obat yang memiliki stok yang belum kadaluarsa
+        $obats = Obat::whereHas('stokBatches', function($query) {
+            $query->where('stok_sisa', '>', 0)
+                  ->where('tgl_expired', '>=', date('Y-m-d'));
+        })->get();
+
         return view('penjualan.create', compact('obats'));
     }
 

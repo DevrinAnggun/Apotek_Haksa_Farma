@@ -67,6 +67,11 @@
                                 <span class="text-[10px] text-red-500 block font-bold uppercase mt-0.5">! KADALUARSA !</span>
                             @endif
                             <span class="text-xs text-gray-400 block capitalize font-normal">{{ strtolower($obat->kategori->nama_kategori ?? '-') }} · {{ strtolower($obat->satuan->nama_satuan ?? '-') }}</span>
+                            @if($obat->tanggal_kadaluarsa)
+                                <span class="text-[10px] block mt-0.5 {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-600 font-bold' : 'text-gray-400' }}">
+                                    Exp: {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d/m/Y') }}
+                                </span>
+                            @endif
                         </td>
                         <td class="py-2.5 px-2 text-center">
                             @if(($obat->kategori->nama_kategori ?? '') === 'CEK')

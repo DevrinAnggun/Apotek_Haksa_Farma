@@ -17,6 +17,7 @@ class RiwayatStokMasuk extends Model
         'qty_masuk',
         'harga_beli',
         'harga_jual',
+        'tgl_expired',
         'keterangan'
     ];
 

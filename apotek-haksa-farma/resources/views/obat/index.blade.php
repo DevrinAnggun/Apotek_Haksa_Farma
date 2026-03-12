@@ -120,7 +120,9 @@
                     @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK')
                         <span class="text-gray-400 font-normal">-</span>
                     @elseif($obat->tanggal_kadaluarsa)
-                        {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d-m-Y') }}
+                        <span class="{{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-600' : '' }}">
+                            {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d-m-Y') }}
+                        </span>
                     @else
                         <span class="text-gray-300">-</span>
                     @endif
@@ -371,6 +373,29 @@
     </div>
 </div>
 
+{{-- MODAL KONFIRMASI HAPUS KATEGORI --}}
+<div id="modalHapusKat" class="fixed inset-0 z-[110] hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeHapusKatModal()"></div>
+    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden animate-modal">
+        <div class="bg-red-600 py-3 text-center">
+            <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
+        </div>
+        <div class="px-6 pt-6 pb-4 text-center">
+            <p id="hapus_kat_title" class="text-base font-semibold text-gray-800 mb-2 truncate px-2 text-center">Hapus Kategori ini?</p>
+            <p class="text-[11px] text-gray-500 italic leading-relaxed text-center">
+                Data yang dihapus tidak dapat dikembalikan.
+            </p>
+        </div>
+        <div class="flex gap-3 px-6 pb-6 mt-2">
+            <button type="button" onclick="closeHapusKatModal()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">BATAL</button>
+            <form id="formHapusKatFinal" action="" method="POST" class="flex-1">
+                @csrf @method('DELETE')
+                <button type="button" onclick="showSuccessAnimation('formHapusKatFinal', 'Kategori Berhasil Dihapus!')" class="w-full py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition uppercase tracking-wider">YA, HAPUS</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 {{-- MODAL SUKSES --}}
 <div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
@@ -447,8 +472,20 @@
     function closeHapusModal() { document.getElementById('modalHapus').classList.add('hidden'); document.body.style.overflow = ''; }
     function openTambahKatModal() { document.getElementById('modalTambahKat').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
     function closeTambahKatModal() { document.getElementById('modalTambahKat').classList.add('hidden'); document.body.style.overflow = ''; }
+    
     function confirmHapusKat(id, nama) {
-        if(confirm('Hapus kategori ' + nama + '?')) document.getElementById('formHapusKat' + id).submit();
+        const modal = document.getElementById('modalHapusKat');
+        const form = document.getElementById('formHapusKatFinal');
+        const title = document.getElementById('hapus_kat_title');
+        
+        form.action = '{{ url("kategori") }}/' + id;
+        title.textContent = 'Hapus kategori ' + nama + '?';
+        
+        modal.classList.remove('hidden');
+    }
+
+    function closeHapusKatModal() {
+        document.getElementById('modalHapusKat').classList.add('hidden');
     }
     function showSuccessAnimation(formId, titleText) {
         const form = document.getElementById(formId);

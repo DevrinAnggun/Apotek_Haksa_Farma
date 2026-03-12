@@ -102,6 +102,7 @@ class PembelianController extends Controller
                     'qty_masuk' => $item['qty'],
                     'harga_beli' => $item['harga_beli'],
                     'harga_jual' => $item['harga_jual'],
+                    'tgl_expired' => $item['tgl_expired'],
                     'keterangan' => 'Penerimaan Stok Awal'
                 ]);
 
@@ -214,6 +215,7 @@ class PembelianController extends Controller
                         'qty_masuk' => $tambahStok,
                         'harga_beli' => $request->harga_beli,
                         'harga_jual' => $request->harga_jual,
+                        'tgl_expired' => $request->tgl_expired,
                         'keterangan' => 'Penambahan Stok Baru (Edit)'
                     ]);
                 }

@@ -131,6 +131,11 @@
                                 <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left uppercase tracking-wide">
                                     {{ $detail->obat->nama_obat ?? '-' }}
                                     <span class="text-[10px] text-gray-400 block font-normal normal-case">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</span>
+                                    @if($detail->obat->tanggal_kadaluarsa)
+                                        <span class="text-[9px] block {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->isPast() ? 'text-red-500 font-bold' : 'text-gray-400' }}">
+                                            Exp: {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->format('d/m/Y') }}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
                                 <td class="py-2 px-3 text-center border border-gray-300">

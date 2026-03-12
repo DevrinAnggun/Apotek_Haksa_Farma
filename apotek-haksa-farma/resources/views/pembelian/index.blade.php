@@ -374,7 +374,7 @@
             <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
                 <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
-                    Update Riwayat
+                    Simpan
                 </button>
             </div>
         </form>
@@ -522,8 +522,7 @@
             <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
                 <button type="button" onclick="closeModalStokMasuk()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    Simpan Stok Masuk
+                    Simpan
                 </button>
             </div>
         </form>
@@ -550,7 +549,7 @@
                         <th class="p-2 font-bold text-gray-700 text-center">Tgl & Jam</th>
                         <th class="p-2 font-bold text-gray-700 text-center">Jumlah</th>
                         <th class="p-2 font-bold text-gray-700 text-center">Harga Beli</th>
-                        <th class="p-2 font-bold text-gray-700 text-center">Keterangan</th>
+                        <th class="p-2 font-bold text-gray-700 text-center">Tgl Kadaluarsa</th>
                     </tr>
                 </thead>
                 <tbody id="riwayat_body">
@@ -644,12 +643,17 @@
                     const formattedDate = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
                     const formattedTime = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                     
+                    const expDateObj = item.tgl_expired ? new Date(item.tgl_expired) : null;
+                    const formattedExp = expDateObj 
+                        ? expDateObj.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                        : '-';
+                    
                     body.innerHTML += `
                         <tr class="border-b border-gray-100 text-center">
                             <td class="p-3 text-gray-600">${formattedDate} <br> <span class="text-[10px] text-gray-400">${formattedTime} WIB</span></td>
                             <td class="p-3 font-bold text-blue-600">+${item.qty_masuk}</td>
-                            <td class="p-3 text-gray-700 font-medium">Rp${new Intl.NumberFormat('id-ID').format(item.harga_beli)}</td>
-                            <td class="p-3 text-gray-500 italic text-[11px]">${item.keterangan || '-'}</td>
+                            <td class="p-3 text-gray-600">Rp${new Intl.NumberFormat('id-ID').format(item.harga_beli)}</td>
+                            <td class="p-3 text-xs font-bold ${item.tgl_expired && new Date(item.tgl_expired) < new Date() ? 'text-red-500' : 'text-gray-600'}">${formattedExp}</td>
                         </tr>
                     `;
                 });
