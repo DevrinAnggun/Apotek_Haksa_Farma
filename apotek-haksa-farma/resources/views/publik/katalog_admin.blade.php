@@ -206,13 +206,21 @@
                     <div class="space-y-4">
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Gambar Obat</label>
-                            <div class="relative group border-2 border-dashed border-gray-200 rounded-2xl h-44 flex flex-col items-center justify-center transition hover:border-green-400 overflow-hidden">
-                                <input type="file" name="gambar" accept="image/*" onchange="previewImageKatalog(this)" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                                <div id="preview-kat-placeholder" class="flex flex-col items-center">
-                                    <svg class="w-10 h-10 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Upload Foto</p>
+                            <div class="space-y-2">
+                                <div class="relative group border-2 border-dashed border-gray-200 rounded-2xl h-56 flex flex-col items-center justify-center transition hover:border-green-400 overflow-hidden bg-gray-50">
+                                    <input type="file" id="input-tambah-gambar" accept="image/*" onchange="initCropHandler(this, 'preview-kat-img', 'preview-kat-placeholder', 1)" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                    <div id="preview-kat-placeholder" class="flex flex-col items-center">
+                                        <svg class="w-10 h-10 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Upload Foto</p>
+                                    </div>
+                                    <img id="preview-kat-img" class="max-w-full block hidden">
                                 </div>
-                                <img id="preview-kat-img" class="absolute inset-0 w-full h-full object-contain p-2 hidden">
+                                <button type="button" id="btn-crop-tambah" onclick="applyManualCrop('preview-kat-img', 'input-tambah-gambar', 1)" 
+                                    class="hidden w-full py-2 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition shadow-sm">
+                                    Terapkan
+                                </button>
+                                <p id="hint-tambah" class="hidden text-[9px] text-gray-400 italic text-center">Geser kotak untuk memotong, lalu klik Terapkan</p>
+                                <input type="file" name="gambar" id="final-tambah-gambar" class="hidden">
                             </div>
                         </div>
                     </div>
@@ -305,9 +313,22 @@
                         <textarea name="cara_pakai" id="edit_cara_pakai" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
                     </div>
 
-                    <div class="space-y-1">
+                    <div class="space-y-2">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Gambar</label>
-                        <input type="file" name="gambar" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        <div class="relative w-full h-64 border border-gray-100 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
+                            <img id="edit_preview_kat" src="" class="max-w-full block hidden">
+                            <div id="edit_kat_placeholder" class="w-full h-full flex flex-col items-center justify-center text-[10px] text-gray-300 font-bold uppercase text-center p-4">
+                                <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                Pilih Gambar Untuk Mengubah
+                            </div>
+                        </div>
+                        <input type="file" id="input-edit-gambar" accept="image/*" onchange="initCropHandler(this, 'edit_preview_kat', 'edit_kat_placeholder', 1)" 
+                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition shadow-sm">
+                        <button type="button" id="btn-crop-edit" onclick="applyManualCrop('edit_preview_kat', 'input-edit-gambar', 1)" 
+                            class="hidden w-full py-2 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition shadow-sm">
+                            Terapkan
+                        </button>
+                        <input type="file" name="gambar" id="final-edit-gambar" class="hidden">
                     </div>
                 </div>
             </form>
@@ -418,6 +439,19 @@
         document.getElementById('edit_expired_date').value = d.expiredDate;
         document.getElementById('edit_id_kategori').value = d.idKategori;
         document.getElementById('edit_id_satuan').value = d.idSatuan;
+        
+        // Handle Preview Image
+        const preview = document.getElementById('edit_preview_kat');
+        const placeholder = document.getElementById('edit_kat_placeholder');
+        if (d.gambar) {
+            preview.src = d.gambar;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        } else {
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+
         const editDeskripsi = document.getElementById('edit_deskripsi');
         if (editDeskripsi) editDeskripsi.value = d.deskripsi || '';
         const editCaraPakai = document.getElementById('edit_cara_pakai');
@@ -436,10 +470,90 @@
     function showSuccessAnimation(formId, titleText) {
         const form = document.getElementById(formId);
         if (!form.checkValidity()) { form.reportValidity(); return; }
+        
+        // Ensure we explicitly apply crop if user hasn't
+        if (formId === 'formTambahKatalog' && currentCropper) {
+            applyManualCrop('preview-kat-img', 'input-tambah-gambar', 1);
+        } else if (formId === 'formEdit' && currentCropper) {
+            applyManualCrop('edit_preview_kat', 'input-edit-gambar', 1);
+        }
+
         document.getElementById('sukses_title').textContent = titleText;
         document.getElementById('modalSukses').classList.remove('hidden');
         document.getElementById('modalSukses').classList.add('flex');
         setTimeout(() => form.submit(), 1200);
+    }
+
+    /* ===== IMPROVED CROP LOGIC ===== */
+    let activeCroppers = {};
+
+    function initCropHandler(input, imgId, placeholderId, ratio) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(imgId);
+                const placeholder = document.getElementById(placeholderId);
+                const isEdit = imgId.includes('edit');
+                const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-tambah';
+                const hintId = isEdit ? '' : 'hint-tambah';
+                
+                img.src = e.target.result;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                
+                if (activeCroppers[imgId]) activeCroppers[imgId].destroy();
+                
+                setTimeout(() => {
+                    activeCroppers[imgId] = new Cropper(img, {
+                        aspectRatio: ratio,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.9,
+                        background: false,
+                        modal: true,
+                        guides: true,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                    });
+                    
+                    document.getElementById(btnId).classList.remove('hidden');
+                    if(hintId) document.getElementById(hintId).classList.remove('hidden');
+                }, 200);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function applyManualCrop(imgId, inputId, ratio) {
+        const cropper = activeCroppers[imgId];
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({ width: 800, height: 800 / ratio });
+        canvas.toBlob((blob) => {
+            const isEdit = imgId.includes('edit');
+            const finalInputId = isEdit ? 'final-edit-gambar' : 'final-tambah-gambar';
+            const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-tambah';
+            
+            const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById(finalInputId).files = dataTransfer.files;
+            
+            // UI Feedback
+            const btn = document.getElementById(btnId);
+            const originalText = btn.innerText;
+            btn.innerText = 'BERHASIL DIPOTONG!';
+            btn.classList.add('bg-emerald-600');
+            btn.classList.remove('bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-emerald-600');
+                btn.classList.add('bg-green-600');
+            }, 1500);
+        }, 'image/jpeg', 0.9);
     }
 </script>
 @endpush

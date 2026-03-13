@@ -116,13 +116,20 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Gambar Utama</label>
-                        <div class="border-2 border-dashed border-gray-200 rounded-2xl h-44 flex flex-col items-center justify-center hover:border-green-400 transition relative overflow-hidden group">
-                            <input type="file" name="gambar" accept="image/*" onchange="previewImage(event, 'preview-create')" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                            <div id="placeholder-create" class="text-center">
-                                <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Upload Foto</p>
+                        <div class="space-y-3">
+                            <div class="border-2 border-dashed border-gray-200 rounded-2xl h-56 flex flex-col items-center justify-center hover:border-green-400 transition relative overflow-hidden group bg-gray-50">
+                                <input type="file" id="input-create-artikel" accept="image/*" onchange="initCropHandler(this, 'preview-create', 'placeholder-create', 1.77)" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                <div id="placeholder-create" class="text-center p-4">
+                                    <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Pilih Gambar</p>
+                                </div>
+                                <img id="preview-create" class="max-w-full block hidden">
                             </div>
-                            <img id="preview-create" class="absolute inset-0 w-full h-full object-cover hidden">
+                            <button type="button" id="btn-crop-create" onclick="applyManualCrop('preview-create', 'input-create-artikel', 1.77)" 
+                                class="hidden w-full py-2.5 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition shadow-sm">
+                                Terapkan
+                            </button>
+                            <input type="file" name="gambar" id="final-create-artikel" class="hidden">
                         </div>
                     </div>
                 </div>
@@ -173,13 +180,20 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Gambar Utama</label>
-                        <div class="border-2 border-dashed border-gray-200 rounded-2xl h-44 flex flex-col items-center justify-center hover:border-green-400 transition relative overflow-hidden group">
-                            <input type="file" name="gambar" accept="image/*" onchange="previewImage(event, 'preview-edit')" class="absolute inset-0 opacity-0 cursor-pointer z-10">
-                            <div id="placeholder-edit" class="text-center">
-                                <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Ganti Foto</p>
+                        <div class="space-y-3">
+                            <div class="border-2 border-dashed border-gray-200 rounded-2xl h-56 flex flex-col items-center justify-center hover:border-green-400 transition relative overflow-hidden group bg-gray-50">
+                                <input type="file" id="input-edit-artikel" accept="image/*" onchange="initCropHandler(this, 'preview-edit', 'placeholder-edit', 1.77)" class="absolute inset-0 opacity-0 cursor-pointer z-10">
+                                <div id="placeholder-edit" class="text-center p-4">
+                                    <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Ganti Foto</p>
+                                </div>
+                                <img id="preview-edit" class="max-w-full block hidden">
                             </div>
-                            <img id="preview-edit" class="absolute inset-0 w-full h-full object-cover hidden">
+                            <button type="button" id="btn-crop-edit" onclick="applyManualCrop('preview-edit', 'input-edit-artikel', 1.77)" 
+                                class="hidden w-full py-2.5 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition shadow-sm">
+                                Terapkan
+                            </button>
+                            <input type="file" name="gambar" id="final-edit-artikel" class="hidden">
                         </div>
                     </div>
                 </div>
@@ -228,20 +242,6 @@
 </div>
 
 <script>
-    function previewImage(event, targetId) {
-        const reader = new FileReader();
-        const preview = document.getElementById(targetId);
-        const placeholderId = targetId === 'preview-create' ? 'placeholder-create' : 'placeholder-edit';
-        const placeholder = document.getElementById(placeholderId);
-        
-        reader.onload = function() {
-            preview.src = reader.result;
-            preview.classList.remove('hidden');
-            if(placeholder) placeholder.classList.add('hidden');
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
     function openCreateArtikelModal() {
         document.getElementById('modalCreateArtikel').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -293,6 +293,72 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         document.body.style.overflow = '';
+    }
+
+    /* ===== IMPROVED CROP LOGIC FOR ARTIKEL ===== */
+    let activeCroppers = {};
+
+    function initCropHandler(input, imgId, placeholderId, ratio) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById(imgId);
+                const placeholder = document.getElementById(placeholderId);
+                const isEdit = imgId.includes('edit');
+                const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-create';
+                
+                img.src = e.target.result;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                
+                if (activeCroppers[imgId]) activeCroppers[imgId].destroy();
+                
+                setTimeout(() => {
+                    activeCroppers[imgId] = new Cropper(img, {
+                        aspectRatio: ratio,
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.9,
+                        background: false,
+                        modal: true,
+                        guides: true,
+                        center: true,
+                    });
+                    
+                    document.getElementById(btnId).classList.remove('hidden');
+                }, 200);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function applyManualCrop(imgId, inputId, ratio) {
+        const cropper = activeCroppers[imgId];
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({ width: 1280, height: 1280 / ratio });
+        canvas.toBlob((blob) => {
+            const isEdit = imgId.includes('edit');
+            const finalInputId = isEdit ? 'final-edit-artikel' : 'final-create-artikel';
+            const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-create';
+            
+            const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById(finalInputId).files = dataTransfer.files;
+            
+            const btn = document.getElementById(btnId);
+            const originalText = btn.innerText;
+            btn.innerText = 'BERHASIL DIPOTONG!';
+            btn.classList.add('bg-emerald-600');
+            btn.classList.remove('bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-emerald-600');
+                btn.classList.add('bg-green-600');
+            }, 1500);
+        }, 'image/jpeg', 0.9);
     }
 </script>
 

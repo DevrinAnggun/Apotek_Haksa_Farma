@@ -40,7 +40,7 @@
 
         {{-- Abstract/Summary --}}
         @if($artikel->ringkasan)
-            <div class="border-l-4 border-gray-800 bg-gray-50 pl-6 py-3 mb-10 italic text-gray-600 text-sm leading-relaxed rounded-r-xl">
+            <div class="border-l-4 border-green-600 bg-gray-50 pl-6 py-3 mb-10 italic text-gray-600 text-sm leading-relaxed rounded-r-xl">
                 "{{ $artikel->ringkasan }}"
             </div>
         @endif
@@ -60,7 +60,7 @@
             <div class="flex items-center gap-3">
                 <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Bagikan:</span>
                 <button onclick="copyToClipboard(this)" 
-                        class="flex items-center gap-2 bg-gray-800 text-white px-5 py-2.5 rounded-full hover:bg-black transition-all duration-300 group shadow-lg shadow-gray-200">
+                        class="flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-full hover:bg-green-700 transition-all duration-300 group shadow-lg shadow-green-100">
                     <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                     </svg>
@@ -81,13 +81,13 @@
             
             // UI Feedback
             textSpan.innerText = 'Tersalin!';
-            btn.classList.add('bg-green-600', 'text-white');
-            btn.classList.remove('bg-gray-50', 'text-gray-400');
+            btn.classList.add('bg-green-700');
+            btn.classList.remove('bg-green-600');
             
             setTimeout(() => {
                 textSpan.innerText = originalText;
-                btn.classList.remove('bg-green-600', 'text-white');
-                btn.classList.add('bg-gray-50', 'text-gray-400');
+                btn.classList.remove('bg-green-700');
+                btn.classList.add('bg-green-600');
             }, 2000);
         });
     }

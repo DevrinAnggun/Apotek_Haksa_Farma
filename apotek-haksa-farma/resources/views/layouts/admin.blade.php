@@ -20,7 +20,17 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <style>
+        .cropper-container { z-index: 100 !important; }
+        .cropper-view-box, .cropper-face { border-radius: 8px; }
+        /* Pastikan gambar preview punya container yang pas */
+        .img-crop-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
+        .img-crop-container img { max-width: 100%; display: block; }
         body { font-family: 'Poppins', sans-serif; background-color: #f7fafc; }
         .sidebar-active { background-color: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; font-weight: 600; }
         .sidebar-link { transition: all 0.2s ease-in-out; }
@@ -378,6 +388,62 @@
                 input.type = 'password';
                 eye.classList.remove('hidden');
                 eyeOff.classList.add('hidden');
+            }
+        }
+    </script>
+    <script>
+        let currentCropper = null;
+
+        function initCropper(input, imgId, placeholderId, ratio = 1) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(imgId);
+                    const placeholder = document.getElementById(placeholderId);
+                    
+                    // Reset img state
+                    if (currentCropper) {
+                        currentCropper.destroy();
+                        currentCropper = null;
+                    }
+
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    if(placeholder) placeholder.classList.add('hidden');
+                    
+                    setTimeout(() => {
+                        currentCropper = new Cropper(img, {
+                            aspectRatio: ratio,
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 0.8, // Beri sedikit ruang agar user sadar bisa digeser
+                            restore: false,
+                            guides: false,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false,
+                            responsive: true,
+                            checkOrientation: true,
+                            background: false, // Hilangkan checkerboard agar lebih clean
+                            crop(event) {
+                                // Real-time crop to file input
+                                const canvas = currentCropper.getCroppedCanvas({
+                                    width: 800,
+                                    height: 800 / ratio,
+                                });
+                                canvas.toBlob((blob) => {
+                                    const file = new File([blob], 'cropped_image.jpg', { type: 'image/jpeg' });
+                                    const dataTransfer = new DataTransfer();
+                                    dataTransfer.items.add(file);
+                                    input.files = dataTransfer.files;
+                                }, 'image/jpeg', 0.8);
+                            },
+                        });
+                    }, 250); // Delay sedikit lebih lama agar rendering modal stabil
+                }
+                reader.readAsDataURL(input.files[0]);
             }
         }
     </script>
