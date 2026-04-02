@@ -4,7 +4,7 @@
 <!-- Header title area -->
 <div class="mb-8 text-center flex flex-col items-center">
     <h2 class="text-3xl font-extrabold text-black tracking-wide uppercase mb-2 flex items-center gap-3">
-        STOK SUPPLIER
+        SUPPLIER
     </h2>
 </div>
 
@@ -48,12 +48,28 @@
         + Stok Masuk
     </button>
 
-    <!-- PDF Report Button -->
-    <a href="{{ route('pembelian.cetak_pdf') }}"
-        class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition text-center shadow flex items-center justify-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        PDF Laporan
-    </a>
+    <!-- PDF Report Dropdown -->
+    <div x-data="{ openPdf: false }" class="relative w-full sm:w-auto">
+        <button type="button" @click="openPdf = !openPdf" @click.away="openPdf = false"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition shadow flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            PDF Laporan
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div x-show="openPdf" x-transition.opacity.duration.200ms
+            class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden" style="display: none;">
+            <a href="{{ route('pembelian.cetak_pdf') }}" class="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition border-b border-gray-50 flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Laporan Stok Masuk
+            </a>
+            <a href="{{ route('laporan.retur_pdf') }}" class="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition flex items-center gap-2">
+                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                Laporan Retur Barang
+            </a>
+        </div>
+    </div>
 </div>
 
 {{-- ===== TABEL RIWAYAT STOK MASUK ===== --}}
@@ -120,6 +136,14 @@
                             class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm"
                             title="Riwayat Penambahan">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+
+                        <!-- Tombol Retur -->
+                        <button type="button"
+                            onclick="openReturModal('{{ $beli->id }}', '{{ $detail->id_obat }}', '{{ $detail->obat->nama_obat ?? '' }}')"
+                            class="bg-orange-500 hover:bg-orange-600 text-white p-1.5 rounded transition shadow-sm"
+                            title="Retur Obat">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
                         </button>
 
                         <!-- Tombol Edit -->
@@ -587,6 +611,59 @@
     </div>
 </div>
 
+{{-- ===== MODAL RETUR PEMBELIAN ===== --}}
+<div id="modalReturPembelian" class="fixed inset-0 z-[120] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeReturModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-modal flex flex-col">
+        <!-- Header -->
+        <div class="bg-orange-500 px-6 py-4 flex items-center justify-between text-white text-center">
+            <h3 class="font-bold text-xl uppercase tracking-widest w-full">Retur Obat</h3>
+            <button onclick="closeReturModal()" class="absolute right-5 text-orange-100 hover:text-white transition text-3xl font-light">&times;</button>
+        </div>
+
+        <form action="{{ route('pembelian.retur') }}" method="POST" id="formReturPembelian" onsubmit="event.preventDefault(); showSuccessAnimation('formReturPembelian', 'Retur Berhasil Diproses!');">
+            @csrf
+            <input type="hidden" name="id_pembelian" id="retur_id_pembelian">
+            <input type="hidden" name="id_obat" id="retur_id_obat">
+            
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Barang</label>
+                    <input type="text" id="retur_nama_obat" readonly
+                        class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none transition font-bold uppercase text-gray-600 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Jumlah Retur (Qty)</label>
+                    <input type="number" name="qty_retur" min="1" required placeholder="Contoh: 10"
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition font-bold text-orange-600 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nominal Potongan</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
+                        <input type="number" name="nominal_potongan" min="0" required placeholder="0" value="0"
+                            class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition font-bold text-gray-800 shadow-sm"
+                            title="Nominal potongan yang akan mengurangi tagihan pembayaran ke supplier">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Alasan Retur</label>
+                    <textarea name="alasan" required placeholder="Contoh: Barang kadaluarsa" rows="3"
+                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-sm"></textarea>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
+                <button type="button" onclick="closeReturModal()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
+                    Proses Retur
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {{-- Single Form for Deletion --}}
 <form id="form-delete-pembelian" action="" method="POST" class="hidden">
     @csrf
@@ -736,6 +813,30 @@
             closeDeletePembelian(); // ID sekarang tetap aman karena form sudah diset actionnya
             showSuccessAnimation('form-delete-pembelian', 'Riwayat Berhasil Dihapus!');
         }
+    }
+
+    /* ===== LOGIKA RETUR ===== */
+    function openReturModal(idPembelian, idObat, namaObat) {
+        document.getElementById('retur_id_pembelian').value = idPembelian;
+        document.getElementById('retur_id_obat').value = idObat;
+        document.getElementById('retur_nama_obat').value = namaObat;
+
+        document.getElementById('formReturPembelian').reset();
+        
+        // Repopulate invisible fields since reset clears them
+        document.getElementById('retur_id_pembelian').value = idPembelian;
+        document.getElementById('retur_id_obat').value = idObat;
+        document.getElementById('retur_nama_obat').value = namaObat;
+
+        document.getElementById('modalReturPembelian').classList.remove('hidden');
+        document.getElementById('modalReturPembelian').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeReturModal() {
+        document.getElementById('modalReturPembelian').classList.add('hidden');
+        document.getElementById('modalReturPembelian').classList.remove('flex');
+        document.body.style.overflow = '';
     }
 
     /* ===== ANIMASI SUKSES ===== */

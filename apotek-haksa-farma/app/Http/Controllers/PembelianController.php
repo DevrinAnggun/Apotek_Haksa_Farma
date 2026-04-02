@@ -275,4 +275,80 @@ class PembelianController extends Controller
 
         return response()->json($riwayat);
     }
+    public function storeRetur(Request $request)
+    {
+        $request->validate([
+            'id_pembelian' => 'required|exists:pembelians,id',
+            'id_obat' => 'required|exists:obats,id',
+            'qty_retur' => 'required|integer|min:1',
+            'alasan' => 'required|string',
+            'nominal_potongan' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $pembelian = Pembelian::findOrFail($request->id_pembelian);
+            $obat = \App\Models\Obat::findOrFail($request->id_obat);
+
+            // 1. Simpan data Retur 
+            \App\Models\ReturPembelian::create([
+                'id_pembelian' => $pembelian->id,
+                'id_obat' => $obat->id,
+                'qty_retur' => $request->qty_retur,
+                'tgl_retur' => now()->toDateString(),
+                'alasan' => $request->alasan,
+                'nominal_potongan' => $request->nominal_potongan,
+            ]);
+
+            // 2. Kurangi stok batch dan stok sisa
+            $batch = StokBatch::where('id_pembelian', $pembelian->id)->where('id_obat', $obat->id)->first();
+            if ($batch) {
+                // Jangan kurangi stok awal agar historis masuknya tetap ada,
+                // tapi kurangi stok_sisa karena barang dikembalikan.
+                $batch->stok_sisa -= $request->qty_retur;
+                if ($batch->stok_sisa < 0) {
+                    $batch->stok_sisa = 0;
+                }
+                $batch->save();
+            }
+
+            // 3. Tambahkan ke riwayat stok masuk dengan nilai negatif
+            $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->where('id_obat', $obat->id)->first();
+            if ($detail) {
+                RiwayatStokMasuk::create([
+                    'id_pembelian_detail' => $detail->id,
+                    'id_obat' => $obat->id,
+                    'qty_masuk' => -$request->qty_retur, // negatif karena retur
+                    'harga_beli' => $detail->harga_beli,
+                    'harga_jual' => $obat->harga_jual,
+                    'tgl_expired' => $batch ? $batch->tgl_expired : null,
+                    'keterangan' => 'Retur: ' . $request->alasan
+                ]);
+
+                // 4. Update total bayar pembelian jika ada pemotongan tagihan
+                if ($request->nominal_potongan > 0) {
+                    $detail->subtotal -= $request->nominal_potongan;
+                    if($detail->subtotal < 0) $detail->subtotal = 0;
+                    $detail->save();
+                }
+            }
+
+            if ($request->nominal_potongan > 0) {
+                $pembelian->total_bayar -= $request->nominal_potongan;
+                if ($pembelian->total_bayar < 0) {
+                    $pembelian->total_bayar = 0;
+                }
+                $pembelian->save();
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Retur barang berhasil diproses.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal memproses retur: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memproses retur: ' . $e->getMessage());
+        }
+    }
 }

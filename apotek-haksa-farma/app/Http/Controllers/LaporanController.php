@@ -181,4 +181,22 @@ class LaporanController extends Controller
         $pdf->setPaper('A4', 'landscape');
         return $pdf->download("Laporan_Penjualan_Kadaluarsa_{$startDate}_sampai_{$endDate}.pdf");
     }
+    public function cetakReturPdf(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+
+        $returs = \App\Models\ReturPembelian::with(['pembelian.supplier', 'obat'])
+            ->whereDate('tgl_retur', '>=', $startDate)
+            ->whereDate('tgl_retur', '<=', $endDate)
+            ->orderBy('tgl_retur', 'desc')
+            ->get();
+
+        $totalPotongan = $returs->sum('nominal_potongan');
+
+        $pdf = Pdf::loadView('pembelian.retur_pdf', compact('returs', 'startDate', 'endDate', 'totalPotongan'));
+        $pdf->setPaper('A4', 'landscape');
+        
+        return $pdf->download("Laporan_Retur_Obat_{$startDate}_sampai_{$endDate}.pdf");
+    }
 }

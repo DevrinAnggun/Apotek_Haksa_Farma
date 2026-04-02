@@ -47,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);
         Route::get('/pembelian/riwayat/{id_detail}', [PembelianController::class, 'getRiwayat'])->name('pembelian.riwayat');
+        Route::post('/pembelian/retur', [PembelianController::class, 'storeRetur'])->name('pembelian.retur');
         Route::resource('pembelian', PembelianController::class);
 
         // Laporan & Print
@@ -55,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/penjualan-sebelum-kadaluarsa/pdf', [LaporanController::class, 'cetakPenjualanSebelumKadaluarsaPdf'])->name('laporan.penjualan_sebelum_kadaluarsa_pdf');
         Route::get('/laporan/penjualan-kadaluarsa/pdf', [LaporanController::class, 'cetakPenjualanKadaluarsaPdf'])->name('laporan.penjualan_kadaluarsa_pdf');
         Route::get('/laporan/pembelian/pdf', [PembelianController::class, 'cetakPdf'])->name('pembelian.cetak_pdf');
+        Route::get('/laporan/retur/pdf', [LaporanController::class, 'cetakReturPdf'])->name('laporan.retur_pdf');
         Route::delete('/penjualan/{penjualan}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
         // Content Management
         Route::resource('artikel', \App\Http\Controllers\ArtikelController::class);

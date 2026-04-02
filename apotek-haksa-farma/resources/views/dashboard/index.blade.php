@@ -69,7 +69,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
-            <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Stok Supplier</div>
+            <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Supplier</div>
         </div>
         <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
             Lihat Stok Masuk <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -153,10 +153,9 @@
         </div>
 
         <div class="p-6">
-            <!-- Pilihan Tipe Laporan -->
             <div class="mb-6">
                 <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2 ml-1 tracking-widest">Pilih Tipe Laporan</label>
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <button @click="reportType = 'penjualan'" 
                             :class="reportType === 'penjualan' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
                             class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
@@ -172,12 +171,17 @@
                             class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
                         Kadaluarsa
                     </button>
+                    <button @click="reportType = 'retur'" 
+                            :class="reportType === 'retur' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                            class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
+                        Retur Obat
+                    </button>
                 </div>
             </div>
 
             <div x-show="true" x-transition>
-                <!-- Pilihan Cepat (Non-Kadaluarsa) -->
-                <div x-show="reportType !== 'kadaluarsa'" class="grid grid-cols-2 gap-3 mb-6">
+                <!-- Pilihan Cepat (Non-Kadaluarsa & Non-Retur) -->
+                <div x-show="reportType !== 'kadaluarsa' && reportType !== 'retur'" class="grid grid-cols-2 gap-3 mb-6">
                     <!-- Harian -->
                     <button type="button" @click="downloadQuick('daily', reportType)"
                        class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:shadow-md transition-all group">
@@ -224,8 +228,8 @@
                     </button>
                 </div>
 
-                <!-- Download Per Bulan (Hidden by default) -->
-                <div x-show="showMonthly && reportType !== 'kadaluarsa'" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
+                <!-- Download Per Bulan (Hidden by default, always shown for Retur) -->
+                <div x-show="(showMonthly && reportType !== 'kadaluarsa' && reportType !== 'retur') || reportType === 'retur'" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
                     <header class="flex items-center gap-2 mb-3">
                         <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
                     </header>
@@ -250,7 +254,7 @@
                 </div>
 
                 <!-- Filter Custom -->
-                <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+                <div x-show="reportType !== 'retur'" class="bg-gray-50 rounded-xl p-5 border border-gray-100">
                     <header class="flex items-center gap-2 mb-4">
                         <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                         <span class="text-sm font-bold text-gray-700 uppercase tracking-wider">Filter Tanggal Spesifik</span>
@@ -308,6 +312,7 @@
         let route;
         if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
         else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'retur') route = '{{ route("laporan.retur_pdf") }}';
         else if (type === 'kadaluarsa') {
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
@@ -319,6 +324,7 @@
         let route;
         if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
         else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'retur') route = '{{ route("laporan.retur_pdf") }}';
         else if (type === 'kadaluarsa') {
              route = '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
@@ -334,6 +340,7 @@
         let route;
         if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
         else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'retur') route = '{{ route("laporan.retur_pdf") }}';
         else if (type === 'kadaluarsa') {
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
