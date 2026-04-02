@@ -39,6 +39,9 @@ class KadaluarsaController extends Controller
                 }, 
                 'obat.kategori'
             ])
+            ->whereHas('obat.kategori', function($q) {
+                $q->where('nama_kategori', '!=', 'CEK');
+            })
             ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasHari)
             ->groupBy('id_obat')
@@ -48,15 +51,49 @@ class KadaluarsaController extends Controller
     /**
      * Mengekspor data kadaluarsa ke PDF
      */
-    public function cetakPdf()
+    public function cetakPdf(Request $request)
     {
-        $batasHari = Carbon::now()->addDays(7);
-        $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->get();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $query = StokBatch::select(
+                'id_obat',
+                DB::raw('SUM(stok_sisa) as total_sisa'),
+                DB::raw('MIN(tgl_expired) as earliest_expired')
+            )
+            ->with([
+                'obat' => function($q) {
+                    $q->withSum('penjualanDetails as total_terjual', 'qty');
+                }, 
+                'obat.kategori'
+            ])
+            ->whereHas('obat.kategori', function($q) {
+                $q->where('nama_kategori', '!=', 'CEK');
+            })
+            ->where('stok_sisa', '>', 0);
+            
+        if ($startDate && $endDate) {
+            $query->whereBetween('tgl_expired', [$startDate, $endDate]);
+            $batasHari = Carbon::parse($endDate);
+        } else {
+            $batasHari = Carbon::now()->addDays(7);
+            $query->whereDate('tgl_expired', '<=', $batasHari);
+        }
+
+        $kadaluarsas = $query->groupBy('id_obat')
+            ->orderBy('earliest_expired', 'asc')->get();
 
         $pdf = Pdf::loadView('kadaluarsa.pdf', compact('kadaluarsas', 'batasHari'));
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download('Laporan_Data_Kadaluarsa_' . date('d_m_Y') . '.pdf');
+        $filename = 'Laporan_Data_Kadaluarsa_';
+        if ($startDate && $endDate) {
+             $filename .= "{$startDate}_sampai_{$endDate}.pdf";
+        } else {
+             $filename .= date('d_m_Y') . '.pdf';
+        }
+
+        return $pdf->download($filename);
     }
 
     /**

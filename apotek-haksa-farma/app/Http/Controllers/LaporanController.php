@@ -89,4 +89,96 @@ class LaporanController extends Controller
         // Memberikan file PDF tersebut untuk diunduh (downloadable)
         return $pdf->download("Laporan_Penjualan_{$startDate}_sampai_{$endDate}.pdf");
     }
+
+    public function cetakPenjualanSebelumKadaluarsaPdf(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+
+        $penjualans = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
+            ->whereDate('tgl_penjualan', '<=', $endDate)
+            ->whereHas('details.obat', function($q) {
+                $q->whereHas('kategori', function($qKat) {
+                    $qKat->where('nama_kategori', '!=', 'CEK');
+                })->whereHas('stokBatches', function($qBatch) {
+                    $qBatch->where('stok_sisa', '>', 0)
+                           ->whereDate('tgl_expired', '>', Carbon::today());
+                });
+            })
+            ->with(['user', 'details' => function($q) {
+                $q->whereHas('obat', function($q2) {
+                    $q2->whereHas('kategori', function($qKat2) {
+                        $qKat2->where('nama_kategori', '!=', 'CEK');
+                    })->whereHas('stokBatches', function($qBatch2) {
+                        $qBatch2->where('stok_sisa', '>', 0)
+                               ->whereDate('tgl_expired', '>', Carbon::today());
+                    });
+                })->with('obat');
+            }])
+            ->orderBy('tgl_penjualan', 'asc')
+            ->get();
+
+        $totalPendapatan = 0;
+        foreach($penjualans as $trx) {
+            foreach($trx->details as $d) {
+                $totalPendapatan += $d->subtotal;
+            }
+        }
+
+        $pdf = Pdf::loadView('penjualan.pdf', [
+            'penjualans' => $penjualans,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'totalPendapatan' => $totalPendapatan,
+            'customTitle' => 'LAPORAN PENJUALAN OBAT SEBELUM KADALUARSA'
+        ]);
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->download("Laporan_Penjualan_Sebelum_Kadaluarsa_{$startDate}_sampai_{$endDate}.pdf");
+    }
+
+    public function cetakPenjualanKadaluarsaPdf(Request $request)
+    {
+        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+
+        $penjualans = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
+            ->whereDate('tgl_penjualan', '<=', $endDate)
+            ->whereHas('details.obat', function($q) {
+                $q->whereHas('kategori', function($qKat) {
+                    $qKat->where('nama_kategori', '!=', 'CEK');
+                })->whereHas('stokBatches', function($qBatch) {
+                    $qBatch->where('stok_sisa', '>', 0)
+                           ->whereDate('tgl_expired', '<=', Carbon::today());
+                });
+            })
+            ->with(['user', 'details' => function($q) {
+                $q->whereHas('obat', function($q2) {
+                    $q2->whereHas('kategori', function($qKat2) {
+                        $qKat2->where('nama_kategori', '!=', 'CEK');
+                    })->whereHas('stokBatches', function($qBatch2) {
+                        $qBatch2->where('stok_sisa', '>', 0)
+                               ->whereDate('tgl_expired', '<=', Carbon::today());
+                    });
+                })->with('obat');
+            }])
+            ->orderBy('tgl_penjualan', 'asc')
+            ->get();
+
+        $totalPendapatan = 0;
+        foreach($penjualans as $trx) {
+            foreach($trx->details as $d) {
+                $totalPendapatan += $d->subtotal;
+            }
+        }
+
+        $pdf = Pdf::loadView('penjualan.pdf', [
+            'penjualans' => $penjualans,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'totalPendapatan' => $totalPendapatan,
+            'customTitle' => 'LAPORAN PENJUALAN OBAT SUDAH KADALUARSA'
+        ]);
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->download("Laporan_Penjualan_Kadaluarsa_{$startDate}_sampai_{$endDate}.pdf");
+    }
 }

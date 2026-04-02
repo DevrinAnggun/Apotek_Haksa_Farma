@@ -138,7 +138,7 @@
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
 <div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ reportType: 'penjualan', showMonthly: false }">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ reportType: 'penjualan', showMonthly: false, kadaluarsaType: 'stok' }">
         <!-- Header -->
         <div class="bg-gray-800 px-6 py-6 flex items-center justify-between text-white rounded-t-2xl">
             <div class="flex items-center gap-3">
@@ -175,9 +175,9 @@
                 </div>
             </div>
 
-            <div x-show="reportType !== 'kadaluarsa'" x-transition>
-                <!-- Pilihan Cepat -->
-                <div class="grid grid-cols-2 gap-3 mb-6">
+            <div x-show="true" x-transition>
+                <!-- Pilihan Cepat (Non-Kadaluarsa) -->
+                <div x-show="reportType !== 'kadaluarsa'" class="grid grid-cols-2 gap-3 mb-6">
                     <!-- Harian -->
                     <button type="button" @click="downloadQuick('daily', reportType)"
                        class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:shadow-md transition-all group">
@@ -199,8 +199,33 @@
                     </button>
                 </div>
 
+                <!-- Pilihan Cepat (Khusus Kadaluarsa) -->
+                <div x-show="reportType === 'kadaluarsa'" class="grid grid-cols-2 gap-3 mb-6" style="display: none;">
+                    <button type="button" @click="kadaluarsaType = 'stok'" 
+                       class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group relative"
+                       :class="kadaluarsaType === 'stok' ? 'bg-orange-500 border-orange-500 shadow-md scale-105' : 'bg-orange-50 border-orange-100 hover:border-orange-500'">
+
+                       <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
+                            :class="kadaluarsaType === 'stok' ? 'bg-white/20' : 'bg-orange-100 text-orange-600'">
+                            <svg class="w-5 h-5" :class="kadaluarsaType === 'stok' ? 'text-white' : 'text-orange-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                       </div>
+                        <span class="font-bold text-[10px] uppercase text-center tracking-normal leading-relaxed" :class="kadaluarsaType === 'stok' ? 'text-white' : 'text-orange-700'">Data Stok<br>Kadaluarsa</span>
+                    </button>
+                    
+                    <button type="button" @click="kadaluarsaType = 'penjualan'" 
+                       class="flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all group relative"
+                       :class="kadaluarsaType === 'penjualan' ? 'bg-orange-500 border-orange-500 shadow-md scale-105' : 'bg-orange-50 border-orange-100 hover:border-orange-500'">
+
+                       <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
+                            :class="kadaluarsaType === 'penjualan' ? 'bg-white/20' : 'bg-orange-100 text-orange-600'">
+                            <svg class="w-5 h-5" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                       </div>
+                        <span class="font-bold text-[10px] uppercase text-center tracking-normal leading-relaxed mt-1" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-700'">Penjualan Sblm<br>Expired</span>
+                    </button>
+                </div>
+
                 <!-- Download Per Bulan (Hidden by default) -->
-                <div x-show="showMonthly" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
+                <div x-show="showMonthly && reportType !== 'kadaluarsa'" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
                     <header class="flex items-center gap-2 mb-3">
                         <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
                     </header>
@@ -244,7 +269,7 @@
                                     class="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                             </div>
                         </div>
-                        <button type="button" @click="downloadCustom(reportType)"
+                        <button type="button" @click="downloadCustom(reportType, kadaluarsaType)"
                             class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                             Export PDF
@@ -253,21 +278,7 @@
                 </div>
             </div>
 
-            <!-- Bagian Kadaluarsa (Hanya tombol langsung) -->
-            <div x-show="reportType === 'kadaluarsa'" x-transition class="animate-fadeIn">
-                <div class="bg-orange-50 rounded-2xl p-8 border-2 border-orange-100 flex flex-col items-center text-center">
-                    <div class="bg-orange-100 p-4 rounded-full mb-4 text-orange-600">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    </div>
-                    <h4 class="font-extrabold text-orange-800 uppercase tracking-widest mb-2">Laporan Kadaluarsa</h4>
-                    <p class="text-xs text-orange-600 mb-6 leading-relaxed">Unduh daftar semua obat yang telah kadaluarsa atau mendekati masa kadaluarsa (H-7).</p>
-                    <a href="{{ route('kadaluarsa.pdf') }}" target="_blank"
-                       class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3.5 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 uppercase tracking-widest text-xs text-center">
-                        Unduh Laporan Sekarang
-                    </a>
-                </div>
             </div>
-        </div>
 
         <!-- Footer Info -->
         <div class="bg-gray-50 px-6 py-4 text-center border-t border-gray-100">
@@ -287,27 +298,46 @@
         document.getElementById('reportModal').classList.remove('flex');
         document.body.style.overflow = '';
     }
-    function downloadDashMonthly(type) {
+    function downloadDashMonthly(type, kadaluarsaType) {
         const m = document.getElementById('dash_month').value;
         const y = document.getElementById('dash_year').value;
         const startDate = `${y}-${m.padStart(2, '0')}-01`;
         const lastDay = new Date(y, m, 0).getDate();
         const endDate = `${y}-${m.padStart(2, '0')}-${lastDay}`;
         
-        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        let route;
+        if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
+        else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'kadaluarsa') {
+             route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
+        }
+
         window.open(`${route}?start_date=${startDate}&end_date=${endDate}`, '_blank');
     }
 
     function downloadQuick(mode, type) {
-        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        let route;
+        if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
+        else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'kadaluarsa') {
+             route = '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
+        }
+
         const date = new Date().toISOString().split('T')[0];
         window.open(`${route}?start_date=${date}&end_date=${date}`, '_blank');
     }
 
-    function downloadCustom(type) {
+    function downloadCustom(type, kadaluarsaType) {
         const s = document.getElementById('cust_start').value;
         const e = document.getElementById('cust_end').value;
-        const route = type === 'penjualan' ? '{{ route("laporan.cetak_pdf") }}' : '{{ route("pembelian.cetak_pdf") }}';
+        
+        let route;
+        if (type === 'penjualan') route = '{{ route("laporan.cetak_pdf") }}';
+        else if (type === 'pembelian') route = '{{ route("pembelian.cetak_pdf") }}';
+        else if (type === 'kadaluarsa') {
+             route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
+        }
+
         window.open(`${route}?start_date=${s}&end_date=${e}`, '_blank');
     }
 </script>
