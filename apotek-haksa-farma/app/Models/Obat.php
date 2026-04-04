@@ -43,6 +43,16 @@ class Obat extends Model
         return $this->hasMany(DetailPenjualan::class, 'id_obat');
     }
 
+    public function stockOpnames()
+    {
+        return $this->hasMany(StockOpname::class, 'id_obat');
+    }
+
+    public function returPembelians()
+    {
+        return $this->hasMany(ReturPembelian::class, 'id_obat');
+    }
+
     public function stokBatches()
     {
         return $this->hasMany(StokBatch::class, 'id_obat');

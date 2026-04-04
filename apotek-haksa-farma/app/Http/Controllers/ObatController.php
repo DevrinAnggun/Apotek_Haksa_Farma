@@ -17,8 +17,28 @@ class ObatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Obat::with(['kategori', 'satuan'])
-                     ->withSum('penjualanDetails as total_terjual', 'qty');
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+        $daysInMonth = Carbon::create($year, $month)->daysInMonth;
+        $monthName = Carbon::create($year, $month)->translatedFormat('F Y');
+
+        $query = Obat::with(['kategori', 'satuan', 'stokBatches'])
+            ->with(['penjualanDetails' => function($q) use ($month, $year) {
+                $q->whereHas('penjualan', function($q2) use ($month, $year) {
+                    $q2->whereMonth('tgl_penjualan', $month)->whereYear('tgl_penjualan', $year);
+                })->with('penjualan:id,tgl_penjualan');
+            }])
+            ->with(['pembelianDetails' => function($q) use ($month, $year) {
+                $q->whereHas('pembelian', function($q2) use ($month, $year) {
+                    $q2->whereMonth('tgl_pembelian', $month)->whereYear('tgl_pembelian', $year);
+                });
+            }])
+            ->with(['returPembelians' => function($q) use ($month, $year) {
+                $q->whereMonth('tgl_retur', $month)->whereYear('tgl_retur', $year);
+            }])
+            ->with(['stockOpnames' => function($q) use ($month, $year) {
+                $q->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+            }]);
 
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -31,10 +51,37 @@ class ObatController extends Controller
         }
 
         $obats = $query->paginate(10)->withQueryString();
+
+        $obats->getCollection()->transform(function ($obat) use ($daysInMonth, $month, $year) {
+            $obat->current_stok = $obat->stokBatches->sum('stok_sisa');
+            $obat->masuk_bulan_ini = $obat->pembelianDetails->sum('qty');
+            $obat->retur_bulan_ini = $obat->returPembelians->sum('qty_retur');
+            $obat->terjual_bulan_ini = $obat->penjualanDetails->sum('qty');
+            
+            $isCurrentMonth = ($month == date('m') && $year == date('Y'));
+            if ($isCurrentMonth) {
+                $obat->stok_awal = $obat->current_stok - $obat->masuk_bulan_ini + $obat->retur_bulan_ini + $obat->terjual_bulan_ini;
+            } else {
+                $obat->stok_awal = 0; // Approximations for past months
+            }
+
+            $dailySO = [];
+            for($i = 1; $i <= $daysInMonth; $i++) {
+                $dailySO[$i] = 0;
+            }
+            foreach($obat->stockOpnames as $so) {
+                $day = Carbon::parse($so->tanggal)->format('j');
+                $dailySO[(int)$day] = $so->jumlah;
+            }
+            $obat->daily_so = $dailySO;
+            
+            return $obat;
+        });
+
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
         
-        return view('obat.index', compact('obats', 'kategoris', 'satuans'));
+        return view('obat.index', compact('obats', 'kategoris', 'satuans', 'daysInMonth', 'monthName', 'month', 'year'));
     }
 
     public function katalogAdmin(Request $request)
@@ -84,13 +131,14 @@ class ObatController extends Controller
             'id_satuan'   => 'required|exists:satuans,id',
             'harga_beli'  => 'required|integer|min:0',
             'harga_jual'  => 'required|integer|min:0',
-            'stok'        => 'nullable|integer|min:0',
+            'stok_awal'   => 'nullable|integer|min:0',
+            'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'deskripsi'   => 'nullable|string',
             'cara_pakai'  => 'nullable|string',
         ]);
 
-        $obatData = $request->except(['stok', 'expired_date', 'gambar']);
+        $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
 
         // Handle Image Upload
@@ -102,16 +150,22 @@ class ObatController extends Controller
 
         $obat = Obat::create($obatData);
 
+        $stokAwal = $request->input('stok_awal', 0);
+        $barangDatang = $request->input('barang_datang', 0);
+        $sisaStok = $stokAwal + $barangDatang;
+
         // Inject initial stok directly to StokBatch table if user filled it
-        if ($request->filled('stok') && $request->stok > 0) {
+        if ($sisaStok > 0) {
             $expiredDate = $request->filled('expired_date') ? $request->expired_date : Carbon::now()->addYears(2)->format('Y-m-d');
             StokBatch::create([
                 'id_obat' => $obat->id,
                 'no_batch' => 'BATCH-INIT-' . time(),
                 'tgl_expired' => $expiredDate, 
-                'stok_awal' => $request->stok,
-                'stok_sisa' => $request->stok,
+                'stok_awal' => $stokAwal,
+                'stok_sisa' => $sisaStok,
             ]);
+            
+            // If there's barang datang, we might want to log it if needed, but for now we just add it to initial batch.
         }
 
         return redirect()->back()->with('success', 'Data Obat berhasil ditambahkan!');
@@ -131,13 +185,14 @@ class ObatController extends Controller
             'id_satuan'   => 'required|exists:satuans,id',
             'harga_beli'  => 'required|integer|min:0',
             'harga_jual'  => 'required|integer|min:0',
-            'stok'        => 'nullable|integer|min:0',
+            'stok_awal'   => 'nullable|integer|min:0',
+            'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'deskripsi'   => 'nullable|string',
             'cara_pakai'  => 'nullable|string',
         ]);
 
-        $obatData = $request->except(['stok', 'expired_date', 'gambar']);
+        $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
         $obatData['batas_stok_minimal'] = 5;
 
         // Handle Image Update
@@ -153,7 +208,11 @@ class ObatController extends Controller
         $obat->update($obatData);
 
         // Handle direct edit stok
-        if ($request->filled('stok')) {
+        $stokAwal = $request->input('stok_awal', 0);
+        $barangDatang = $request->input('barang_datang', 0);
+        $sisaStok = $stokAwal + $barangDatang;
+
+        if ($request->filled('stok_awal') || $request->filled('barang_datang')) {
             // Find existing generic batch or get any first batch
             $batch = StokBatch::where('id_obat', $obat->id)->orderBy('created_at', 'asc')->first();
             $expiredDate = $request->filled('expired_date') ? $request->expired_date : Carbon::now()->addYears(2)->format('Y-m-d');
@@ -161,18 +220,18 @@ class ObatController extends Controller
             if ($batch) {
                 // Update existing batch
                 $batch->update([
-                    'stok_sisa' => $request->stok,
-                    'stok_awal' => $request->stok,
+                    'stok_sisa' => $sisaStok,
+                    'stok_awal' => $stokAwal, // Maybe we shouldn't overwrite existing stok_awal actually, but to be consistent with form we will
                     'tgl_expired' => $expiredDate,
                 ]);
-            } else if ($request->stok > 0) {
+            } else if ($sisaStok > 0) {
                 // Generate a new one if completely empty and user put > 0
                 StokBatch::create([
                     'id_obat' => $obat->id,
                     'no_batch' => 'BATCH-ADJ-' . time(),
                     'tgl_expired' => $expiredDate,
-                    'stok_awal' => $request->stok,
-                    'stok_sisa' => $request->stok,
+                    'stok_awal' => $stokAwal,
+                    'stok_sisa' => $sisaStok,
                 ]);
             }
         } else if ($request->filled('expired_date')) {
@@ -193,5 +252,50 @@ class ObatController extends Controller
         }
         $obat->delete();
         return redirect()->back()->with('success', 'Data Obat berhasil dihapus!');
+    }
+
+    public function saveStockOpname(Request $request)
+    {
+        $id_obat = $request->id_obat;
+        $tanggal = $request->tanggal; // Expected Y-m-d
+        $jumlah = $request->jumlah;
+
+        \App\Models\StockOpname::updateOrCreate(
+            ['id_obat' => $id_obat, 'tanggal' => $tanggal],
+            ['jumlah' => $jumlah]
+        );
+
+        return response()->json(['success' => true]);
+    }
+
+    public function getSOData(Request $request, $id)
+    {
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+        $daysInMonth = \Carbon\Carbon::create($year, $month)->daysInMonth;
+
+        $obat = Obat::with(['stockOpnames' => function($q) use ($month, $year) {
+                $q->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+            }])
+            ->with(['penjualanDetails' => function($q) use ($month, $year) {
+                $q->whereHas('penjualan', function($q2) use ($month, $year) {
+                    $q2->whereMonth('tgl_penjualan', $month)->whereYear('tgl_penjualan', $year);
+                });
+            }])->findOrFail($id);
+        
+        $dailySO = [];
+        for($i = 1; $i <= $daysInMonth; $i++) {
+            $dailySO[$i] = 0;
+        }
+        foreach($obat->stockOpnames as $so) {
+            $day = \Carbon\Carbon::parse($so->tanggal)->format('j');
+            $dailySO[(int)$day] = $so->jumlah;
+        }
+
+        return response()->json([
+            'daily_so' => $dailySO,
+            'terjual_bulan_ini' => $obat->penjualanDetails->sum('qty'),
+            'daysInMonth' => $daysInMonth
+        ]);
     }
 }

@@ -43,6 +43,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('kategori', KategoriController::class);
         Route::resource('supplier', SupplierController::class);
         Route::get('/obat/katalog', [ObatController::class, 'katalogAdmin'])->name('obat.katalog');
+        Route::post('/obat/save-so', [ObatController::class, 'saveStockOpname'])->name('obat.save_so');
+        Route::get('/obat/{id}/so-data', [ObatController::class, 'getSOData'])->name('obat.so_data');
         Route::resource('obat', ObatController::class);
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);
