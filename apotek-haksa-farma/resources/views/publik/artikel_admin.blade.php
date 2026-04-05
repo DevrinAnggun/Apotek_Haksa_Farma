@@ -234,10 +234,25 @@
                 class="flex-1 py-2.5 text-xs font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition uppercase tracking-widest">BATAL</button>
             <form id="formDeleteArtikel" action="" method="POST" class="flex-1">
                 @csrf @method('DELETE')
-                <button type="submit"
+                <button type="button" onclick="showSuccessAnimation('formDeleteArtikel', 'Artikel Berhasil Dihapus!')"
                     class="w-full py-2.5 text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition uppercase tracking-widest">YA, HAPUS</button>
             </form>
         </div>
+    </div>
+</div>
+
+{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
+<div id="modalSukses" class="fixed inset-0 z-[120] hidden items-center justify-center">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
+        <div class="flex justify-center mb-5">
+            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
+                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
+            </svg>
+        </div>
+        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
+        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
     </div>
 </div>
 
@@ -360,10 +375,40 @@
             }, 1500);
         }, 'image/jpeg', 0.9);
     }
+
+    /* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
+    function showSuccessAnimation(formId, titleText) {
+        const modal = document.getElementById('modalSukses');
+        document.getElementById('sukses_title').textContent = titleText;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        // Restart animasi SVG
+        const circle = modal.querySelector('.circle-anim');
+        const check  = modal.querySelector('.check-anim');
+        circle.style.animation = 'none';
+        check.style.animation  = 'none';
+        circle.getBoundingClientRect(); // trigger reflow
+        check.getBoundingClientRect();
+        circle.style.animation = '';
+        check.style.animation  = '';
+
+        setTimeout(() => {
+            document.getElementById(formId).submit();
+        }, 800);
+    }
 </script>
 
 <style>
     @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
+
+    .sukses-box { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+    .circle-anim { animation: drawCircle 0.65s ease forwards; }
+    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
+    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
 @endsection

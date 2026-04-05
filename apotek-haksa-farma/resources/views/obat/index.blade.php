@@ -494,7 +494,7 @@
             </div>
         </div>
         <div class="flex justify-end px-8 py-5 bg-white border-t border-gray-200 shrink-0">
-            <button type="button" onclick="closeSOModal()" class="px-8 py-2.5 text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition uppercase tracking-[0.1em]">Simpan</button>
+            <button type="button" onclick="simpanSOModal()" class="px-8 py-2.5 text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md transition uppercase tracking-[0.1em]">Simpan</button>
         </div>
     </div>
 </div>
@@ -535,9 +535,11 @@
 @push('scripts')
 <script>
     let currentSOObatId = null;
+    let hasSOSaved = false;
 
     function openSOModal(idObat, namaObat, dailySOJson, totalPenjualan) {
         currentSOObatId = idObat;
+        hasSOSaved = false;
         document.getElementById('so_modal_title').textContent = 'SO: ' + namaObat;
         
         const month = parseInt('{{ $month }}');
@@ -618,6 +620,7 @@
     }
 
     function saveSO(idObat, tanggal, jumlah, inputElement) {
+        hasSOSaved = true;
         inputElement.classList.add('opacity-50', 'animate-pulse');
         fetch('{{ route("obat.save_so") }}', {
             method: 'POST',
@@ -743,6 +746,45 @@
         document.getElementById('modalSukses').classList.remove('hidden');
         document.getElementById('modalSukses').classList.add('flex');
         setTimeout(() => form.submit(), 1200);
+    }
+
+    function showSuccessPopup(titleText, callback) {
+        document.getElementById('sukses_title').textContent = titleText;
+        document.getElementById('modalSukses').classList.remove('hidden');
+        document.getElementById('modalSukses').classList.add('flex');
+        setTimeout(() => {
+            document.getElementById('modalSukses').classList.add('hidden');
+            document.getElementById('modalSukses').classList.remove('flex');
+            if (callback) callback();
+        }, 1200);
+    }
+
+    function simpanSOModal() {
+        if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+            document.activeElement.blur();
+        }
+        
+        // Timeout to allow blur to trigger saveSO if necessary
+        setTimeout(() => {
+            let adaIsi = false;
+            const inputs = document.querySelectorAll('#so_modal_row input');
+            inputs.forEach(input => {
+                if (input.value && parseInt(input.value) > 0) {
+                    adaIsi = true;
+                }
+            });
+            
+            if (hasSOSaved || adaIsi) {
+                showSuccessPopup('Tersimpan!', () => {
+                    closeSOModal();
+                    if (hasSOSaved) {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                closeSOModal();
+            }
+        }, 100);
     }
 </script>
 @endpush
