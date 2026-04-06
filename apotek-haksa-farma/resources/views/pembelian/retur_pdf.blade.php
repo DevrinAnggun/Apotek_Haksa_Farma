@@ -34,11 +34,12 @@
         <thead>
             <tr>
                 <th width="30">No</th>
-                <th width="80">Tgl Retur</th>
-                <th width="120">Supplier</th>
-                <th width="150">Nama Barang</th>
-                <th width="40">Qty</th>
-                <th width="150">Alasan</th>
+                <th width="70">Tgl Retur</th>
+                <th width="100">Supplier</th>
+                <th width="130">Nama Barang</th>
+                <th width="30">Qty</th>
+                <th width="130">Alasan</th>
+                <th width="80">Foto Bukti</th>
                 <th width="100">Total Potongan (Rp)</th>
             </tr>
         </thead>
@@ -52,17 +53,24 @@
                     <td><span class="font-bold">{{ $retur->obat->nama_obat ?? 'Barang Terhapus' }}</span></td>
                     <td class="text-center">{{ $retur->qty_retur }}</td>
                     <td>{{ $retur->alasan }}</td>
+                    <td class="text-center">
+                        @if($retur->foto && file_exists(public_path($retur->foto)))
+                            <img src="{{ public_path($retur->foto) }}" style="max-width: 70px; max-height: 70px;" alt="">
+                        @else
+                            <span style="color: #999; font-style: italic;">Tidak ada</span>
+                        @endif
+                    </td>
                     <td class="text-right">Rp{{ number_format($retur->nominal_potongan, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="text-center" style="padding: 20px;">Belum ada riwayat retur pada periode ini.</td>
+                    <td colspan="8" class="text-center" style="padding: 20px;">Belum ada riwayat retur pada periode ini.</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr style="background-color: #f9f9f9;">
-                <td colspan="6" class="text-right font-bold">TOTAL POTONGAN :</td>
+                <td colspan="7" class="text-right font-bold">TOTAL POTONGAN :</td>
                 <td class="text-right font-bold" style="color: #166534;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
             </tr>
         </tfoot>

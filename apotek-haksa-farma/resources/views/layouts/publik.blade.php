@@ -101,10 +101,10 @@
             <div>
                 <p class="font-bold text-white mb-3 text-sm">Dapatkan Penawaran Terbaru</p>
                 <p class="text-xs text-gray-400 mb-3">Tetap update soal katalog informasi terbaru di Haksa Farma</p>
-                <div class="flex gap-2">
-                    <input type="text" placeholder="Search you want..." class="flex-1 px-3 py-2 rounded-lg bg-white text-gray-800 text-xs focus:outline-none">
-                    <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs transition">→</button>
-                </div>
+                <form action="{{ route('home') }}" method="GET" class="flex gap-2">
+                    <input type="text" name="search" placeholder="Cari obat..." class="flex-1 px-3 py-2 rounded-lg bg-white text-gray-800 text-xs focus:outline-none">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs transition">→</button>
+                </form>
             </div>
         </div>
         <div class="border-t border-gray-700 py-4 text-center text-xs text-gray-500">

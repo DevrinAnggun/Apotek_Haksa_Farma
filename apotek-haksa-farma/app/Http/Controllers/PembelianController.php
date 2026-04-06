@@ -6,6 +6,7 @@ use App\Models\Pembelian;
 use App\Models\DetailPembelian;
 use App\Models\StokBatch;
 use App\Models\RiwayatStokMasuk;
+use App\Models\StockOpname;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -110,6 +111,20 @@ class PembelianController extends Controller
                     'harga_beli' => $item['harga_beli'],
                     'harga_jual' => $item['harga_jual']
                 ]);
+
+                // Auto-fill Stock Opname pada tanggal penerimaan
+                $tglTerima = $request->tgl_pembelian;
+                $existing = StockOpname::where('id_obat', $item['id_obat'])
+                    ->where('tanggal', $tglTerima)->first();
+                if ($existing) {
+                    $existing->increment('jumlah', $item['qty']);
+                } else {
+                    StockOpname::create([
+                        'id_obat' => $item['id_obat'],
+                        'tanggal' => $tglTerima,
+                        'jumlah' => $item['qty'],
+                    ]);
+                }
             }
 
             $pembelian->update(['total_bayar' => $totalBayar]);
@@ -218,6 +233,20 @@ class PembelianController extends Controller
                         'tgl_expired' => $request->tgl_expired,
                         'keterangan' => 'Penambahan Stok Baru (Edit)'
                     ]);
+
+                    // Auto-fill Stock Opname pada tanggal hari ini (saat stok baru ditambahkan)
+                    $tglTerima = now()->toDateString();
+                    $existingSO = StockOpname::where('id_obat', $request->id_obat)
+                        ->where('tanggal', $tglTerima)->first();
+                    if ($existingSO) {
+                        $existingSO->increment('jumlah', $tambahStok);
+                    } else {
+                        StockOpname::create([
+                            'id_obat' => $request->id_obat,
+                            'tanggal' => $tglTerima,
+                            'jumlah' => $tambahStok,
+                        ]);
+                    }
                 }
 
                 $obat = \App\Models\Obat::find($request->id_obat);
@@ -283,6 +312,7 @@ class PembelianController extends Controller
             'qty_retur' => 'required|integer|min:1',
             'alasan' => 'required|string',
             'nominal_potongan' => 'required|numeric|min:0',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         try {
@@ -290,6 +320,15 @@ class PembelianController extends Controller
 
             $pembelian = Pembelian::findOrFail($request->id_pembelian);
             $obat = \App\Models\Obat::findOrFail($request->id_obat);
+
+            // Handle foto upload (opsional)
+            $fotoPath = null;
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                $filename = 'retur_' . time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('uploads/retur'), $filename);
+                $fotoPath = 'uploads/retur/' . $filename;
+            }
 
             // 1. Simpan data Retur 
             \App\Models\ReturPembelian::create([
@@ -299,6 +338,7 @@ class PembelianController extends Controller
                 'tgl_retur' => now()->toDateString(),
                 'alasan' => $request->alasan,
                 'nominal_potongan' => $request->nominal_potongan,
+                'foto' => $fotoPath,
             ]);
 
             // 2. Kurangi stok batch dan stok sisa

@@ -35,6 +35,11 @@
         .sidebar-active { background-color: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; font-weight: 600; }
         .sidebar-link { transition: all 0.2s ease-in-out; }
         .sidebar-link:hover:not(.sidebar-active) { background-color: #f3f4f6; color: #16a34a; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="flex flex-col h-screen overflow-hidden text-sm">
@@ -142,10 +147,10 @@
                 </a>
                 @endif
 
-                <!-- Halaman User (Publik) -->
-                <a href="{{ route('publik.katalog') }}" target="_blank" class="sidebar-link flex items-center px-6 py-3 text-gray-600 {{ request()->is('publik*') ? 'sidebar-active' : '' }}">
+                <!-- Website Utama (Publik) -->
+                <a href="{{ route('home') }}" target="_blank" class="sidebar-link flex items-center px-6 py-3 text-gray-600">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    Halaman User
+                    Ke Halaman Utama
                 </a>
             </div>
         </aside>

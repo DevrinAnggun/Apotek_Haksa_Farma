@@ -467,7 +467,7 @@
                             @endfor
                         </select>
                         <select id="so_modal_year" onchange="changeSOPeriod()" class="border border-gray-300 rounded px-2 py-1 bg-white font-bold text-gray-800 text-xs focus:ring-green-500 focus:border-green-500 shadow-sm cursor-pointer border-r-[8px] border-r-transparent">
-                            @for ($y = date('Y') - 2; $y <= date('Y') + 1; $y++)
+                            @for ($y = 2026; $y <= 2030; $y++)
                                 <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endfor
                         </select>
@@ -568,18 +568,18 @@
         
         for(let i = 1; i <= daysInMonth; i++) {
             const th = document.createElement('th');
-            th.className = 'border border-gray-300 p-2 bg-red-600 text-white min-w-[30px] font-bold text-center';
+            th.className = 'border border-gray-300 px-1 py-1 bg-red-600 text-white w-8 font-bold text-center text-[10px]';
             th.textContent = i;
             headerRow.appendChild(th);
             
             const val = dailySO[i] || 0;
             const td = document.createElement('td');
-            td.className = 'p-0 border border-gray-300 relative min-w-[30px]';
+            td.className = 'p-0 border border-gray-300 relative w-8';
             
             const input = document.createElement('input');
             input.type = 'number';
             input.min = '0';
-            input.className = 'w-full h-8 text-center px-1 focus:outline-none focus:ring-inset focus:ring-2 focus:ring-blue-500 text-xs font-bold transition-all bg-transparent no-spinners ' + (val > 0 ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50');
+            input.className = 'w-8 h-7 text-center focus:outline-none focus:ring-inset focus:ring-2 focus:ring-blue-500 text-[10px] font-bold transition-all bg-transparent no-spinners ' + (val > 0 ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50');
             input.value = val > 0 ? val : '';
             input.placeholder = '-';
             

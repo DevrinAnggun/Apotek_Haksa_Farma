@@ -21,10 +21,8 @@ Route::get('/publik/artikel/{slug}', [PublicController::class, 'bacaArtikel'])->
 Route::get('/publik/kontak',  [PublicController::class, 'kontak'])->name('publik.kontak');
 
 
-// Rute Publik (Belum Login)
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Rute Publik Utama (Landing Page)
+Route::get('/', [PublicController::class, 'katalog'])->name('home');
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 

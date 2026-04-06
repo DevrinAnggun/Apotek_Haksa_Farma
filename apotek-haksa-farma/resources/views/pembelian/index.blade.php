@@ -621,12 +621,12 @@
             <button onclick="closeReturModal()" class="absolute right-5 text-orange-100 hover:text-white transition text-3xl font-light">&times;</button>
         </div>
 
-        <form action="{{ route('pembelian.retur') }}" method="POST" id="formReturPembelian" onsubmit="event.preventDefault(); showSuccessAnimation('formReturPembelian', 'Retur Berhasil Diproses!');">
+        <form action="{{ route('pembelian.retur') }}" method="POST" id="formReturPembelian" enctype="multipart/form-data" onsubmit="event.preventDefault(); showSuccessAnimation('formReturPembelian', 'Retur Berhasil Diproses!');">
             @csrf
             <input type="hidden" name="id_pembelian" id="retur_id_pembelian">
             <input type="hidden" name="id_obat" id="retur_id_obat">
             
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Barang</label>
                     <input type="text" id="retur_nama_obat" readonly
@@ -650,6 +650,17 @@
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Alasan Retur</label>
                     <textarea name="alasan" required placeholder="Contoh: Barang kadaluarsa" rows="3"
                         class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Foto Bukti <span class="text-gray-400 font-normal text-xs">(Opsional)</span></label>
+                    <label class="flex items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg px-4 py-4 cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition group">
+                        <input type="file" name="foto" accept="image/*" class="hidden" onchange="previewReturFoto(this)">
+                        <div id="retur_foto_placeholder" class="flex flex-col items-center gap-1 text-gray-400 group-hover:text-orange-500 transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-xs font-medium">Klik untuk upload foto</span>
+                        </div>
+                        <img id="retur_foto_preview" src="#" alt="Preview" class="hidden w-20 h-20 object-cover rounded-lg border border-gray-200 shadow-sm">
+                    </label>
                 </div>
             </div>
 
@@ -837,6 +848,24 @@
         document.getElementById('modalReturPembelian').classList.add('hidden');
         document.getElementById('modalReturPembelian').classList.remove('flex');
         document.body.style.overflow = '';
+        // Reset foto preview
+        document.getElementById('retur_foto_preview').classList.add('hidden');
+        document.getElementById('retur_foto_preview').src = '#';
+        document.getElementById('retur_foto_placeholder').classList.remove('hidden');
+    }
+
+    function previewReturFoto(input) {
+        const preview = document.getElementById('retur_foto_preview');
+        const placeholder = document.getElementById('retur_foto_placeholder');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     /* ===== ANIMASI SUKSES ===== */
