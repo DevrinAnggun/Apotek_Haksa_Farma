@@ -60,7 +60,7 @@
                             <span style="color: #999; font-style: italic;">Tidak ada</span>
                         @endif
                     </td>
-                    <td class="text-right">Rp{{ number_format($retur->nominal_potongan, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp{{ number_format($retur->nominal_potongan, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr>
@@ -71,7 +71,7 @@
         <tfoot>
             <tr style="background-color: #f9f9f9;">
                 <td colspan="7" class="text-right font-bold">TOTAL POTONGAN :</td>
-                <td class="text-right font-bold" style="color: #166534;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
+                <td class="text-center font-bold" style="color: #166534;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>

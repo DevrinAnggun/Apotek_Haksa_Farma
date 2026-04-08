@@ -47,11 +47,14 @@ class LaporanController extends Controller
         $viewStart = $startDate ?: $defaultStart;
         $viewEnd   = $endDate   ?: $defaultEnd;
 
+        $obats = \App\Models\Obat::orderBy('nama_obat', 'asc')->get();
+
         return view('penjualan.index', [
             'penjualans' => $penjualans,
             'startDate' => $viewStart,
             'endDate' => $viewEnd,
-            'totalPendapatan' => $totalPendapatan
+            'totalPendapatan' => $totalPendapatan,
+            'obats' => $obats
         ]);
     }
 
@@ -66,10 +69,13 @@ class LaporanController extends Controller
         $startDate = $request->input('start_date', $defaultStart);
         $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
-        $penjualans = Penjualan::with('user')
+        $penjualans = Penjualan::whereHas('details.obat', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with(['user', 'details.obat'])
             ->whereDate('tgl_penjualan', '>=', $startDate)
             ->whereDate('tgl_penjualan', '<=', $endDate)
-            ->orderBy('tgl_penjualan', 'asc') // Urutkan dari terlama ke terbaru untuk laporan
+            ->orderBy('tgl_penjualan', 'asc')
             ->get();
 
         $totalPendapatan = $penjualans->sum('total_harga');
@@ -95,9 +101,13 @@ class LaporanController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
-        $penjualans = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
+        $id_obat = $request->input('id_obat');
+
+        $query = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
             ->whereDate('tgl_penjualan', '<=', $endDate)
-            ->whereHas('details.obat', function($q) {
+            ->whereHas('details.obat', function($q) use ($id_obat) {
+                $q->whereNull('deleted_at'); 
+                if($id_obat) $q->where('id', $id_obat); // Filter obat jika dipilih
                 $q->whereHas('kategori', function($qKat) {
                     $qKat->where('nama_kategori', '!=', 'CEK');
                 })->whereHas('stokBatches', function($qBatch) {
@@ -105,8 +115,9 @@ class LaporanController extends Controller
                            ->whereDate('tgl_expired', '>', Carbon::today());
                 });
             })
-            ->with(['user', 'details' => function($q) {
-                $q->whereHas('obat', function($q2) {
+            ->with(['user', 'details' => function($q) use ($id_obat) {
+                $q->whereHas('obat', function($q2) use ($id_obat) {
+                    if($id_obat) $q2->where('id', $id_obat);
                     $q2->whereHas('kategori', function($qKat2) {
                         $qKat2->where('nama_kategori', '!=', 'CEK');
                     })->whereHas('stokBatches', function($qBatch2) {
@@ -115,8 +126,9 @@ class LaporanController extends Controller
                     });
                 })->with('obat');
             }])
-            ->orderBy('tgl_penjualan', 'asc')
-            ->get();
+            ->orderBy('tgl_penjualan', 'asc');
+
+        $penjualans = $query->get();
 
         $totalPendapatan = 0;
         foreach($penjualans as $trx) {
@@ -144,6 +156,7 @@ class LaporanController extends Controller
         $penjualans = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
             ->whereDate('tgl_penjualan', '<=', $endDate)
             ->whereHas('details.obat', function($q) {
+                $q->whereNull('deleted_at'); // Filter obat yang belum dihapus
                 $q->whereHas('kategori', function($qKat) {
                     $qKat->where('nama_kategori', '!=', 'CEK');
                 })->whereHas('stokBatches', function($qBatch) {
@@ -186,7 +199,10 @@ class LaporanController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
         $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
-        $returs = \App\Models\ReturPembelian::with(['pembelian.supplier', 'obat'])
+        $returs = \App\Models\ReturPembelian::whereHas('obat', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with(['pembelian.supplier', 'obat'])
             ->whereDate('tgl_retur', '>=', $startDate)
             ->whereDate('tgl_retur', '<=', $endDate)
             ->orderBy('tgl_retur', 'desc')

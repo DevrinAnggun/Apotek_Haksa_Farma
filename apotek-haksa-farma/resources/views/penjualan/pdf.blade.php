@@ -47,10 +47,10 @@
                     <td class="text-center">{{ $no++ }}</td>
                     <td class="text-center">{{ \Carbon\Carbon::parse($trx->tgl_penjualan)->format('d-m-Y') }}</td>
                     <td>{{ $detail->obat->nama_obat ?? 'Barang Terhapus' }}</td>
-                    <td class="text-right">Rp. {{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp. {{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
                     <td class="text-center">{{ $detail->obat->total_stok ?? 0 }}</td>
                     <td class="text-center">{{ $detail->qty }}</td>
-                    <td class="text-right">Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                    <td class="text-center">Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                 </tr>
                 @php $grandTotal += $detail->subtotal; @endphp
                 @endforeach
@@ -63,7 +63,7 @@
         <tfoot>
             <tr style="background-color: #eee;">
                 <td colspan="6" class="text-right" style="font-weight: bold; padding-right: 15px;">TOTAL PENDAPATAN :</td>
-                <td class="text-right" style="font-weight: bold; color: green;">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                <td class="text-center" style="font-weight: bold; color: green;">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>

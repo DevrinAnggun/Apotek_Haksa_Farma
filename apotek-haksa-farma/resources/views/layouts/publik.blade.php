@@ -68,14 +68,18 @@
                 <div class="flex items-start gap-2 mb-2">
                     <svg class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/></svg>
                     <div>
-                        <p class="text-xs font-semibold text-white">Apotek Haksa Farma</p>
-                        <p class="text-xs text-gray-400">WhatsApp Only</p>
-                        <p class="text-xs text-gray-400">08.00 – 20.00 WIB</p>
+                        <a href="https://wa.me/6285385984906" target="_blank" class="text-xs font-semibold text-white hover:text-green-400 transition">Apotek Haksa Farma</a>
+                        <p class="text-[10px] text-gray-400 leading-none mt-1">WhatsApp Only</p>
+                        <p class="text-[10px] text-gray-400 mt-0.5">08.00 – 20.00 WIB</p>
                     </div>
                 </div>
-                <div class="flex gap-3 mt-3">
-                    <span class="text-xs text-gray-400">📷 Instagram</span>
-                    <span class="text-xs text-gray-400">💬 WhatsApp</span>
+                <div class="flex gap-4 mt-4">
+                    <a href="https://www.instagram.com/apotek.haksafarma?igsh=bG9kaW1haWQ2dGc1" target="_blank" class="text-xs text-gray-400 hover:text-pink-500 transition flex items-center gap-1.5 font-medium">
+                        <span>📷</span> Instagram
+                    </a>
+                    <a href="https://wa.me/6285385984906" target="_blank" class="text-xs text-gray-400 hover:text-green-500 transition flex items-center gap-1.5 font-medium">
+                        <span>💬</span> WhatsApp
+                    </a>
                 </div>
             </div>
 
@@ -101,9 +105,9 @@
             <div>
                 <p class="font-bold text-white mb-3 text-sm">Dapatkan Penawaran Terbaru</p>
                 <p class="text-xs text-gray-400 mb-3">Tetap update soal katalog informasi terbaru di Haksa Farma</p>
-                <form action="{{ route('home') }}" method="GET" class="flex gap-2">
-                    <input type="text" name="search" placeholder="Cari obat..." class="flex-1 px-3 py-2 rounded-lg bg-white text-gray-800 text-xs focus:outline-none">
-                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs transition">→</button>
+                <form action="{{ route('publik.katalog') }}" method="GET" class="flex gap-2">
+                    <input type="text" name="search" placeholder="Cari obat..." class="flex-1 px-3 py-2 rounded-lg bg-white text-gray-800 text-xs focus:outline-none focus:ring-2 focus:ring-green-500 transition">
+                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs transition shadow-md">→</button>
                 </form>
             </div>
         </div>

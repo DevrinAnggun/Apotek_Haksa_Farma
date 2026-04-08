@@ -20,8 +20,11 @@ class PembelianController extends Controller
      */
     public function index()
     {
-        // Data for purchase listing
-        $pembelians = Pembelian::with(['supplier', 'user', 'details.obat'])
+        // Tampilkan riwayat pembelian yang obat-obatnya belum dihapus (Soft Delete)
+        $pembelians = Pembelian::whereHas('details.obat', function($q) {
+                                   $q->whereNull('deleted_at');
+                               })
+                               ->with(['supplier', 'user', 'details.obat'])
                                ->latest()
                                ->paginate(10);
 
@@ -148,7 +151,10 @@ class PembelianController extends Controller
         $startDate = $request->input('start_date', Carbon::now()->subMonths(3)->format('Y-m-d'));
         $endDate   = $request->input('end_date', Carbon::now()->format('Y-m-d'));
 
-        $pembelians = Pembelian::with(['supplier', 'user', 'details.obat'])
+        $pembelians = Pembelian::whereHas('details.obat', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with(['supplier', 'user', 'details.obat'])
             ->whereDate('tgl_pembelian', '>=', $startDate)
             ->whereDate('tgl_pembelian', '<=', $endDate)
             ->latest('tgl_pembelian')

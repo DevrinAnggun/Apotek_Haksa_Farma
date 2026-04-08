@@ -87,7 +87,6 @@
                 <th class="border border-gray-300 p-2 min-w-[80px]">STOK AWAL</th>
                 <th class="border border-gray-300 p-2 min-w-[90px] leading-tight">BARANG<br>DATANG</th>
                 <th class="border border-gray-300 p-2 min-w-[80px]">TOTAL</th>
-                <th class="border border-gray-300 p-2 min-w-[60px] bg-blue-50 text-[#1e3a8a]">SO</th>
                 <th class="border border-gray-300 p-2 min-w-[90px] leading-tight">TOTAL<br>PENJUALAN</th>
                 <th class="border border-gray-300 p-2 min-w-[90px] leading-tight">SISA<br>STOK</th>
                 <th class="border border-gray-300 p-2 min-w-[120px] leading-tight">TOTAL HARGA<br>PENJUALAN</th>
@@ -108,7 +107,7 @@
                 <td class="py-2 px-3 text-left text-gray-800 font-bold border border-gray-300">
                     {{ $obat->kategori->nama_kategori ?? '-' }}
                 </td>
-                <td class="py-2 px-3 text-center text-gray-900 border border-gray-300 whitespace-nowrap">
+                <td class="py-2 px-3 text-left text-gray-900 border border-gray-300 whitespace-nowrap">
                     Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}
                 </td>
                 <td class="py-2 px-3 text-center text-gray-800 border border-gray-300">
@@ -118,17 +117,16 @@
                     {{ $obat->stok_awal }}
                 </td>
                 <td class="py-2 px-3 text-center border border-gray-300 font-bold text-blue-600">
-                    {{ $obat->masuk_bulan_ini }}
+                    <div class="flex items-center justify-center">
+                        <button type="button" 
+                                onclick="openSOModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}', '{{ json_encode($obat->daily_so) }}', {{ $obat->terjual_bulan_ini }})"
+                                class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 p-1.5 rounded transition shadow-sm flex items-center justify-center group" title="Lihat Stock Opname ({{ $monthName }})">
+                            <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        </button>
+                    </div>
                 </td>
                 <td class="py-2 px-3 text-center border border-gray-300 font-bold bg-gray-50 text-gray-800">
                     {{ $totalRow }}
-                </td>
-                <td class="py-2 px-3 text-center border border-gray-300">
-                    <button type="button" 
-                            onclick="openSOModal({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}', '{{ json_encode($obat->daily_so) }}', {{ $obat->terjual_bulan_ini }})"
-                            class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 p-1.5 rounded transition shadow-sm mx-auto flex justify-center items-center group" title="Lihat Stock Opname ({{ $monthName }})">
-                        <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    </button>
                 </td>
                 <td class="py-2 px-3 text-center border border-gray-300 font-bold text-red-600">
                     {{ $obat->terjual_bulan_ini }}
@@ -136,7 +134,7 @@
                 <td class="py-2 px-3 text-center border border-gray-300 font-bold {{ $obat->current_stok <= 5 ? 'text-red-500' : 'text-green-700' }}">
                     {{ $obat->current_stok }}
                 </td>
-                <td class="py-2 px-3 text-right text-gray-900 font-bold border border-gray-300 whitespace-nowrap">
+                <td class="py-2 px-3 text-left text-gray-900 font-bold border border-gray-300 whitespace-nowrap">
                     Rp{{ number_format($obat->terjual_bulan_ini * $obat->harga_jual, 0, ',', '.') }}
                 </td>
                 <td class="py-2 px-3 text-center text-gray-900 border border-gray-300 whitespace-nowrap">
@@ -179,7 +177,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="14" class="py-12 text-center text-gray-400 italic border border-gray-300">Data obat belum tersedia.</td>
+                <td colspan="13" class="py-12 text-center text-gray-400 italic border border-gray-300">Data obat belum tersedia.</td>
             </tr>
             @endforelse
         </tbody>
@@ -540,7 +538,7 @@
     function openSOModal(idObat, namaObat, dailySOJson, totalPenjualan) {
         currentSOObatId = idObat;
         hasSOSaved = false;
-        document.getElementById('so_modal_title').textContent = 'SO: ' + namaObat;
+        document.getElementById('so_modal_title').textContent = namaObat;
         
         const month = parseInt('{{ $month }}');
         const year = '{{ $year }}';

@@ -138,7 +138,7 @@
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
 <div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden" x-data="{ reportType: 'penjualan', showMonthly: false, kadaluarsaType: 'stok' }">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden flex flex-col max-h-[90vh]" x-data="{ reportType: 'penjualan', showMonthly: false, kadaluarsaType: 'stok', idObat: '' }">
         <!-- Header -->
         <div class="bg-gray-800 px-6 py-6 flex items-center justify-between text-white rounded-t-2xl">
             <div class="flex items-center gap-3">
@@ -152,7 +152,7 @@
             <button onclick="closeReportModal()" class="text-blue-100 hover:text-white transition text-2xl leading-none">&times;</button>
         </div>
 
-        <div class="p-6">
+        <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
             <div class="mb-6">
                 <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2 ml-1 tracking-widest">Pilih Tipe Laporan</label>
                 <div class="grid grid-cols-2 gap-2">
@@ -226,6 +226,17 @@
                        </div>
                         <span class="font-bold text-[10px] uppercase text-center tracking-normal leading-relaxed mt-1" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-700'">Penjualan Sblm<br>Expired</span>
                     </button>
+                </div>
+                
+                <!-- Filter Obat Tertentu (Hanya muncul jika tipenya Penjualan Sblm Expired) -->
+                <div x-show="reportType === 'kadaluarsa' && kadaluarsaType === 'penjualan'" class="mb-4 animate-fadeIn">
+                    <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2 ml-1 tracking-widest">Filter Barang Tertentu (Opsional)</label>
+                    <select x-model="idObat" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-blue-500 font-bold uppercase text-gray-700">
+                        <option value="" class="normal-case">-- Semua Obat --</option>
+                        @foreach($obats as $o)
+                            <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <!-- Download Per Bulan (Hidden by default, always shown for Retur) -->
@@ -317,7 +328,10 @@
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
 
-        window.open(`${route}?start_date=${startDate}&end_date=${endDate}`, '_blank');
+        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObatParam = idObat ? `&id_obat=${idObat}` : '';
+
+        window.open(`${route}?start_date=${startDate}&end_date=${endDate}${idObatParam}`, '_blank');
     }
 
     function downloadQuick(mode, type) {
@@ -330,7 +344,10 @@
         }
 
         const date = new Date().toISOString().split('T')[0];
-        window.open(`${route}?start_date=${date}&end_date=${date}`, '_blank');
+        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObatParam = idObat ? `&id_obat=${idObat}` : '';
+
+        window.open(`${route}?start_date=${date}&end_date=${date}${idObatParam}`, '_blank');
     }
 
     function downloadCustom(type, kadaluarsaType) {
@@ -345,7 +362,10 @@
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
 
-        window.open(`${route}?start_date=${s}&end_date=${e}`, '_blank');
+        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObatParam = idObat ? `&id_obat=${idObat}` : '';
+
+        window.open(`${route}?start_date=${s}&end_date=${e}${idObatParam}`, '_blank');
     }
 </script>
 

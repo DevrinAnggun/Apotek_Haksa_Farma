@@ -39,8 +39,12 @@ class KadaluarsaController extends Controller
                 }, 
                 'obat.kategori'
             ])
-            ->whereHas('obat.kategori', function($q) {
-                $q->where('nama_kategori', '!=', 'CEK');
+            ->whereHas('obat', function($q) {
+                // Dimana obat tersebut TIDAK dalam status terhapus (deleted_at IS NULL)
+                $q->whereNull('deleted_at');
+                $q->whereHas('kategori', function($q2) {
+                    $q2->where('nama_kategori', '!=', 'CEK');
+                });
             })
             ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasHari)
@@ -67,8 +71,11 @@ class KadaluarsaController extends Controller
                 }, 
                 'obat.kategori'
             ])
-            ->whereHas('obat.kategori', function($q) {
-                $q->where('nama_kategori', '!=', 'CEK');
+            ->whereHas('obat', function($q) {
+                $q->whereNull('deleted_at');
+                $q->whereHas('kategori', function($q2) {
+                    $q2->where('nama_kategori', '!=', 'CEK');
+                });
             })
             ->where('stok_sisa', '>', 0);
             

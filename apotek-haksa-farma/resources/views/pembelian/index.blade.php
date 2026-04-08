@@ -739,7 +739,9 @@
                     body.innerHTML += `
                         <tr class="border-b border-gray-100 text-center">
                             <td class="p-3 text-gray-600">${formattedDate} <br> <span class="text-[10px] text-gray-400">${formattedTime} WIB</span></td>
-                            <td class="p-3 font-bold text-blue-600">+${item.qty_masuk}</td>
+                            <td class="p-3 font-bold ${item.qty_masuk >= 0 ? 'text-blue-600' : 'text-red-500'}">
+                                ${item.qty_masuk >= 0 ? '+' : ''}${item.qty_masuk}
+                            </td>
                             <td class="p-3 text-gray-600">Rp${new Intl.NumberFormat('id-ID').format(item.harga_beli)}</td>
                             <td class="p-3 text-xs font-bold ${item.tgl_expired && new Date(item.tgl_expired) < new Date() ? 'text-red-500' : 'text-gray-600'}">${formattedExp}</td>
                         </tr>

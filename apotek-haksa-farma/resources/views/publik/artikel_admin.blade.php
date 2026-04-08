@@ -94,7 +94,7 @@
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Tulis Artikel Baru</h3>
             <button onclick="closeCreateArtikelModal()" class="absolute right-5 text-gray-100 hover:text-white text-3xl font-light">&times;</button>
         </div>
-        <form action="{{ route('artikel.store') }}" method="POST" enctype="multipart/form-data" class="overflow-y-auto max-h-[85vh]">
+        <form id="formCreateArtikel" action="{{ route('artikel.store') }}" method="POST" enctype="multipart/form-data" class="overflow-y-auto max-h-[85vh]">
             @csrf
             <div class="p-8 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -144,7 +144,7 @@
             </div>
             <div class="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-100 bg-gray-50">
                 <button type="button" onclick="closeCreateArtikelModal()" class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700">Batal</button>
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Simpan Artikel</button>
+                <button type="button" onclick="showSuccessAnimation('formCreateArtikel', 'Artikel Berhasil Disimpan!')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Simpan Artikel</button>
             </div>
         </form>
     </div>
@@ -208,7 +208,7 @@
             </div>
             <div class="flex items-center justify-end gap-3 px-8 py-5 border-t border-gray-100 bg-gray-50">
                 <button type="button" onclick="closeEditArtikelModal()" class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700">Batal</button>
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Perbarui Artikel</button>
+                <button type="button" onclick="showSuccessAnimation('formEditArtikel', 'Artikel Berhasil Diperbarui!')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-0.5">Perbarui Artikel</button>
             </div>
         </form>
     </div>

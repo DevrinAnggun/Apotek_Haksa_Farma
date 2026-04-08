@@ -62,7 +62,6 @@
                         <a href="https://wa.me/{{ preg_replace('/^0/', '62', $wa) }}" class="text-sm text-green-700 hover:underline font-bold">
                             {{ $settings['kontak_telepon'] ?? 'Belum diatur' }}
                         </a>
-                        <p class="text-[10px] text-gray-400 mt-0.5">Jam Operasional Terlampir</p>
                     </div>
                 </div>
 

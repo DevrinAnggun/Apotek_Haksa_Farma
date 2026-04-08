@@ -33,12 +33,12 @@
             </a>
             
             <!-- Dropdown Cetak Laporan -->
-            <div class="relative inline-block text-left" x-data="{ open: false }">
+            <div class="relative inline-block text-left" x-data="{ open: false, idObat: '' }" @click.away="open = false">
                 <div>
-                    <button type="button" @click="open = !open" @click.away="open = false" class="bg-gray-800 hover:bg-black text-white font-bold px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-xs uppercase h-[40px] whitespace-nowrap">
+                    <button type="button" @click="open = !open" class="bg-gray-800 hover:bg-black text-white font-bold px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-xs uppercase h-[40px] whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Export Laporan
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="w-4 h-4 ml-1" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                 </div>
 
@@ -50,7 +50,7 @@
                  x-transition:leave="transition ease-in duration-75" 
                  x-transition:leave-start="transform opacity-100 scale-100" 
                  x-transition:leave-end="transform opacity-0 scale-95" 
-                 class="origin-top-right absolute right-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 py-2 border border-gray-100" style="display: none;">
+                 class="origin-top-right absolute right-0 mt-2 w-72 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 py-2 border border-gray-100" style="display: none;">
                 
                 <div class="px-4 py-2 border-b border-gray-50 mb-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     Pilih Format Cetak
@@ -73,15 +73,21 @@
                     Cetak Hasil Filter
                 </a>
 
-                <div class="border-t border-gray-100 my-1"></div>
-                <div class="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Berdasarkan Kadaluarsa Obat
+                <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-2 rounded-b-xl">
+                    <a :href="'{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}' + (idObat ? '&id_obat=' + idObat : '')" target="_blank" class="flex-1 py-1 text-[11px] text-gray-700 hover:text-orange-700 flex items-center gap-1.5 transition font-bold leading-tight">
+                        <svg class="w-4 h-4 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Penjualan Sblm Exp
+                    </a>
+                    
+                    <div class="w-28 shrink-0">
+                        <select x-model="idObat" class="w-full bg-white border border-gray-200 rounded px-1.5 py-1 text-[10px] focus:ring-1 focus:ring-orange-500 font-bold uppercase text-gray-700 outline-none cursor-pointer">
+                            <option value="">Semua</option>
+                            @foreach($obats as $o)
+                                <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                
-                <a href="{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="block px-4 py-2 text-xs text-gray-700 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 transition">
-                    <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Penjualan Sblm Expired
-                </a>
             </div>
         </div>
     </div>

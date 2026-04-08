@@ -59,17 +59,23 @@ class DashboardController extends Controller
         // -----------------------------------------------------------------------------
         $batasWaktuWarning = Carbon::now()->addDays(30);
 
-        $obatMendekatiExpired = StokBatch::with('obat')
-            ->where('stok_sisa', '>', 0) // Pastikan hanya obat yang MURNI masih ADA di apotek. (Jangan obat basi 2 tahun kemarin tapi sisa=0 dimunculin alert)
+        $obatMendekatiExpired = StokBatch::whereHas('obat', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('obat')
+            ->where('stok_sisa', '>', 0)
             ->whereBetween('tgl_expired', [Carbon::now(), $batasWaktuWarning])
-            ->orderBy('tgl_expired', 'asc') // Urutkan dari yang sisa waktu paling mepet ke hari ini
+            ->orderBy('tgl_expired', 'asc')
             ->get();
             
         // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-7)
         $batasKadaluarsa = Carbon::now()->addDays(7);
-        $obatSudahExpired = StokBatch::with('obat')
-            ->where('stok_sisa', '>', 0) // Karena stok belum dibuang ke tong / retur, sistem masih ngebaca fisiknya ada di apotek
-            ->whereDate('tgl_expired', '<=', $batasKadaluarsa) // Tanggal tgl_expired lebih KECIL atau SAMA DENGAN batas 7 hari
+        $obatSudahExpired = StokBatch::whereHas('obat', function($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with('obat')
+            ->where('stok_sisa', '>', 0)
+            ->whereDate('tgl_expired', '<=', $batasKadaluarsa)
             ->get();
 
         // 5. Variabel Tambahan Untuk Desain Dashboard (Data Barang & Semua Penjualan)
@@ -82,6 +88,9 @@ class DashboardController extends Controller
         $totalSemuaPenjualan = $penjualanValid->sum('total_harga');
         $jumlahObatKadaluarsa = $obatSudahExpired->count();
 
+        // Ambil daftar obat untuk filter laporan
+        $obats = Obat::orderBy('nama_obat', 'asc')->get();
+
         // Lempar data ke halaman blade view dashboard
         return view('dashboard.index', compact(
             'totalTransaksiHariIni',
@@ -92,7 +101,8 @@ class DashboardController extends Controller
             'totalDataBarang',
             'totalPenjualan',
             'totalSemuaPenjualan',
-            'jumlahObatKadaluarsa'
+            'jumlahObatKadaluarsa',
+            'obats'
         ));
     }
 }

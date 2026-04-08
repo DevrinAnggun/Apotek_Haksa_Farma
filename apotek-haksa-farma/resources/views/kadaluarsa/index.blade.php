@@ -113,15 +113,7 @@
                 </td>
                 <td class="py-3 px-5 border border-gray-300">
                     <div class="flex items-center justify-center gap-1">
-                        {{-- Tombol Lihat Detail (trigger modal) --}}
-                        <button type="button" title="Lihat Detail"
-                            data-nama="{{ $item->obat->nama_obat ?? '-' }}"
-                            data-kategori="{{ $item->obat->kategori->nama_kategori ?? '-' }}"
-                            data-stok="{{ number_format($item->total_sisa, 0) }}"
-                            data-tgl="{{ $expired->format('d/m/Y') }}"
-                            class="btn-detail bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </button>
+
 
                         {{-- Form hapus tersembunyi (Sekarang per Obat id) --}}
                         <form id="formHapus-{{ $item->id_obat }}"
@@ -156,52 +148,7 @@
     {{ $kadaluarsas->links() }}
 </div>
 
-{{-- ========== MODAL DETAIL OBAT ========== --}}
-<div id="modalDetail" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-    {{-- Overlay --}}
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="tutupDetail()"></div>
 
-    {{-- Modal Box --}}
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
-
-        {{-- Header Modal --}}
-        <div class="bg-blue-700 px-6 py-4 relative flex items-center justify-center">
-            <h3 class="text-white font-bold text-lg">Detail Obat</h3>
-            <button onclick="tutupDetail()" class="absolute right-5 text-white hover:text-blue-200 text-2xl font-light leading-none">&times;</button>
-        </div>
-
-        {{-- Konten --}}
-        <div class="p-6">
-            <div class="border border-gray-200 rounded-lg overflow-hidden">
-                <table class="w-full text-sm text-left">
-                    <tbody>
-                        <tr class="border-b border-gray-100">
-                            <td class="py-3 px-5 font-semibold text-gray-700 w-44">Nama Barang</td>
-                            <td class="py-3 px-2 text-gray-700 w-4 text-center">:</td>
-                            <td id="d-nama" class="py-3 px-5 font-bold text-gray-900 uppercase"></td>
-                        </tr>
-                        <tr class="border-b border-gray-100">
-                            <td class="py-3 px-5 font-semibold text-gray-700">Kategori</td>
-                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
-                            <td id="d-kategori" class="py-3 px-5 font-bold text-gray-900 uppercase"></td>
-                        </tr>
-                        <tr class="border-b border-gray-100">
-                            <td class="py-3 px-5 font-semibold text-gray-700">Stok</td>
-                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
-                            <td id="d-stok" class="py-3 px-5 font-bold text-gray-900"></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-5 font-semibold text-gray-700">Tanggal Kadaluarsa</td>
-                            <td class="py-3 px-2 text-gray-700 text-center">:</td>
-                            <td id="d-tgl" class="py-3 px-5 font-bold text-gray-900"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-</div>
 
 
 {{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
@@ -276,15 +223,7 @@ function filterTable(keyword) {
     });
 }
 
-function tutupDetail() {
-    document.getElementById('modalDetail').classList.add('hidden');
-    document.body.style.overflow = '';
-}
 
-function tutupDetail() {
-    document.getElementById('modalDetail').classList.add('hidden');
-    document.body.style.overflow = '';
-}
 
 let activeFormHapus = null;
 function tutupHapus() {
@@ -299,17 +238,7 @@ function konfirmasiHapus() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Tombol Lihat → modal detail
-    document.querySelectorAll('.btn-detail').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            document.getElementById('d-nama').textContent      = this.dataset.nama;
-            document.getElementById('d-kategori').textContent = this.dataset.kategori;
-            document.getElementById('d-stok').textContent     = this.dataset.stok;
-            document.getElementById('d-tgl').textContent      = this.dataset.tgl;
-            document.getElementById('modalDetail').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        });
-    });
+
 
     // Tombol Hapus → modal konfirmasi
     document.querySelectorAll('.btn-hapus').forEach(function(btn) {
@@ -324,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Escape tutup semua modal
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { 
-            tutupDetail(); 
             tutupHapus(); 
         }
     });
