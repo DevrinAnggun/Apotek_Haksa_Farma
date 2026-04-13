@@ -102,9 +102,6 @@
                 <a href="{{ route('laporan.penjualan') }}" class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full hover:bg-blue-200 transition">
                     Lihat Semua
                 </a>
-                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full w-auto">
-                    Riwayat Tersimpan
-                </span>
             </div>
         </h3>
     
@@ -176,6 +173,8 @@
                                             tgl: "{{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}",
                                             jam: "{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}",
                                             total: "{{ number_format($penjualan->total_harga, 0, ',', '.') }}",
+                                            bayar: "{{ number_format($penjualan->nominal_bayar, 0, ',', '.') }}",
+                                            kembalian: "{{ number_format($penjualan->kembalian, 0, ',', '.') }}",
                                             items: {!! $itemsJson->toJson() !!}
                                         })'
                                         class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm group"
@@ -270,10 +269,18 @@
                     <!-- Items injected here -->
                 </div>
 
-                <div class="border-t-2 border-dashed border-gray-300 pt-3 mt-4">
+                <div class="border-t-2 border-dashed border-gray-300 pt-3 mt-4 space-y-1">
                     <div class="flex justify-between items-center text-base font-bold">
                         <span>TOTAL AKHIR</span>
                         <span id="struk-total">Rp0</span>
+                    </div>
+                    <div id="struk-bayar-row" class="flex justify-between items-center text-xs text-gray-600">
+                        <span>TUNAI</span>
+                        <span id="struk-bayar">Rp0</span>
+                    </div>
+                    <div id="struk-kembalian-row" class="flex justify-between items-center text-xs text-gray-600">
+                        <span>KEMBALIAN</span>
+                        <span id="struk-kembalian">Rp0</span>
                     </div>
                 </div>
             </div>
@@ -282,7 +289,7 @@
             <div class="text-center mt-8 pt-4 border-t border-gray-100">
                 <p class="italic text-gray-400 mb-4">Terima kasih atas kepercayaannya.<br>Semoga lekas sembuh.</p>
                 <button type="button" onclick="closeStruk()" 
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-2 rounded-lg text-xs font-bold transition uppercase tracking-widest no-print">
+                    class="bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-xl text-xs font-bold transition uppercase tracking-widest no-print shadow-lg shadow-green-100">
                     Tutup
                 </button>
             </div>
@@ -356,6 +363,15 @@
         document.getElementById('struk-tgl').textContent = data.tgl;
         document.getElementById('struk-jam').textContent = data.jam + ' WIB';
         document.getElementById('struk-total').textContent = 'Rp' + data.total;
+        document.getElementById('struk-bayar').textContent = 'Rp' + data.bayar;
+        document.getElementById('struk-kembalian').textContent = 'Rp' + data.kembalian;
+        
+        // Hide kembalian row if zero
+        if (data.kembalian == '0') {
+            document.getElementById('struk-kembalian-row').style.display = 'none';
+        } else {
+            document.getElementById('struk-kembalian-row').style.display = 'flex';
+        }
 
         // Populate Items
         container.innerHTML = '';
@@ -467,7 +483,7 @@
 </div>
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[120] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <div class="flex justify-center mb-5">

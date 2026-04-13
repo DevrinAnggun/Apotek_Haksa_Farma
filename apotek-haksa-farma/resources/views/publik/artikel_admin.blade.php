@@ -100,11 +100,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Judul Artikel</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Judul Artikel <span class="text-red-500">*</span></label>
                             <input type="text" name="judul" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori <span class="text-red-500">*</span></label>
                             <select name="kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                                 <option value="Edukasi">Edukasi</option>
                                 <option value="Tips Kesehatan">Tips Kesehatan</option>
@@ -138,7 +138,7 @@
                     <textarea name="ringkasan" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm" placeholder="Tuliskan 1-2 kalimat pengantar..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Isi Lengkap</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Isi Lengkap <span class="text-red-500">*</span></label>
                     <textarea name="konten" rows="8" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-serif"></textarea>
                 </div>
             </div>
@@ -164,11 +164,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Judul Artikel</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Judul Artikel <span class="text-red-500">*</span></label>
                             <input type="text" name="judul" id="edit_judul" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                         </div>
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori <span class="text-red-500">*</span></label>
                             <select name="kategori" id="edit_kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
                                 <option value="Edukasi">Edukasi</option>
                                 <option value="Tips Kesehatan">Tips Kesehatan</option>
@@ -202,7 +202,7 @@
                     <textarea name="ringkasan" id="edit_ringkasan" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Isi Lengkap</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Isi Lengkap <span class="text-red-500">*</span></label>
                     <textarea name="konten" id="edit_konten" rows="8" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-serif"></textarea>
                 </div>
             </div>
@@ -242,7 +242,7 @@
 </div>
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[120] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <div class="flex justify-center mb-5">

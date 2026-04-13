@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <title>Laporan Data Kadaluarsa (PDF)</title>
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #333; }
+        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-        .title { font-size: 16pt; font-weight: bold; margin: 0; }
-        .subtitle { font-size: 9pt; color: #555; margin-top: 5px; }
+        .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
+        .subtitle { font-size: 9pt; color: #000; margin-top: 5px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #777; padding: 5px; text-align: left; color: #000; }
-        th { background-color: #eee; font-weight: bold; text-align: center; font-size: 9pt; }
+        th, td { border: 1px solid #000; padding: 5px; text-align: left; color: #000; }
+        th { background-color: #eee; font-weight: bold; text-align: center; font-size: 9pt; color: #000; }
         td { font-size: 9pt; color: #000; }
         .text-center { text-align: center; }
         .font-bold { font-weight: bold; }
         .bg-red { background-color: #f3f3f3; color: #000; }
         .bg-orange { background-color: #ffffff; color: #000; }
         
-        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 8pt; font-style: italic; color: #777; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 8pt; font-style: italic; color: #000; }
     </style>
 </head>
 <body>
@@ -26,7 +26,7 @@
     <div class="header">
         <h1 class="title">APOTEK HAKSA FARMA</h1>
         <p class="subtitle">Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474<br>
-        LAPORAN DATA OBAT KADALUARSA (H-7)<br>
+        LAPORAN DATA OBAT KADALUARSA (H-5 BULAN)<br>
         Per Tanggal: {{ date('d M Y') }}</p>
     </div>
 
@@ -62,7 +62,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center" style="padding: 20px;">Tidak ada data obat yang kadaluarsa atau mendekati H-7.</td>
+                    <td colspan="6" class="text-center" style="padding: 20px;">Tidak ada data obat yang kadaluarsa atau mendekati H-5 Bulan.</td>
                 </tr>
             @endforelse
         </tbody>

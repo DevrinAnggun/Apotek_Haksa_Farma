@@ -43,12 +43,44 @@
         </div>
     </div>
 
-    {{-- Export Button --}}
-    <a href="{{ route('kadaluarsa.pdf') }}" target="_blank"
-        class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm transition flex items-center gap-2 text-sm">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        Kadaluarsa
-    </a>
+    {{-- Export Dropdown (Ganti Modal jadi Dropdown Kecil) --}}
+    <div class="relative inline-block text-left" x-data="{ open: false }" @click.away="open = false">
+        <button type="button" @click="open = !open"
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-5 rounded-lg shadow-sm transition flex items-center gap-2 text-xs uppercase tracking-widest h-[40px]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            Cetak Laporan
+            <svg class="w-3 h-3 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+
+        <div x-show="open" 
+             x-transition:enter="transition ease-out duration-100" 
+             x-transition:enter-start="transform opacity-0 scale-95" 
+             x-transition:enter-end="transform opacity-100 scale-100" 
+             x-transition:leave="transition ease-in duration-75" 
+             x-transition:leave-start="transform opacity-100 scale-100" 
+             x-transition:leave-end="transform opacity-0 scale-95" 
+             class="absolute left-0 mt-2 w-56 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-50 border border-gray-100 overflow-hidden" 
+             style="display: none;">
+            
+            <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Pilih Jenis Laporan
+            </div>
+
+            <a href="{{ route('kadaluarsa.pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-orange-600 hover:bg-orange-50 transition border-b border-gray-50">
+                <div class="bg-orange-100 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                </div>
+                DATA STOK KADALUARSA
+            </a>
+
+            <a href="{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+                <div class="bg-gray-100 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                PENJUALAN SBLM EXP
+            </a>
+        </div>
+    </div>
 </div>
 
 {{-- Tabel Data Kadaluarsa --}}
@@ -79,13 +111,13 @@
                 } else {
                     $hLabel      = 'H-' . $diffDays;
                     $statusLabel = $hLabel;
-                    $statusClass = $diffDays <= 7
+                    $statusClass = $diffDays <= 150
                         ? 'bg-red-100 text-red-700 border border-red-200'
                         : 'bg-orange-100 text-orange-700 border border-orange-200';
-                    $rowClass    = $diffDays <= 7 ? 'bg-red-50' : 'bg-orange-50';
+                    $rowClass    = $diffDays <= 150 ? 'bg-red-50' : 'bg-orange-50';
                 }
             @endphp
-            <tr class="hover:bg-gray-100 transition {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 7 ? 'bg-red-50' : 'bg-orange-50') }}">
+            <tr class="hover:bg-gray-100 transition {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 150 ? 'bg-red-50' : 'bg-orange-50') }}">
                 <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ ($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage() + $index + 1 }}</td>
                 <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300 text-left">
                     {{ $item->obat->nama_obat ?? '—' }}
@@ -134,7 +166,7 @@
             <tr>
                 <td colspan="7" class="py-10 text-center border border-gray-300">
                     <div class="flex flex-col items-center gap-2">
-                        <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-7.</p>
+                        <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-5 Bulan.</p>
                     </div>
                 </td>
             </tr>
@@ -177,8 +209,10 @@
 
 
 
+
+
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[100] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->
@@ -215,6 +249,8 @@
 </style>
 
 <script>
+
+
 function filterTable(keyword) {
     const q = keyword.toLowerCase().trim();
     document.querySelectorAll('.kadaluarsa-row').forEach(row => {

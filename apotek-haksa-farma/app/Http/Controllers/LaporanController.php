@@ -196,17 +196,32 @@ class LaporanController extends Controller
     }
     public function cetakReturPdf(Request $request)
     {
-        $startDate = $request->input('start_date', Carbon::now()->subDays(30)->format('Y-m-d'));
-        $endDate = $request->input('end_date', Carbon::now()->format('Y-m-d'));
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+        $month     = $request->input('month');
+        $year      = $request->input('year');
+        $id_obat   = $request->input('id_obat');
 
-        $returs = \App\Models\ReturPembelian::whereHas('obat', function($q) {
+        if ($month && $year) {
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth()->format('Y-m-d');
+            $endDate   = Carbon::createFromDate($year, $month, 1)->endOfMonth()->format('Y-m-d');
+        } else {
+            $startDate = $startDate ?: Carbon::now()->subDays(30)->format('Y-m-d');
+            $endDate   = $endDate ?: Carbon::now()->format('Y-m-d');
+        }
+
+        $query = \App\Models\ReturPembelian::whereHas('obat', function($q) {
                 $q->whereNull('deleted_at');
             })
             ->with(['pembelian.supplier', 'obat'])
             ->whereDate('tgl_retur', '>=', $startDate)
-            ->whereDate('tgl_retur', '<=', $endDate)
-            ->orderBy('tgl_retur', 'desc')
-            ->get();
+            ->whereDate('tgl_retur', '<=', $endDate);
+
+        if ($id_obat) {
+            $query->where('id_obat', $id_obat);
+        }
+
+        $returs = $query->orderBy('tgl_retur', 'desc')->get();
 
         $totalPotongan = $returs->sum('nominal_potongan');
 

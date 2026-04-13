@@ -16,8 +16,8 @@ class KadaluarsaController extends Controller
      */
     public function index()
     {
-        // Tampilkan obat yang memiliki batch SUDAH expired atau H-7 (≤ 7 hari lagi akan expired)
-        $batasHari = Carbon::now()->addDays(7);
+        // Tampilkan obat yang memiliki batch SUDAH expired atau H-5 Bulan (≤ 5 bulan lagi akan expired)
+        $batasHari = Carbon::now()->addMonths(5);
         $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->paginate(10);
 
         return view('kadaluarsa.index', compact('kadaluarsas', 'batasHari'));
@@ -83,7 +83,7 @@ class KadaluarsaController extends Controller
             $query->whereBetween('tgl_expired', [$startDate, $endDate]);
             $batasHari = Carbon::parse($endDate);
         } else {
-            $batasHari = Carbon::now()->addDays(7);
+            $batasHari = Carbon::now()->addMonths(5);
             $query->whereDate('tgl_expired', '<=', $batasHari);
         }
 
@@ -118,9 +118,9 @@ class KadaluarsaController extends Controller
     public function destroy($id_obat)
     {
         try {
-            $batasHari = Carbon::now()->addDays(7);
+            $batasHari = Carbon::now()->addMonths(5);
             
-            // Hapus semua batch obat ini yang sudah expired / H-7
+            // Hapus semua batch obat ini yang sudah expired / H-5 Bulan
             StokBatch::where('id_obat', $id_obat)
                 ->where('stok_sisa', '>', 0)
                 ->whereDate('tgl_expired', '<=', $batasHari)

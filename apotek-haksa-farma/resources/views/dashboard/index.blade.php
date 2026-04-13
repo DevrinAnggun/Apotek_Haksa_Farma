@@ -228,8 +228,8 @@
                     </button>
                 </div>
                 
-                <!-- Filter Obat Tertentu (Hanya muncul jika tipenya Penjualan Sblm Expired) -->
-                <div x-show="reportType === 'kadaluarsa' && kadaluarsaType === 'penjualan'" class="mb-4 animate-fadeIn">
+                <!-- Filter Obat Tertentu (Hanya muncul jika tipenya Penjualan Sblm Expired atau Retur) -->
+                <div x-show="(reportType === 'kadaluarsa' && kadaluarsaType === 'penjualan') || reportType === 'retur'" x-transition class="mb-4 animate-fadeIn">
                     <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2 ml-1 tracking-widest">Filter Barang Tertentu (Opsional)</label>
                     <select x-model="idObat" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-blue-500 font-bold uppercase text-gray-700">
                         <option value="" class="normal-case">-- Semua Obat --</option>
@@ -240,7 +240,7 @@
                 </div>
 
                 <!-- Download Per Bulan (Hidden by default, always shown for Retur) -->
-                <div x-show="(showMonthly && reportType !== 'kadaluarsa' && reportType !== 'retur') || reportType === 'retur'" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-6 animate-fadeIn">
+                <div x-show="(showMonthly && reportType !== 'kadaluarsa' && reportType !== 'retur')" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-2 animate-fadeIn">
                     <header class="flex items-center gap-2 mb-3">
                         <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
                     </header>
@@ -253,7 +253,7 @@
                             @endfor
                         </select>
                         <select id="dash_year" class="w-20 bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            @for($y=2026; $y<=2040; $y++)
+                            @for($y=2024; $y<=2040; $y++)
                                 <option value="{{ $y }}" {{ date('Y') == $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endfor
                         </select>
@@ -262,6 +262,15 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </button>
                     </div>
+                </div>
+
+                <!-- Opsi Semua Riwayat / Custom Date (Hanya untuk Retur) -->
+                <div x-show="reportType === 'retur'" class="mb-6">
+                    <button type="button" @click="downloadCustom(reportType)"
+                        class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Unduh Semua Riwayat
+                    </button>
                 </div>
 
                 <!-- Filter Custom -->
@@ -364,6 +373,12 @@
 
         const idObat = document.querySelector('[x-model=\"idObat\"]').value;
         const idObatParam = idObat ? `&id_obat=${idObat}` : '';
+
+        // Jika retur dan panggil download semua riwayat (custom tanpa tgl), kirim tanpa tgl agar default
+        if (type === 'retur' && !s && !e) {
+             window.open(`${route}?all=true${idObatParam}`, '_blank');
+             return;
+        }
 
         window.open(`${route}?start_date=${s}&end_date=${e}${idObatParam}`, '_blank');
     }

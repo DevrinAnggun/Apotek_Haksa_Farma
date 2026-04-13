@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <title>Laporan Penjualan (PDF)</title>
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #333; }
+        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
-        .title { font-size: 16pt; font-weight: bold; margin: 0; }
-        .subtitle { font-size: 10pt; color: #555; margin-top: 5px; }
+        .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
+        .subtitle { font-size: 10pt; color: #000; margin-top: 5px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #777; padding: 6px; text-align: left; font-size: 11pt; }
-        th { background-color: #ddd; font-weight: bold; text-align: center; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: left; font-size: 11pt; color: #000; }
+        th { background-color: #ddd; font-weight: bold; text-align: center; color: #000; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         
-        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 10pt; font-style: italic; color: #555; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 10pt; font-style: italic; color: #000; }
     </style>
 </head>
 <body>
@@ -62,8 +62,8 @@
         </tbody>
         <tfoot>
             <tr style="background-color: #eee;">
-                <td colspan="6" class="text-right" style="font-weight: bold; padding-right: 15px;">TOTAL PENDAPATAN :</td>
-                <td class="text-center" style="font-weight: bold; color: green;">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                <td colspan="6" class="text-right" style="font-weight: bold; padding-right: 15px; color: #000;">TOTAL PENDAPATAN :</td>
+                <td class="text-center" style="font-weight: bold; color: #000;">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>

@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>Laporan Retur Pembelian (PDF)</title>
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #333; }
+        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
-        .title { font-size: 16pt; font-weight: bold; margin: 0; }
-        .subtitle { font-size: 9pt; color: #555; margin-top: 5px; }
+        .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
+        .subtitle { font-size: 9pt; color: #000; margin-top: 5px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #777; padding: 5px; text-align: left; }
-        th { background-color: #f1f1f1; font-weight: bold; text-align: center; font-size: 9pt; }
-        td { font-size: 9pt; }
+        th, td { border: 1px solid #000; padding: 5px; text-align: left; color: #000; }
+        th { background-color: #f1f1f1; font-weight: bold; text-align: center; font-size: 9pt; color: #000; }
+        td { font-size: 9pt; color: #000; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .font-bold { font-weight: bold; }
         
-        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 8pt; font-style: italic; color: #777; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 8pt; font-style: italic; color: #000; }
     </style>
 </head>
 <body>
@@ -57,7 +57,7 @@
                         @if($retur->foto && file_exists(public_path($retur->foto)))
                             <img src="{{ public_path($retur->foto) }}" style="max-width: 70px; max-height: 70px;" alt="">
                         @else
-                            <span style="color: #999; font-style: italic;">Tidak ada</span>
+                            <span style="color: #000; font-style: italic;">Tidak ada</span>
                         @endif
                     </td>
                     <td class="text-center">Rp{{ number_format($retur->nominal_potongan, 0, ',', '.') }}</td>
@@ -70,8 +70,8 @@
         </tbody>
         <tfoot>
             <tr style="background-color: #f9f9f9;">
-                <td colspan="7" class="text-right font-bold">TOTAL POTONGAN :</td>
-                <td class="text-center font-bold" style="color: #166534;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
+                <td colspan="7" class="text-right font-bold" style="color: #000;">TOTAL POTONGAN :</td>
+                <td class="text-center font-bold" style="color: #000;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>

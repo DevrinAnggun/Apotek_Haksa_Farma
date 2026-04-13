@@ -58,12 +58,23 @@ class ObatController extends Controller
             $obat->retur_bulan_ini = $obat->returPembelians->sum('qty_retur');
             $obat->terjual_bulan_ini = $obat->penjualanDetails->sum('qty');
             
+            // Perkiraan Stok Awal
             $isCurrentMonth = ($month == date('m') && $year == date('Y'));
             if ($isCurrentMonth) {
                 $obat->stok_awal = $obat->current_stok - $obat->masuk_bulan_ini + $obat->retur_bulan_ini + $obat->terjual_bulan_ini;
             } else {
-                $obat->stok_awal = 0; // Approximations for past months
+                $obat->stok_awal = 0; 
             }
+
+            // Stok Sistem Akhir (Expected)
+            $obat->expected_stok = $obat->stok_awal + $obat->masuk_bulan_ini - $obat->retur_bulan_ini - $obat->terjual_bulan_ini;
+            
+            // Stok Fisik Akhir (SO terakhir)
+            $soTerakhir = $obat->stockOpnames->sortByDesc('tanggal')->first();
+            $obat->total_so = $soTerakhir ? $soTerakhir->jumlah : 0;
+            
+            // Selisih
+            $obat->selisih = $obat->total_so - $obat->expected_stok;
 
             $dailySO = [];
             for($i = 1; $i <= $daysInMonth; $i++) {
@@ -297,5 +308,61 @@ class ObatController extends Controller
             'terjual_bulan_ini' => $obat->penjualanDetails->sum('qty'),
             'daysInMonth' => $daysInMonth
         ]);
+    }
+
+    public function cetakStokOpname(Request $request)
+    {
+        $month = $request->input('month', date('m'));
+        $year = $request->input('year', date('Y'));
+        $monthName = \Carbon\Carbon::create($year, $month)->translatedFormat('F Y');
+
+        $obats = Obat::with(['kategori', 'satuan', 'stokBatches'])
+            ->with(['penjualanDetails' => function($q) use ($month, $year) {
+                $q->whereHas('penjualan', function($q2) use ($month, $year) {
+                    $q2->whereMonth('tgl_penjualan', $month)->whereYear('tgl_penjualan', $year);
+                });
+            }])
+            ->with(['pembelianDetails' => function($q) use ($month, $year) {
+                $q->whereHas('pembelian', function($q2) use ($month, $year) {
+                    $q2->whereMonth('tgl_pembelian', $month)->whereYear('tgl_pembelian', $year);
+                });
+            }])
+            ->with(['returPembelians' => function($q) use ($month, $year) {
+                $q->whereMonth('tgl_retur', $month)->whereYear('tgl_retur', $year);
+            }])
+            ->with(['stockOpnames' => function($q) use ($month, $year) {
+                $q->whereMonth('tanggal', $month)->whereYear('tanggal', $year);
+            }])
+            ->get();
+
+        foreach ($obats as $obat) {
+            $obat->current_stok = $obat->stokBatches->sum('stok_sisa');
+            $obat->masuk_bulan_ini = $obat->pembelianDetails->sum('qty');
+            $obat->retur_bulan_ini = $obat->returPembelians->sum('qty_retur');
+            $obat->terjual_bulan_ini = $obat->penjualanDetails->sum('qty');
+            
+            // Perkiraan Stok Awal
+            $isCurrentMonth = ($month == date('m') && $year == date('Y'));
+            if ($isCurrentMonth) {
+                $obat->stok_awal = $obat->current_stok - $obat->masuk_bulan_ini + $obat->retur_bulan_ini + $obat->terjual_bulan_ini;
+            } else {
+                $obat->stok_awal = 0; // fallback untuk bulan lalu
+            }
+
+            // Stok Sistem Akhir (Expected)
+            $obat->expected_stok = $obat->stok_awal + $obat->masuk_bulan_ini - $obat->retur_bulan_ini - $obat->terjual_bulan_ini;
+            
+            // Stok Fisik Akhir (Hasil SO terakhir di bulan itu)
+            $soTerakhir = $obat->stockOpnames->sortByDesc('tanggal')->first();
+            $obat->total_so = $soTerakhir ? $soTerakhir->jumlah : 0;
+            
+            // Selisih
+            $obat->selisih = $obat->total_so - $obat->expected_stok;
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('obat.pdf_so', compact('obats', 'monthName'));
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->download("Laporan_Stock_Opname_{$month}_{$year}.pdf");
     }
 }

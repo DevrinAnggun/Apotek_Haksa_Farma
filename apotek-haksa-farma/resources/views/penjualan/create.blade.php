@@ -3,9 +3,9 @@
 @section('content')
 <div class="mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
     <h2 class="text-2xl font-extrabold text-gray-800 tracking-wide uppercase">Kasir</h2>
-    <a href="{{ route('laporan.penjualan') }}" class="text-sm text-green-700 hover:underline flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        Kembali ke Riwayat Penjualan
+    <a href="{{ route('laporan.penjualan') }}" 
+       class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-5 rounded-lg transition text-center shadow flex items-center justify-center text-xs uppercase tracking-widest">
+        Kembali Ke Riwayat
     </a>
 </div>
 
@@ -135,7 +135,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-gray-500 font-medium mb-1">Uang Bayar (Rp)</label>
+                    <label class="block text-gray-500 font-medium mb-1">Uang Bayar (Rp) <span class="text-red-500">*</span></label>
                     <input type="number" id="nominal_bayar_input" placeholder="Masukkan nominal..."
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                         oninput="hitungKembalian()" min="0">
@@ -359,7 +359,7 @@
 </script>
 
 {{-- ===== MODAL TRANSAKSI BERHASIL ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-50 hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->

@@ -57,7 +57,7 @@ class DashboardController extends Controller
         // Logika: Mengambil data dari tabel `stok_batches` di mana tgl_expired 
         // berada di antara Hari Ini sampai dengan +30 hari ke depan.
         // -----------------------------------------------------------------------------
-        $batasWaktuWarning = Carbon::now()->addDays(30);
+        $batasWaktuWarning = Carbon::now()->addMonths(5);
 
         $obatMendekatiExpired = StokBatch::whereHas('obat', function($q) {
                 $q->whereNull('deleted_at');
@@ -68,8 +68,8 @@ class DashboardController extends Controller
             ->orderBy('tgl_expired', 'asc')
             ->get();
             
-        // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-7)
-        $batasKadaluarsa = Carbon::now()->addDays(7);
+        // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-5 Bulan)
+        $batasKadaluarsa = Carbon::now()->addMonths(5);
         $obatSudahExpired = StokBatch::whereHas('obat', function($q) {
                 $q->whereNull('deleted_at');
             })

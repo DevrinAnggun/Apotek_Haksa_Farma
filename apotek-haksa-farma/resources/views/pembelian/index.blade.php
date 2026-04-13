@@ -64,10 +64,10 @@
                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Laporan Stok Masuk
             </a>
-            <a href="{{ route('laporan.retur_pdf') }}" class="block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-green-50 hover:text-green-700 transition flex items-center gap-2">
-                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-                Laporan Retur Barang
-            </a>
+            <button type="button" onclick="openUnifiedReturModal()" class="w-full text-left block px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition flex items-center gap-2">
+                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Laporan & Rekap Retur
+            </button>
         </div>
     </div>
 </div>
@@ -214,7 +214,7 @@
 {{-- Modals extracted to partials at the end of file --}}
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[150] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <div class="flex justify-center mb-5">
@@ -249,6 +249,120 @@
     @keyframes drawCircle { to { stroke-dashoffset: 0; } }
     @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
+
+{{-- ===== MODAL TERPADU REKAP & LAPORAN RETUR ===== --}}
+<div id="modalUnifiedRetur" class="fixed inset-0 z-[150] hidden flex items-center justify-center font-sans" x-data="{ tab: 'rekap' }">
+    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeUnifiedReturModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden animate-modal flex flex-col max-h-[90vh]">
+        <!-- Header -->
+        <div class="bg-orange-600 px-6 py-4 flex items-center justify-between text-white">
+            <h3 class="font-bold text-lg uppercase tracking-widest flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Laporan & Rekap Retur
+            </h3>
+            <button onclick="closeUnifiedReturModal()" class="text-orange-100 hover:text-white transition text-3xl font-light leading-none">&times;</button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex bg-orange-50 border-b border-orange-100 p-1 gap-1">
+            <button @click="tab = 'rekap'; fetchGlobalRetur();" 
+                    :class="tab === 'rekap' ? 'bg-white text-orange-600 shadow-sm border-orange-200' : 'text-gray-500 hover:bg-orange-100'"
+                    class="flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-transparent">
+                Lihat Rekap Data
+            </button>
+            <button @click="tab = 'unduh'" 
+                    :class="tab === 'unduh' ? 'bg-white text-orange-600 shadow-sm border-orange-200' : 'text-gray-500 hover:bg-orange-100'"
+                    class="flex-1 py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border border-transparent">
+                Unduh PDF Laporan
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto">
+            <!-- TAB 1: LIHAT REKAP -->
+            <div x-show="tab === 'rekap'" class="animate-fadeIn">
+                <div class="p-0">
+                    <table class="w-full text-[11px] text-left border-collapse">
+                        <thead class="bg-gray-100 sticky top-0 border-b border-gray-200">
+                            <tr>
+                                <th class="p-4 font-bold text-gray-700 uppercase tracking-tighter">Nama Barang</th>
+                                <th class="p-4 font-bold text-gray-700 text-center uppercase tracking-tighter">Tanggal</th>
+                                <th class="p-4 font-bold text-gray-700 text-center uppercase tracking-tighter w-12">Qty</th>
+                                <th class="p-4 font-bold text-gray-700 text-center uppercase tracking-tighter">Potongan</th>
+                                <th class="p-4 font-bold text-gray-700 text-left uppercase tracking-tighter">Alasan</th>
+                                <th class="p-4 font-bold text-gray-700 text-center uppercase tracking-tighter w-10">Bukti</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unified_rekap_body">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: UNDUH LAPORAN -->
+            <div x-show="tab === 'unduh'" class="p-8 space-y-6 animate-fadeIn" x-data="{ filterType: 'semua' }">
+                <div class="max-w-md mx-auto space-y-6">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-widest text-center">Pilih Tipe Laporan</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button @click="filterType = 'semua'" :class="filterType === 'semua' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-500'" class="py-2.5 rounded-xl text-[10px] font-bold uppercase transition shadow-sm">Semua Riwayat</button>
+                            <button @click="filterType = 'obat'" :class="filterType === 'obat' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-500'" class="py-2.5 rounded-xl text-[10px] font-bold uppercase transition shadow-sm">Per Obat</button>
+                        </div>
+                    </div>
+
+                    <form action="{{ route('laporan.retur_pdf') }}" method="GET" target="_blank" class="space-y-6">
+                        <!-- Range Date -->
+                        <div x-show="filterType === 'semua'" class="grid grid-cols-2 gap-3 p-4 bg-orange-50 rounded-2xl border border-orange-100 animate-fadeIn">
+                             <div>
+                                <label class="block text-[9px] font-bold text-orange-400 mb-1 uppercase">Mulai</label>
+                                <input type="date" name="start_date" value="{{ date('Y-m-d', strtotime('-30 days')) }}" class="w-full border border-orange-200 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-orange-500 outline-none font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-orange-400 mb-1 uppercase">Selesai</label>
+                                <input type="date" name="end_date" value="{{ date('Y-m-d') }}" class="w-full border border-orange-200 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-orange-500 outline-none font-bold">
+                            </div>
+                        </div>
+
+
+
+                        <!-- Filter Obat -->
+                        <div x-show="filterType === 'obat'" class="p-4 bg-orange-50 rounded-2xl border border-orange-100 animate-fadeIn">
+                            <label class="block text-[9px] font-bold text-orange-400 mb-1 uppercase text-center mb-2">Pilih Nama Obat</label>
+                            <select name="id_obat" class="w-full border border-orange-200 rounded-lg px-3 py-2 text-xs focus:ring-1 focus:ring-orange-500 outline-none font-bold uppercase">
+                                <option value="">-- Pilih Obat --</option>
+                                @foreach($obats as $o)
+                                    <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-4 rounded-2xl transition shadow-xl text-xs flex items-center justify-center gap-2 uppercase tracking-widest active:scale-95">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Unduh Laporan PDF
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+            <span class="text-[10px] text-gray-400 italic">Data diperbarui otomatis secara real-time.</span>
+            <button type="button" onclick="closeUnifiedReturModal()" class="px-8 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold transition rounded-xl text-[10px] uppercase tracking-widest shadow-sm active:scale-95">Tutup</button>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL PREVIEW FOTO RETUR --}}
+<div id="modalPreviewFoto" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closePreviewFoto()"></div>
+    <div class="relative max-w-4xl w-full flex flex-col items-center">
+        <button onclick="closePreviewFoto()" class="absolute -top-12 right-0 text-white hover:text-gray-300 transition text-4xl">&times;</button>
+        <img id="preview_img_full" src="" alt="Bukti Retur" class="max-w-full max-h-[80vh] rounded-xl shadow-2xl border-4 border-white/20">
+    </div>
+</div>
 
 {{-- ===== MODAL EDIT STOK MASUK ===== --}}
 <div id="modalEditStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center"
@@ -299,13 +413,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Tanggal Terima -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima <span class="text-red-500">*</span></label>
                         <input type="date" name="tgl_pembelian" id="edit_tgl_pembelian" required
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                     </div>
                     <!-- Nama Supplier -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier <span class="text-red-500">*</span></label>
                         <input list="supplier_list" name="nama_suplier" id="edit_nama_suplier" required placeholder="Ketik nama supplier..."
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                     </div>
@@ -313,7 +427,7 @@
 
                 <!-- Nama Barang (Searchable Dropdown) -->
                 <div class="relative">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang <span class="text-red-500">*</span></label>
                     <button type="button" @click="openObat = !openObat" 
                         class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm flex justify-between items-center focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 shadow-sm">
                         <span x-text="selectedObatName"></span>
@@ -347,13 +461,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Tanggal Kadaluarsa -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa <span class="text-red-500">*</span></label>
                         <input type="date" name="tgl_expired" id="edit_tgl_expired" required
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                     </div>
                     <!-- Barang Masuk (Qty) -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk <span class="text-red-500">*</span></label>
                         <input type="number" name="qty" id="edit_qty" min="1" required placeholder="0"
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-600 shadow-sm">
                     </div>
@@ -363,7 +477,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Harga Beli -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
                             <input type="number" name="harga_beli" id="edit_harga_beli" min="0" required placeholder="0"
@@ -372,7 +486,7 @@
                     </div>
                     <!-- Harga Jual -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
                             <input type="number" name="harga_jual" id="edit_harga_jual" min="0" required placeholder="0"
@@ -450,13 +564,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Tanggal Terima -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima <span class="text-red-500">*</span></label>
                         <input type="date" name="tgl_pembelian" required value="{{ date('Y-m-d') }}"
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                     </div>
                     <!-- Nama Supplier -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier <span class="text-red-500">*</span></label>
                         <input list="supplier_list" name="nama_suplier" required placeholder="Ketik nama supplier..."
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                         <datalist id="supplier_list">
@@ -469,7 +583,7 @@
 
                 <!-- Nama Barang (Searchable Dropdown) -->
                 <div class="relative">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang <span class="text-red-500">*</span></label>
                     <button type="button" @click="openObat = !openObat" 
                         class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm flex justify-between items-center focus:ring-2 focus:ring-green-500 transition font-bold uppercase text-gray-800 shadow-sm">
                         <span x-text="selectedObatName"></span>
@@ -503,13 +617,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Tanggal Kadaluarsa -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa <span class="text-red-500">*</span></label>
                         <input type="date" name="items[0][tgl_expired]" required
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-medium shadow-sm">
                     </div>
                     <!-- Barang Masuk (Qty) -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Masuk <span class="text-red-500">*</span></label>
                         <input type="number" name="items[0][qty]" min="1" required placeholder="0"
                             class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-600 shadow-sm">
                     </div>
@@ -519,7 +633,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Harga Beli -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
                             <input type="number" name="items[0][harga_beli]" min="0" required placeholder="0"
@@ -528,7 +642,7 @@
                     </div>
                     <!-- Harga Jual -->
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
                             <input type="number" name="items[0][harga_jual]" min="0" required placeholder="0"
@@ -555,6 +669,8 @@
 
     </div>
 </div>
+
+
 
 {{-- ===== MODAL RIWAYAT STOK MASUK ===== --}}
 <div id="modalRiwayatStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center font-sans">
@@ -628,17 +744,17 @@
             
             <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Barang</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Barang <span class="text-red-500">*</span></label>
                     <input type="text" id="retur_nama_obat" readonly
                         class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none transition font-bold uppercase text-gray-600 shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Jumlah Retur (Qty)</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Jumlah Retur (Qty) <span class="text-red-500">*</span></label>
                     <input type="number" name="qty_retur" min="1" required placeholder="Contoh: 10"
                         class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition font-bold text-orange-600 shadow-sm">
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nominal Potongan</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nominal Potongan <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
                         <input type="number" name="nominal_potongan" min="0" required placeholder="0" value="0"
@@ -647,7 +763,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Alasan Retur</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Alasan Retur <span class="text-red-500">*</span></label>
                     <textarea name="alasan" required placeholder="Contoh: Barang kadaluarsa" rows="3"
                         class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition shadow-sm"></textarea>
                 </div>
@@ -854,6 +970,80 @@
         document.getElementById('retur_foto_preview').classList.add('hidden');
         document.getElementById('retur_foto_preview').src = '#';
         document.getElementById('retur_foto_placeholder').classList.remove('hidden');
+    }
+
+    /* ===== LOGIKA MODAL TERPADU RETUR ===== */
+    function openUnifiedReturModal() {
+        const modal = document.getElementById('modalUnifiedRetur');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        fetchGlobalRetur();
+    }
+
+    function closeUnifiedReturModal() {
+        const modal = document.getElementById('modalUnifiedRetur');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    function fetchGlobalRetur() {
+        const body = document.getElementById('unified_rekap_body');
+        body.innerHTML = '<tr><td colspan="6" class="p-8 text-center italic text-gray-400">Memuat riwayat retur...</td></tr>';
+        
+        fetch(`/pembelian/rekap-retur-semua`)
+            .then(response => response.json())
+            .then(data => {
+                body.innerHTML = '';
+                if (data.length === 0) {
+                    body.innerHTML = '<tr><td colspan="6" class="p-10 text-center text-gray-400 italic font-medium">Belum ada riwayat retur ditemukan.</td></tr>';
+                    return;
+                }
+                data.forEach(item => {
+                    const dateObj = new Date(item.tgl_retur);
+                    const formattedDate = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const namaBarang = item.obat ? item.obat.nama_obat : '-';
+                    
+                    const fotoHtml = item.foto 
+                        ? `<button onclick="openPreviewFoto('/${item.foto}')" class="text-orange-500 hover:scale-110 transition p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></button>`
+                        : '<span class="text-gray-300 italic text-[9px]">N/A</span>';
+
+                    body.innerHTML += `
+                        <tr class="border-b border-gray-50 hover:bg-orange-50 transition">
+                            <td class="p-4 text-left font-bold text-gray-800 uppercase text-[10px] leading-tight">${namaBarang}</td>
+                            <td class="p-4 text-center font-medium text-gray-600">${formattedDate}</td>
+                            <td class="p-4 text-center text-red-600 font-extrabold">${item.qty_retur}</td>
+                            <td class="p-4 text-center font-bold text-gray-800">Rp${new Intl.NumberFormat('id-ID').format(item.nominal_potongan)}</td>
+                            <td class="p-4 text-left text-gray-500 italic leading-relaxed text-[10px]">${item.alasan}</td>
+                            <td class="p-4 text-center">${fotoHtml}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(error => {
+                body.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-bold">Gagal memuat rekap retur.</td></tr>';
+            });
+    }
+
+    function openRekapReturModal(idPembelian, idObat, namaObat) {
+        // Reuse unified modal but filter or show specific message if needed
+        // For simplicity, we now use the Global/Unified view as requested
+        openUnifiedReturModal();
+    }
+
+    function openGlobalReturModal() { openUnifiedReturModal(); }
+    function openFilterReturModal() { openUnifiedReturModal(); }
+
+    function openPreviewFoto(src) {
+        document.getElementById('preview_img_full').src = src;
+        document.getElementById('modalPreviewFoto').classList.remove('hidden');
+        document.getElementById('modalPreviewFoto').classList.add('flex');
+    }
+
+    function closePreviewFoto() {
+        document.getElementById('modalPreviewFoto').classList.add('hidden');
+        document.getElementById('modalPreviewFoto').classList.remove('flex');
     }
 
     function previewReturFoto(input) {

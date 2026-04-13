@@ -42,12 +42,16 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('supplier', SupplierController::class);
         Route::get('/obat/katalog', [ObatController::class, 'katalogAdmin'])->name('obat.katalog');
         Route::post('/obat/save-so', [ObatController::class, 'saveStockOpname'])->name('obat.save_so');
+        Route::post('/obat/sync-stock', [ObatController::class, 'syncStock'])->name('obat.sync_stock');
         Route::get('/obat/{id}/so-data', [ObatController::class, 'getSOData'])->name('obat.so_data');
+        Route::get('/obat/cetak-so', [ObatController::class, 'cetakStokOpname'])->name('obat.cetak_so');
         Route::resource('obat', ObatController::class);
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);
         Route::get('/pembelian/riwayat/{id_detail}', [PembelianController::class, 'getRiwayat'])->name('pembelian.riwayat');
         Route::post('/pembelian/retur', [PembelianController::class, 'storeRetur'])->name('pembelian.retur');
+        Route::get('/pembelian/rekap-retur/{id_pembelian}/{id_obat}', [PembelianController::class, 'getRekapRetur'])->name('pembelian.rekap_retur');
+        Route::get('/pembelian/rekap-retur-semua', [PembelianController::class, 'getAllReturRecap'])->name('pembelian.rekap_retur_all');
         Route::resource('pembelian', PembelianController::class);
 
         // Laporan & Print

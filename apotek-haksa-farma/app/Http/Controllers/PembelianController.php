@@ -397,4 +397,15 @@ class PembelianController extends Controller
             return redirect()->back()->with('error', 'Gagal memproses retur: ' . $e->getMessage());
         }
     }
+
+   
+
+    public function getAllReturRecap()
+    {
+        $returs = \App\Models\ReturPembelian::with('obat')
+            ->latest('tgl_retur')
+            ->get();
+
+        return response()->json($returs);
+    }
 }

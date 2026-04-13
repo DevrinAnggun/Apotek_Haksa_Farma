@@ -39,7 +39,7 @@
             {{-- Nav Menu --}}
             <nav class="flex items-center gap-1">
                 <a href="{{ route('publik.katalog') }}"
-                    class="nav-item px-4 py-2 rounded-full text-sm font-semibold {{ request()->routeIs('publik.katalog') ? 'nav-active' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
+                    class="nav-item px-4 py-2 rounded-full text-sm font-semibold {{ (request()->routeIs('publik.katalog') || request()->routeIs('home')) ? 'nav-active' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
                     Katalog Produk
                 </a>
                 <a href="{{ route('publik.artikel') }}"
@@ -60,7 +60,7 @@
     </main>
 
     {{-- ===== FOOTER ===== --}}
-    <footer class="bg-gray-800 text-gray-300 mt-16">
+    <footer class="bg-green-900 text-gray-200 mt-16">
         <div class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {{-- Kolom 1 --}}
             <div>
@@ -111,7 +111,7 @@
                 </form>
             </div>
         </div>
-        <div class="border-t border-gray-700 py-4 text-center text-xs text-gray-500">
+        <div class="border-t border-green-800 py-4 text-center text-xs text-green-300/50">
             © {{ date('Y') }} Apotek Haksa Farma. All rights reserved.
         </div>
     </footer>
