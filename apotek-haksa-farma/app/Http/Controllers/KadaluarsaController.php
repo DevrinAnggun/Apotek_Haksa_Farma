@@ -91,7 +91,7 @@ class KadaluarsaController extends Controller
             ->orderBy('earliest_expired', 'asc')->get();
 
         $pdf = Pdf::loadView('kadaluarsa.pdf', compact('kadaluarsas', 'batasHari'));
-        $pdf->setPaper('A4', 'portrait');
+        $pdf->setPaper('A4', 'landscape');
 
         $filename = 'Laporan_Data_Kadaluarsa_';
         if ($startDate && $endDate) {

@@ -95,7 +95,6 @@
             <div class="flex-1 py-6 space-y-1">
                 
                 <!-- Dashboard -->
-                <!-- The URL segment checking applies 'sidebar-active' to the current page -->
                 <a href="{{ route('dashboard') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-600 {{ request()->is('dashboard*') || request()->is('/') ? 'sidebar-active' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     Dashboard
@@ -167,7 +166,7 @@
     </div>
 
     <!-- ===== MODAL EDIT PROFIL & PASSWORD ===== -->
-    <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+    <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onclick="closeProfileModal()"></div>
 
@@ -189,33 +188,8 @@
             <!-- Body -->
             <div class="px-6 py-5 overflow-y-auto max-h-[75vh]">
 
-                @if(session('success'))
-                    <div id="modal-success-alert" class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-xl mb-4 shadow-sm flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="bg-green-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
-                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="font-bold text-xs">{{ session('success') }}</span>
-                        </div>
-                        <button onclick="dismissAlert('modal-success-alert')" class="text-green-500 hover:text-green-700 transition font-bold text-lg leading-none">&times;</button>
-                    </div>
-                @endif
+                <!-- Alerts moved to main content area to avoid confusing user -->
 
-                @if ($errors->any())
-                    <div id="modal-error-alert" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-xl mb-4 shadow-sm flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="bg-red-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
-                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            </div>
-                            <div class="text-xs font-bold">
-                                @foreach ($errors->all() as $error)
-                                    <p>{{ $error }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                        <button onclick="dismissAlert('modal-error-alert')" class="text-red-500 hover:text-red-700 transition font-bold text-lg leading-none">&times;</button>
-                    </div>
-                @endif
 
                 <form action="{{ route('profile.update') }}" method="POST" id="profileForm">
                     @csrf
@@ -373,7 +347,8 @@
         });
 
         // Auto buka modal jika ada error validasi (dari server)
-        @if ($errors->any())
+        // Auto buka modal hanya jika ada error spesifik profil
+        @if ($errors->has('username') || $errors->has('password_baru'))
             document.addEventListener('DOMContentLoaded', function() {
                 openProfileModal();
             });
@@ -453,5 +428,6 @@
         }
     </script>
     @stack('scripts')
+    @yield('modals')
 </body>
 </html>

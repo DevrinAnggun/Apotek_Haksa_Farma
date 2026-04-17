@@ -35,6 +35,7 @@
                    <span class="{{ !request('kategori') ? 'bg-white/20' : 'bg-gray-100' }} px-2 py-0.5 rounded-md text-[10px]">{{ \App\Models\Obat::whereHas('kategori', fn($q) => $q->where('nama_kategori', '!=', 'CEK'))->count() }}</span>
                 </a>
                 @foreach($kategoris as $kat)
+                    @if(strtoupper($kat->nama_kategori) === 'CEK') @continue @endif
                 <a href="{{ route('obat.katalog', ['kategori' => $kat->id]) }}" 
                    class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition {{ request('kategori') == $kat->id ? 'bg-green-600 text-white shadow-md' : 'text-gray-600 hover:bg-green-50 hover:text-green-700' }}">
                    <span class="truncate">{{ $kat->nama_kategori }}</span>
@@ -62,14 +63,13 @@
         {{-- Product Grid --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($obats as $obat)
-            <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col relative">
-                <div class="absolute top-3 left-3 z-10">
-                    <span class="bg-white/90 backdrop-blur shadow-sm text-green-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider border border-green-100">
+            @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK') @continue @endif
+            <div class="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col relative p-4">
+                <div class="flex items-start justify-between mb-3">
+                    <span class="bg-green-50 text-green-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider border border-green-100">
                         {{ $obat->kategori->nama_kategori ?? 'Umum' }}
                     </span>
-                </div>
-
-                <div class="absolute top-3 right-3 z-20 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                    
                     <button type="button"
                         data-id="{{ $obat->id }}"
                         data-nama="{{ $obat->nama_obat }}"
@@ -81,43 +81,39 @@
                         data-harga-beli="{{ $obat->harga_beli }}"
                         data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
                         data-id-merk="{{ $obat->id_merk }}"
-                        data-gambar="{{ $obat->gambar ? asset($obat->gambar) : '' }}"
+                        data-deskripsi="{{ $obat->deskripsi }}"
+                        data-cara-pakai="{{ $obat->cara_pakai }}"
                         onclick="openEditModal(this)"
-                        class="p-2.5 bg-white text-green-600 rounded-xl shadow-lg border border-green-50 hover:bg-green-600 hover:text-white transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        class="p-2 bg-gray-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                     </button>
-
                 </div>
 
-                <div class="h-44 bg-gray-50 flex items-center justify-center relative overflow-hidden">
-                    @if($obat->gambar)
-                        <img src="{{ asset($obat->gambar) }}" class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500">
-                    @else
-                        <div class="w-full h-full bg-gradient-to-br from-green-50 to-green-100 flex flex-col items-center justify-center gap-2 text-green-300 font-bold uppercase text-[10px]">
-                            No Product Photo
-                        </div>
-                    @endif
-                </div>
+                @if($obat->gambar && file_exists(public_path($obat->gambar)))
+                    <div class="w-full h-48 mb-3 bg-white rounded-2xl overflow-hidden flex items-center justify-center">
+                        <img src="{{ asset($obat->gambar) }}" alt="{{ $obat->nama_obat }}" class="w-full h-full object-cover">
+                    </div>
+                @endif
 
-                <div class="p-5 flex-1 flex flex-col">
-                    <h3 class="text-sm font-extrabold text-gray-800 uppercase leading-snug tracking-tight mb-4 line-clamp-2 min-h-[40px]">
+                <div class="flex-1 flex flex-col">
+                    <h3 class="text-sm font-extrabold text-gray-800 uppercase leading-snug tracking-tight mb-3 line-clamp-2">
                         {{ $obat->nama_obat }}
                     </h3>
                     
                     <div class="mt-auto pt-3 border-t border-gray-50 flex items-center justify-between">
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">Harga Pelanggan</p>
+                            <p class="text-[10px] text-gray-900 font-black uppercase tracking-widest leading-none mb-1">Harga Jual</p>
                             <p class="text-base font-extrabold text-green-700">Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">Stok</p>
-                            <p class="text-sm font-extrabold text-gray-700">{{ $obat->total_stok }} <span class="text-[10px] text-gray-400">Pcs</span></p>
+                            <p class="text-[10px] text-gray-900 font-black uppercase tracking-widest leading-none mb-1">Stok</p>
+                            <p class="text-sm font-extrabold text-gray-900">{{ $obat->total_stok }} <span class="text-[10px] text-gray-900 font-black">Pcs</span></p>
                         </div>
                     </div>
                 </div>
             </div>
             @empty
-            <div class="col-span-full py-20 text-center text-gray-400">
+            <div class="col-span-full py-20 text-center text-gray-900 font-black uppercase tracking-widest">
                 Tidak ada produk untuk ditampilkan di katalog.
             </div>
             @endforelse
@@ -141,95 +137,56 @@
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-800 px-6 py-4 flex items-center justify-between text-white border-b border-green-900">
-            <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Obat</h3>
+            <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Katalog</h3>
             <button onclick="closeEditModal()" class="absolute right-5 text-gray-200 hover:text-white text-3xl font-light leading-none">&times;</button>
         </div>
         <div class="px-8 pt-2 pb-8 overflow-y-auto max-h-[75vh]">
-            <form id="formEdit" action="" method="POST" enctype="multipart/form-data" class="space-y-5">
+            <form id="formEdit" action="" method="POST" class="space-y-5">
                 @csrf @method('PUT')
                 <input type="hidden" name="kode_obat" id="edit_kode_obat">
                 <input type="hidden" name="harga_beli" id="edit_harga_beli">
+                <input type="hidden" name="stok" id="edit_stok">
+                <input type="hidden" name="id_satuan" id="edit_id_satuan">
+                <input type="hidden" name="expired_date" id="edit_expired_date">
                 
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kategori <span class="text-red-500">*</span></label>
-                    <select name="id_kategori" id="edit_id_kategori" onchange="toggleCekFields('edit')" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none shadow-sm uppercase text-sm font-medium">
-                        <option value="" class="normal-case">-- Pilih Kategori --</option>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kategori</label>
+                    <select name="id_kategori" id="edit_id_kategori" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-gray-50 focus:outline-none appearance-none shadow-sm uppercase text-sm font-bold cursor-not-allowed" onmousedown="return false;">
                         @foreach($kategoris as $kat)
-                            <option value="{{ $kat->id }}" data-nama="{{ $kat->nama_kategori }}">{{ $kat->nama_kategori }}</option>
+                            <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Obat <span class="text-red-500">*</span></label>
-                    <input type="text" name="nama_obat" id="edit_nama_obat" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 uppercase text-sm font-medium">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Obat</label>
+                    <input type="text" name="nama_obat" id="edit_nama_obat" readonly class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-gray-50 shadow-sm focus:outline-none uppercase text-sm font-bold cursor-not-allowed">
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Harga Jual <span class="text-red-500">*</span></label>
-                        <input type="number" name="harga_jual" id="edit_harga_jual" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
-                    </div>
-                    <div class="space-y-1" id="edit_stok_wrapper">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Stok Fisik <span class="text-red-500">*</span></label>
-                        <input type="number" name="stok" id="edit_stok" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 items-start">
-                    <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Satuan <span class="text-red-500">*</span></label>
-                        <select name="id_satuan" id="edit_id_satuan" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none shadow-sm text-sm font-medium">
-                            <option value="">-- Satuan --</option>
-                            @foreach($satuans as $sat)
-                                <option value="{{ $sat->id }}">{{ $sat->nama_satuan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="space-y-1 flex flex-col">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kadaluarsa <span class="text-red-500">*</span></label>
-                        <input type="date" name="expired_date" id="edit_expired_date" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
-                    </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Harga Jual <span class="text-red-500">*</span></label>
+                    <input type="number" name="harga_jual" id="edit_harga_jual" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
                 </div>
 
                 <div class="space-y-4 pt-4 border-t border-gray-50">
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Deskripsi Obat</label>
-                        <textarea name="deskripsi" id="edit_deskripsi" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Deskripsi Obat <span class="text-red-500">*</span></label>
+                        <textarea name="deskripsi" id="edit_deskripsi" rows="3" placeholder="Tambahkan informasi lengkap mengenai obat..." class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
                     </div>
 
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kegunaan</label>
-                        <textarea name="cara_pakai" id="edit_cara_pakai" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Gambar</label>
-                        <div class="relative w-full h-64 border border-gray-100 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
-                            <img id="edit_preview_kat" src="" class="max-w-full block hidden">
-                            <div id="edit_kat_placeholder" class="w-full h-full flex flex-col items-center justify-center text-[10px] text-gray-300 font-bold uppercase text-center p-4">
-                                <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                Pilih Gambar Untuk Mengubah
-                            </div>
-                        </div>
-                        <input type="file" id="input-edit-gambar" accept="image/*" onchange="initCropHandler(this, 'edit_preview_kat', 'edit_kat_placeholder', 1)" 
-                            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition shadow-sm">
-                        <button type="button" id="btn-crop-edit" onclick="applyManualCrop('edit_preview_kat', 'input-edit-gambar', 1)" 
-                            class="hidden w-full py-2 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition shadow-sm">
-                            Terapkan
-                        </button>
-                        <input type="file" name="gambar" id="final-edit-gambar" class="hidden">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kegunaan / Cara Pakai <span class="text-red-500">*</span></label>
+                        <textarea name="cara_pakai" id="edit_cara_pakai" rows="3" placeholder="Contoh: Dewasa 3x1 sehari setelah makan" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
                     </div>
                 </div>
             </form>
         </div>
         <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
             <button type="button" onclick="closeEditModal()" class="px-6 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700 transition uppercase tracking-wider">Batal</button>
-            <button type="button" onclick="showSuccessAnimation('formEdit', 'Perubahan Berhasil Disimpan!')" class="px-8 py-2.5 text-sm font-extrabold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition uppercase tracking-wider">Simpan</button>
+            <button type="button" onclick="showSuccessAnimation('formEdit', 'Data Berhasil Disimpan!')" class="px-8 py-2.5 text-sm font-extrabold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition uppercase tracking-wider">Simpan</button>
         </div>
     </div>
 </div>
-
 
 
 {{-- MODAL SUKSES --}}
@@ -259,153 +216,39 @@
 
 @push('scripts')
 <script>
-    function previewImageKatalog(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('preview-kat-img').src = e.target.result;
-                document.getElementById('preview-kat-img').classList.remove('hidden');
-                document.getElementById('preview-kat-placeholder').classList.add('hidden');
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-    function toggleCekFields(prefix) {
-        const sel = document.getElementById(prefix + '_id_kategori');
-        if (!sel) return;
-        const selectedOption = sel.options[sel.selectedIndex];
-        const isCek = selectedOption && selectedOption.getAttribute('data-nama') === 'CEK';
-        const stokWrapper = document.getElementById(prefix + '_stok_wrapper');
-        const expWrapper = document.getElementById(prefix + '_expired_wrapper');
-        if (isCek) {
-            if (stokWrapper) stokWrapper.classList.add('hidden');
-            if (expWrapper) expWrapper.classList.add('hidden');
-            const stokInput = document.getElementById(prefix === 'tambah' ? 'tambah_field_stok' : 'edit_stok');
-            if (stokInput) stokInput.value = 9999;
-        } else {
-            if (stokWrapper) stokWrapper.classList.remove('hidden');
-            if (expWrapper) expWrapper.classList.remove('hidden');
-        }
-    }
     function openEditModal(el) {
         const d = el.dataset;
         const form = document.getElementById('formEdit');
         form.action = '{{ url("obat") }}/' + d.id;
+        
+        // Populate Hidden & Readonly Fields
         document.getElementById('edit_kode_obat').value = d.kodeObat;
         document.getElementById('edit_harga_beli').value = d.hargaBeli;
-        document.getElementById('edit_nama_obat').value = d.nama;
-        document.getElementById('edit_harga_jual').value = d.hargaJual;
         document.getElementById('edit_stok').value = d.stok;
+        document.getElementById('edit_id_satuan').value = d.idSatuan;
         document.getElementById('edit_expired_date').value = d.expiredDate;
         document.getElementById('edit_id_kategori').value = d.idKategori;
-        document.getElementById('edit_id_satuan').value = d.idSatuan;
-        
-        // Handle Preview Image
-        const preview = document.getElementById('edit_preview_kat');
-        const placeholder = document.getElementById('edit_kat_placeholder');
-        if (d.gambar) {
-            preview.src = d.gambar;
-            preview.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-        } else {
-            preview.classList.add('hidden');
-            placeholder.classList.remove('hidden');
-        }
+        document.getElementById('edit_nama_obat').value = d.nama;
 
-        const editDeskripsi = document.getElementById('edit_deskripsi');
-        if (editDeskripsi) editDeskripsi.value = d.deskripsi || '';
-        const editCaraPakai = document.getElementById('edit_cara_pakai');
-        if (editCaraPakai) editCaraPakai.value = d.caraPakai || '';
-        toggleCekFields('edit');
+        // Editable Content
+        document.getElementById('edit_harga_jual').value = d.hargaJual;
+        document.getElementById('edit_deskripsi').value = d.deskripsi || '';
+        document.getElementById('edit_cara_pakai').value = d.caraPakai || '';
+
         document.getElementById('modalEdit').classList.remove('hidden');
+        document.getElementById('modalEdit').classList.add('flex');
         document.body.style.overflow = 'hidden';
     }
-    function closeEditModal() { document.getElementById('modalEdit').classList.add('hidden'); document.body.style.overflow = ''; }
+    
+    function closeEditModal() { document.getElementById('modalEdit').classList.add('hidden'); document.getElementById('modalEdit').classList.remove('flex'); document.body.style.overflow = ''; }
 
     function showSuccessAnimation(formId, titleText) {
         const form = document.getElementById(formId);
         if (!form.checkValidity()) { form.reportValidity(); return; }
-        
-        if (formId === 'formEdit' && activeCroppers['edit_preview_kat']) {
-            applyManualCrop('edit_preview_kat', 'input-edit-gambar', 1);
-        }
-
         document.getElementById('sukses_title').textContent = titleText;
         document.getElementById('modalSukses').classList.remove('hidden');
         document.getElementById('modalSukses').classList.add('flex');
         setTimeout(() => form.submit(), 1200);
-    }
-
-    /* ===== IMPROVED CROP LOGIC ===== */
-    let activeCroppers = {};
-
-    function initCropHandler(input, imgId, placeholderId, ratio) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById(imgId);
-                const placeholder = document.getElementById(placeholderId);
-                const isEdit = imgId.includes('edit');
-                const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-tambah';
-                const hintId = isEdit ? '' : 'hint-tambah';
-                
-                img.src = e.target.result;
-                img.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                
-                if (activeCroppers[imgId]) activeCroppers[imgId].destroy();
-                
-                setTimeout(() => {
-                    activeCroppers[imgId] = new Cropper(img, {
-                        aspectRatio: ratio,
-                        viewMode: 1,
-                        dragMode: 'move',
-                        autoCropArea: 0.9,
-                        background: false,
-                        modal: true,
-                        guides: true,
-                        center: true,
-                        highlight: false,
-                        cropBoxMovable: true,
-                        cropBoxResizable: true,
-                    });
-                    
-                    document.getElementById(btnId).classList.remove('hidden');
-                    if(hintId) document.getElementById(hintId).classList.remove('hidden');
-                }, 200);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function applyManualCrop(imgId, inputId, ratio) {
-        const cropper = activeCroppers[imgId];
-        if (!cropper) return;
-
-        const canvas = cropper.getCroppedCanvas({ width: 800, height: 800 / ratio });
-        canvas.toBlob((blob) => {
-            const isEdit = imgId.includes('edit');
-            const finalInputId = isEdit ? 'final-edit-gambar' : 'final-tambah-gambar';
-            const btnId = isEdit ? 'btn-crop-edit' : 'btn-crop-tambah';
-            
-            const file = new File([blob], 'cropped.jpg', { type: 'image/jpeg' });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            document.getElementById(finalInputId).files = dataTransfer.files;
-            
-            // UI Feedback
-            const btn = document.getElementById(btnId);
-            const originalText = btn.innerText;
-            btn.innerText = 'BERHASIL DIPOTONG!';
-            btn.classList.add('bg-emerald-600');
-            btn.classList.remove('bg-green-600');
-            
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.classList.remove('bg-emerald-600');
-                btn.classList.add('bg-green-600');
-            }, 1500);
-        }, 'image/jpeg', 0.9);
     }
 </script>
 @endpush

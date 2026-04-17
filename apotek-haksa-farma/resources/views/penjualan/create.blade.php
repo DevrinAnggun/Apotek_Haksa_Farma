@@ -40,7 +40,7 @@
 
         {{-- Tabel Obat --}}
         <div class="flex-1 overflow-y-auto px-5 pb-4" style="max-height: 65vh;">
-            <table class="w-full text-sm border-collapse mt-2">
+            <table class="w-full text-xs border-collapse mt-2">
                 <thead class="sticky top-0 bg-white z-10">
                     <tr class="border-b border-gray-200 text-gray-500 text-xs uppercase">
                         <th class="py-2 px-2 text-center font-semibold w-10">No</th>
@@ -60,14 +60,19 @@
                     <tr class="border-b border-gray-100 transition obat-row {{ $rowClass }}"
                         data-nama="{{ strtolower($obat->nama_obat) }}"
                         data-kode="{{ strtolower($obat->kode_obat) }}">
-                        <td class="py-2.5 px-2 text-center text-gray-400 font-medium">{{ $loop->iteration }}</td>
+                        <td class="py-2.5 px-2 text-center text-gray-900 font-medium">{{ $loop->iteration }}</td>
                         <td class="py-2.5 px-2 font-medium tracking-wide">
                             <span class="font-bold uppercase {{ $isExpired ? 'text-red-600' : 'text-gray-800' }}">{{ $obat->nama_obat }}</span>
                             @if($isExpired)
                                 <span class="text-[10px] text-red-500 block font-bold uppercase mt-0.5">! KADALUARSA !</span>
                             @endif
-                            <span class="text-xs text-gray-400 block capitalize font-normal">{{ strtolower($obat->kategori->nama_kategori ?? '-') }} · {{ strtolower($obat->satuan->nama_satuan ?? '-') }}</span>
-                            @if($obat->tanggal_kadaluarsa)
+                            <span class="text-xs text-gray-900 block capitalize font-medium mt-0.5">
+                                {{ strtolower($obat->kategori->nama_kategori ?? '-') }}
+                            </span>
+                            @php 
+                                $isCek = ($obat->kategori->nama_kategori ?? '') === 'CEK';
+                            @endphp
+                            @if($obat->tanggal_kadaluarsa && !$isCek)
                                 <span class="text-[10px] block mt-0.5 {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-600 font-bold' : 'text-gray-400' }}">
                                     Exp: {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->format('d/m/Y') }}
                                 </span>
@@ -75,7 +80,7 @@
                         </td>
                         <td class="py-2.5 px-2 text-center">
                             @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
-                                <span class="text-gray-400 font-semibold">—</span>
+                                <span class="text-gray-900 font-black">—</span>
                             @else
                                 <span class="font-bold {{ $stok <= 0 ? 'text-red-500' : ($stok < 5 ? 'text-yellow-600' : 'text-green-600') }}">
                                     {{ $stok }}
@@ -101,7 +106,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="py-8 text-center text-gray-400 italic">Belum ada data obat.</td>
+                        <td colspan="5" class="py-12 text-center text-[13px] text-gray-400 font-medium">Belum ada data obat.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -120,7 +125,7 @@
             </div>
 
             <div id="keranjangList" class="px-3 py-3 flex flex-col gap-2 overflow-y-auto" style="max-height: 38vh; min-height: 80px;">
-                <p id="emptyCart" class="text-center text-gray-400 text-sm italic py-6">Keranjang masih kosong.<br>Klik "+ Tambah" untuk menambah obat.</p>
+                <p id="emptyCart" class="text-center text-gray-400 text-[13px] font-medium py-6">keranjang masih kosong.<br>klik "+ tambah" untuk menambah obat.</p>
             </div>
         </div>
 
@@ -190,7 +195,7 @@
         const emptyNote = document.getElementById('emptyCart');
 
         if (keranjang.length === 0) {
-            list.innerHTML = '<p id="emptyCart" class="text-center text-gray-400 text-sm italic py-6">Keranjang masih kosong.<br>Klik "+ Tambah" untuk menambah obat.</p>';
+            list.innerHTML = '<p id="emptyCart" class="text-center text-gray-400 text-[13px] font-medium py-6">keranjang masih kosong.<br>klik "+ tambah" untuk menambah obat.</p>';
             updateTotals();
             return;
         }
@@ -320,6 +325,7 @@
         const modal = document.getElementById('modalSukses');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        modal.style.display = 'flex';
 
         // Restart animasi SVG setiap kali modal dibuka
         const circle = modal.querySelector('.circle-anim');
@@ -359,7 +365,7 @@
 </script>
 
 {{-- ===== MODAL TRANSAKSI BERHASIL ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center" style="display: none;">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->

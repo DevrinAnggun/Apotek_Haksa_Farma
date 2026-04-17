@@ -13,12 +13,13 @@ class PublicController extends Controller
      */
     public function katalog(Request $request)
     {
-        // Query Dasar: Hanya ambil obat yang kategorinya BUKAN 'CEK' dan BELUM kadaluarsa
+        // Query Dasar: Hanya ambil obat yang kategorinya BUKAN 'CEK'
         $query = Obat::whereHas('kategori', function($q) {
                         $q->where('nama_kategori', '!=', 'CEK');
                      })
                      ->whereHas('stokBatches', function($q) {
-                        $q->where('tgl_expired', '>=', date('Y-m-d'));
+                        $q->where('stok_sisa', '>', 0)
+                          ->where('tgl_expired', '>=', date('Y-m-d'));
                      })
                      ->with(['kategori', 'satuan'])
                      ->withSum(['stokBatches as total_stok' => function($q) {
@@ -37,8 +38,9 @@ class PublicController extends Controller
 
         $obats    = $query->orderBy('nama_obat')->paginate(12)->withQueryString();
 
-        // Ambil kategori untuk sidebar (Kecuali 'CEK')
+        // Ambil kategori untuk sidebar (Kecuali 'CEK') + jumlah obat
         $kategoris = Kategori::where('nama_kategori', '!=', 'CEK')
+                             ->withCount('obats')
                              ->orderBy('nama_kategori')
                              ->get();
 

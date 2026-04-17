@@ -66,16 +66,16 @@
                 Pilih Jenis Laporan
             </div>
 
-            <a href="{{ route('kadaluarsa.pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-orange-600 hover:bg-orange-50 transition border-b border-gray-50">
-                <div class="bg-orange-100 p-1.5 rounded-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+            <a href="{{ route('kadaluarsa.pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-green-600 hover:bg-green-50 transition border-b border-gray-50 uppercase tracking-tighter">
+                <div class="bg-green-100 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
                 DATA STOK KADALUARSA
             </a>
 
-            <a href="{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition">
+            <a href="{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf') }}" target="_blank" class="flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 hover:bg-green-50 hover:text-green-600 transition uppercase tracking-tighter border-b border-gray-50">
                 <div class="bg-gray-100 p-1.5 rounded-lg">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 PENJUALAN SBLM EXP
             </a>
@@ -98,7 +98,9 @@
             </tr>
         </thead>
         <tbody id="kadaluarsaTableBody">
+            @php $displayCounter = 1; @endphp
             @forelse($kadaluarsas as $index => $item)
+            @if(isset($item->obat->kategori) && strtoupper($item->obat->kategori->nama_kategori) === 'CEK') @continue @endif
             @php
                 $now     = \Carbon\Carbon::now();
                 $expired = \Carbon\Carbon::parse($item->earliest_expired);
@@ -113,15 +115,15 @@
                     $statusLabel = $hLabel;
                     $statusClass = $diffDays <= 150
                         ? 'bg-red-100 text-red-700 border border-red-200'
-                        : 'bg-orange-100 text-orange-700 border border-orange-200';
-                    $rowClass    = $diffDays <= 150 ? 'bg-red-50' : 'bg-orange-50';
+                        : 'bg-blue-100 text-blue-700 border border-blue-200';
+                    $rowClass    = $diffDays <= 150 ? 'bg-red-50' : 'bg-blue-50';
                 }
             @endphp
-            <tr class="hover:bg-gray-100 transition {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 150 ? 'bg-red-50' : 'bg-orange-50') }}">
-                <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ ($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage() + $index + 1 }}</td>
+            <tr class="hover:bg-gray-100 transition text-xs {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 150 ? 'bg-red-50' : 'bg-blue-50') }}">
+                <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ (($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage()) + ($displayCounter++) }}</td>
                 <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300 text-left">
                     {{ $item->obat->nama_obat ?? '—' }}
-                    <span class="text-xs font-normal text-gray-400 block normal-case">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
+                    <span class="text-xs font-medium text-gray-900 block normal-case mt-0.5">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
                 </td>
                 <td class="py-3 px-5 text-center font-bold border border-gray-300 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
                     {{ number_format($item->total_sisa, 0, ',', '.') }}
@@ -166,7 +168,7 @@
             <tr>
                 <td colspan="7" class="py-10 text-center border border-gray-300">
                     <div class="flex flex-col items-center gap-2">
-                        <p class="text-gray-400 text-sm">Tidak ada obat yang kadaluarsa atau mendekati H-5 Bulan.</p>
+                        <p class="text-gray-400 font-medium text-[13px]">Tidak ada obat yang kadaluarsa atau mendekati H-5 Bulan.</p>
                     </div>
                 </td>
             </tr>
@@ -184,7 +186,7 @@
 
 
 {{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
-<div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+<div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="tutupHapus()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-[320px] mx-4 overflow-hidden animate-modal">
         <div class="bg-red-600 py-3 text-center">
@@ -194,7 +196,7 @@
             <p class="text-base font-bold text-gray-800 mb-2 leading-relaxed">
                 Yakin ingin menghapus <span id="hapusNamaObat" class="text-red-600"></span>?
             </p>
-            <p class="text-[11px] text-gray-500 italic leading-relaxed">
+            <p class="text-[11px] text-gray-400 leading-relaxed uppercase font-bold tracking-widest">
                 Data yang dihapus tidak dapat dikembalikan.
             </p>
         </div>
@@ -212,7 +214,7 @@
 
 
 {{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
+<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center" style="display: none;">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
         <!-- Animated Checkmark SVG -->
@@ -263,7 +265,9 @@ function filterTable(keyword) {
 
 let activeFormHapus = null;
 function tutupHapus() {
-    document.getElementById('modalHapus').classList.add('hidden');
+    const modal = document.getElementById('modalHapus');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
     document.body.style.overflow = '';
     activeFormHapus = null;
 }
@@ -281,7 +285,9 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function() {
             activeFormHapus = document.getElementById(this.dataset.form);
             document.getElementById('hapusNamaObat').textContent = this.dataset.nama || '';
-            document.getElementById('modalHapus').classList.remove('hidden');
+            const modal = document.getElementById('modalHapus');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         });
     });
@@ -308,6 +314,7 @@ function showSuccessAnimation(formId, titleText) {
     
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    modal.style.display = 'flex';
 
     // Restart animasi SVG
     const circle = modal.querySelector('.circle-anim');

@@ -162,11 +162,25 @@ class PembelianController extends Controller
 
         $totalPembelian = $pembelians->sum('total_bayar');
 
+        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
+        $customTitle = 'LAPORAN STOK MASUK';
+        if ($startDate === $endDate) {
+            $customTitle = 'LAPORAN STOK MASUK HARIAN';
+        } else {
+            $start = \Carbon\Carbon::parse($startDate);
+            $end = \Carbon\Carbon::parse($endDate);
+            // Jika rentang adalah satu bulan penuh
+            if ($start->day === 1 && $end->day === $start->daysInMonth && $start->month === $end->month && $start->year === $end->year) {
+                $customTitle = 'LAPORAN STOK MASUK BULANAN';
+            }
+        }
+
         $pdf = Pdf::loadView('pembelian.pdf', compact(
             'pembelians', 
             'startDate', 
             'endDate', 
-            'totalPembelian'
+            'totalPembelian',
+            'customTitle'
         ));
 
         $pdf->setPaper('A4', 'landscape');
@@ -327,15 +341,6 @@ class PembelianController extends Controller
             $pembelian = Pembelian::findOrFail($request->id_pembelian);
             $obat = \App\Models\Obat::findOrFail($request->id_obat);
 
-            // Handle foto upload (opsional)
-            $fotoPath = null;
-            if ($request->hasFile('foto')) {
-                $file = $request->file('foto');
-                $filename = 'retur_' . time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('uploads/retur'), $filename);
-                $fotoPath = 'uploads/retur/' . $filename;
-            }
-
             // 1. Simpan data Retur 
             \App\Models\ReturPembelian::create([
                 'id_pembelian' => $pembelian->id,
@@ -344,7 +349,7 @@ class PembelianController extends Controller
                 'tgl_retur' => now()->toDateString(),
                 'alasan' => $request->alasan,
                 'nominal_potongan' => $request->nominal_potongan,
-                'foto' => $fotoPath,
+                'foto' => null,
             ]);
 
             // 2. Kurangi stok batch dan stok sisa

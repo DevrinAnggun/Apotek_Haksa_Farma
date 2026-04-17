@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Penjualan (PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #000; }
+        body { font-family: 'Poppins', Helvetica, sans-serif; font-size: 10pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
         .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
         .subtitle { font-size: 10pt; color: #000; margin-top: 5px; }
@@ -23,7 +24,7 @@
     <div class="header">
         <h1 class="title">APOTEK HAKSA FARMA</h1>
         <p class="subtitle">Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474<br>
-        {{ $customTitle ?? 'LAPORAN PENJUALAN HARIAN / BULANAN' }}<br>
+        {{ $customTitle ?? 'LAPORAN PENJUALAN' }}<br>
         Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
@@ -76,8 +77,8 @@
     <!-- DOMPdf fitur footer nomor halaman -->
     <script type="text/php">
         if ( isset($pdf) ) {
-            $x = 520;
-            $y = 820;
+            $x = 750;
+            $y = 560;
             $text = "Halaman {PAGE_NUM} dari {PAGE_COUNT}";
             $font = $fontMetrics->get_font("helvetica", "italic");
             $size = 9;

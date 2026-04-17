@@ -80,13 +80,27 @@ class LaporanController extends Controller
 
         $totalPendapatan = $penjualans->sum('total_harga');
 
+        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
+        $customTitle = 'LAPORAN PENJUALAN';
+        if ($startDate === $endDate) {
+            $customTitle = 'LAPORAN PENJUALAN HARIAN';
+        } else {
+            $start = \Carbon\Carbon::parse($startDate);
+            $end = \Carbon\Carbon::parse($endDate);
+            // Jika rentang adalah satu bulan penuh
+            if ($start->day === 1 && $end->day === $start->daysInMonth && $start->month === $end->month && $start->year === $end->year) {
+                $customTitle = 'LAPORAN PENJUALAN BULANAN';
+            }
+        }
+
         // Render blade view menjadi halaman HTML untuk PDF
         // Load view 'penjualan.pdf' dan passing datanya
         $pdf = Pdf::loadView('penjualan.pdf', compact(
             'penjualans', 
             'startDate', 
             'endDate', 
-            'totalPendapatan'
+            'totalPendapatan',
+            'customTitle'
         ));
 
         // Set ukuran kertas (A4 Landscape agar tabel lebar tidak terpotong)
@@ -225,7 +239,19 @@ class LaporanController extends Controller
 
         $totalPotongan = $returs->sum('nominal_potongan');
 
-        $pdf = Pdf::loadView('pembelian.retur_pdf', compact('returs', 'startDate', 'endDate', 'totalPotongan'));
+        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
+        $customTitle = 'LAPORAN RETUR OBAT';
+        if ($startDate === $endDate) {
+            $customTitle = 'LAPORAN RETUR OBAT HARIAN';
+        } else {
+            $start = \Carbon\Carbon::parse($startDate);
+            $end = \Carbon\Carbon::parse($endDate);
+            if ($start->day === 1 && $end->day === $start->daysInMonth && $start->month === $end->month && $start->year === $end->year) {
+                $customTitle = 'LAPORAN RETUR OBAT BULANAN';
+            }
+        }
+
+        $pdf = Pdf::loadView('pembelian.retur_pdf', compact('returs', 'startDate', 'endDate', 'totalPotongan', 'customTitle'));
         $pdf->setPaper('A4', 'landscape');
         
         return $pdf->download("Laporan_Retur_Obat_{$startDate}_sampai_{$endDate}.pdf");

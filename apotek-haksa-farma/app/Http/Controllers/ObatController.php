@@ -72,6 +72,8 @@ class ObatController extends Controller
             // Stok Fisik Akhir (SO terakhir)
             $soTerakhir = $obat->stockOpnames->sortByDesc('tanggal')->first();
             $obat->total_so = $soTerakhir ? $soTerakhir->jumlah : 0;
+            $obat->last_so_date = $soTerakhir ? Carbon::parse($soTerakhir->tanggal)->format('Y-m-d') : '';
+            $obat->last_so_id = $soTerakhir ? $soTerakhir->id : null;
             
             // Selisih
             $obat->selisih = $obat->total_so - $obat->expected_stok;
@@ -134,29 +136,45 @@ class ObatController extends Controller
 
     public function store(Request $request)
     {
+        $isCek = \App\Models\Kategori::where('id', $request->id_kategori)->where('nama_kategori', 'CEK')->exists();
+        
         // Validasi Relasi dan Nilai Numerik
         $request->validate([
             'kode_obat'   => 'required|string|unique:obats,kode_obat',
             'nama_obat'   => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategoris,id',
-            'id_satuan'   => 'required|exists:satuans,id',
-            'harga_beli'  => 'required|integer|min:0',
-            'harga_jual'  => 'required|integer|min:0',
+            'id_satuan'   => $isCek ? 'nullable|exists:satuans,id' : 'required|exists:satuans,id',
+            'harga_beli'  => $isCek ? 'nullable|integer|min:0' : 'required|integer|min:0',
+            'harga_jual'  => $isCek ? 'nullable|integer|min:0' : 'required|integer|min:0',
             'stok_awal'   => 'nullable|integer|min:0',
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'deskripsi'   => 'nullable|string',
             'cara_pakai'  => 'nullable|string',
+            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
+        
+        // Default values for CEK category if empty
+        if ($isCek) {
+            if (!$request->filled('id_satuan')) {
+                $obatData['id_satuan'] = \App\Models\Satuan::first()->id;
+            }
+            if (!$request->filled('harga_beli')) {
+                $obatData['harga_beli'] = 0;
+            }
+            if (!$request->filled('harga_jual')) {
+                $obatData['harga_jual'] = 0;
+            }
+        }
         $obatData['batas_stok_minimal'] = 5;
 
-        // Handle Image Upload
         if ($request->hasFile('gambar')) {
-            $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('uploads/obat'), $imageName);
-            $obatData['gambar'] = 'uploads/obat/' . $imageName;
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/obat'), $filename);
+            $obatData['gambar'] = 'images/obat/' . $filename;
         }
 
         $obat = Obat::create($obatData);
@@ -189,31 +207,47 @@ class ObatController extends Controller
 
     public function update(Request $request, Obat $obat)
     {
+        $isCek = \App\Models\Kategori::where('id', $request->id_kategori)->where('nama_kategori', 'CEK')->exists();
+
         $request->validate([
             'kode_obat'   => 'required|string|unique:obats,kode_obat,'.$obat->id,
             'nama_obat'   => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategoris,id',
-            'id_satuan'   => 'required|exists:satuans,id',
-            'harga_beli'  => 'required|integer|min:0',
-            'harga_jual'  => 'required|integer|min:0',
+            'id_satuan'   => $isCek ? 'nullable|exists:satuans,id' : 'required|exists:satuans,id',
+            'harga_beli'  => $isCek ? 'nullable|integer|min:0' : 'required|integer|min:0',
+            'harga_jual'  => $isCek ? 'nullable|integer|min:0' : 'required|integer|min:0',
             'stok_awal'   => 'nullable|integer|min:0',
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'deskripsi'   => 'nullable|string',
             'cara_pakai'  => 'nullable|string',
+            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
+
+        // Default values for CEK category if empty
+        if ($isCek) {
+            if (!$request->filled('id_satuan')) {
+                $obatData['id_satuan'] = \App\Models\Satuan::first()->id;
+            }
+            if (!$request->filled('harga_beli')) {
+                $obatData['harga_beli'] = 0;
+            }
+            if (!$request->filled('harga_jual')) {
+                $obatData['harga_jual'] = 0;
+            }
+        }
         $obatData['batas_stok_minimal'] = 5;
 
-        // Handle Image Update
         if ($request->hasFile('gambar')) {
             if ($obat->gambar && file_exists(public_path($obat->gambar))) {
                 unlink(public_path($obat->gambar));
             }
-            $imageName = time() . '.' . $request->gambar->extension();
-            $request->gambar->move(public_path('uploads/obat'), $imageName);
-            $obatData['gambar'] = 'uploads/obat/' . $imageName;
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/obat'), $filename);
+            $obatData['gambar'] = 'images/obat/' . $filename;
         }
 
         $obat->update($obatData);
@@ -257,10 +291,6 @@ class ObatController extends Controller
 
     public function destroy(Obat $obat)
     {
-        // Hapus gambar jika ada
-        if ($obat->gambar && file_exists(public_path($obat->gambar))) {
-            unlink(public_path($obat->gambar));
-        }
         $obat->delete();
         return redirect()->back()->with('success', 'Data Obat berhasil dihapus!');
     }
@@ -277,6 +307,29 @@ class ObatController extends Controller
         );
 
         return response()->json(['success' => true]);
+    }
+
+    public function updateSODate(Request $request)
+    {
+        $id_so = $request->id_so;
+        $tanggal = $request->tanggal;
+        
+        $so = \App\Models\StockOpname::find($id_so);
+        if ($so) {
+            // Cek apakah tanggal baru bertabrakan dengan record obat yang sama
+            $exists = \App\Models\StockOpname::where('id_obat', $so->id_obat)
+                        ->where('tanggal', $tanggal)
+                        ->where('id', '!=', $id_so)
+                        ->exists();
+            
+            if($exists) {
+                return response()->json(['success' => false, 'message' => 'Sudah ada catatan di tanggal tersebut.'], 422);
+            }
+
+            $so->update(['tanggal' => $tanggal]);
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 404);
     }
 
     public function getSOData(Request $request, $id)
@@ -316,7 +369,10 @@ class ObatController extends Controller
         $year = $request->input('year', date('Y'));
         $monthName = \Carbon\Carbon::create($year, $month)->translatedFormat('F Y');
 
-        $obats = Obat::with(['kategori', 'satuan', 'stokBatches'])
+        $obats = Obat::whereHas('kategori', function($q) {
+                $q->where('nama_kategori', '!=', 'CEK');
+            })
+            ->with(['kategori', 'satuan', 'stokBatches'])
             ->with(['penjualanDetails' => function($q) use ($month, $year) {
                 $q->whereHas('penjualan', function($q2) use ($month, $year) {
                     $q2->whereMonth('tgl_penjualan', $month)->whereYear('tgl_penjualan', $year);

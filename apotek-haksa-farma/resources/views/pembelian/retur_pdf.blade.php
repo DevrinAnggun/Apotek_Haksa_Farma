@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Retur Pembelian (PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #000; }
+        body { font-family: 'Poppins', Helvetica, sans-serif; font-size: 9pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
         .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
         .subtitle { font-size: 9pt; color: #000; margin-top: 5px; }
@@ -25,7 +26,7 @@
     <div class="header">
         <h1 class="title">APOTEK HAKSA FARMA</h1>
         <p class="subtitle">Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474<br>
-        LAPORAN RETUR OBAT KADALUARSA (SUPPLIER)<br>
+        {{ $customTitle ?? 'LAPORAN RETUR OBAT' }}<br>
         Periode: {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}
         </p>
     </div>
@@ -39,7 +40,6 @@
                 <th width="130">Nama Barang</th>
                 <th width="30">Qty</th>
                 <th width="130">Alasan</th>
-                <th width="80">Foto Bukti</th>
                 <th width="100">Total Potongan (Rp)</th>
             </tr>
         </thead>
@@ -53,24 +53,17 @@
                     <td><span class="font-bold">{{ $retur->obat->nama_obat ?? 'Barang Terhapus' }}</span></td>
                     <td class="text-center">{{ $retur->qty_retur }}</td>
                     <td>{{ $retur->alasan }}</td>
-                    <td class="text-center">
-                        @if($retur->foto && file_exists(public_path($retur->foto)))
-                            <img src="{{ public_path($retur->foto) }}" style="max-width: 70px; max-height: 70px;" alt="">
-                        @else
-                            <span style="color: #000; font-style: italic;">Tidak ada</span>
-                        @endif
-                    </td>
                     <td class="text-center">Rp{{ number_format($retur->nominal_potongan, 0, ',', '.') }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center" style="padding: 20px;">Belum ada riwayat retur pada periode ini.</td>
+                    <td colspan="7" class="text-center" style="padding: 20px;">Belum ada riwayat retur pada periode ini.</td>
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr style="background-color: #f9f9f9;">
-                <td colspan="7" class="text-right font-bold" style="color: #000;">TOTAL POTONGAN :</td>
+                <td colspan="6" class="text-right font-bold" style="color: #000;">TOTAL POTONGAN :</td>
                 <td class="text-center font-bold" style="color: #000;">Rp{{ number_format($totalPotongan, 0, ',', '.') }}</td>
             </tr>
         </tfoot>

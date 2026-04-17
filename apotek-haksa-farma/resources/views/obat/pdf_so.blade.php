@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <title>Laporan Stock Opname - {{ $monthName }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 10pt; color: #000; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', 'Helvetica', 'Arial', sans-serif; font-size: 9pt; color: #000; margin: 0; padding: 0; }
         .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px; }
         .header h2 { margin: 0; text-transform: uppercase; color: #000; font-size: 18pt; }
         .header p { margin: 5px 0; font-size: 10pt; color: #000; }
@@ -46,9 +47,9 @@
                 <th>Nama Obat</th>
                 <th width="40">Satuan</th>
                 <th width="50">Awal</th>
-                <th width="50">Msk</th>
-                <th width="50">Klr</th>
-                <th width="50">Sis</th>
+                <th width="50">Masuk</th>
+                <th width="50">Keluar</th>
+                <th width="50">Sistem</th>
                 <th width="50" style="background-color: #eee;">Fisik</th>
                 <th width="50">Selisih</th>
                 <th width="80">Harga Modal</th>
@@ -109,5 +110,16 @@
             <p><strong>( ____________________ )</strong></p>
         </div>
     </div>
+    <!-- Halaman -->
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $x = 750;
+            $y = 560;
+            $text = "Hal {PAGE_NUM} / {PAGE_COUNT}";
+            $font = $fontMetrics->get_font("helvetica", "italic");
+            $size = 8;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
 </body>
 </html>

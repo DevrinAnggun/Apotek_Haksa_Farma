@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Stok Masuk Supplier (PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #000; }
+        body { font-family: 'Poppins', Helvetica, sans-serif; font-size: 9pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
         .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
         .subtitle { font-size: 9pt; color: #000; margin-top: 5px; }
@@ -25,7 +26,8 @@
     <div class="header">
         <h1 class="title">APOTEK HAKSA FARMA</h1>
         <p class="subtitle">Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474<br>
-        LAPORAN STOK MASUK (SUPPLIER)
+        {{ $customTitle ?? 'LAPORAN STOK MASUK' }}<br>
+        Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
     <table>

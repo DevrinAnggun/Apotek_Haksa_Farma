@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('supplier', SupplierController::class);
         Route::get('/obat/katalog', [ObatController::class, 'katalogAdmin'])->name('obat.katalog');
         Route::post('/obat/save-so', [ObatController::class, 'saveStockOpname'])->name('obat.save_so');
+        Route::post('/obat/update-so-date', [ObatController::class, 'updateSODate'])->name('obat.update_so_date');
         Route::post('/obat/sync-stock', [ObatController::class, 'syncStock'])->name('obat.sync_stock');
         Route::get('/obat/{id}/so-data', [ObatController::class, 'getSOData'])->name('obat.so_data');
         Route::get('/obat/cetak-so', [ObatController::class, 'cetakStokOpname'])->name('obat.cetak_so');

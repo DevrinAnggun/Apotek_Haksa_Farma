@@ -35,7 +35,7 @@
             <!-- Dropdown Cetak Laporan -->
             <div class="relative inline-block text-left" x-data="{ open: false, idObat: '' }" @click.away="open = false">
                 <div>
-                    <button type="button" @click="open = !open" class="bg-gray-800 hover:bg-black text-white font-bold px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-xs uppercase h-[40px] whitespace-nowrap">
+                    <button type="button" @click="open = !open" class="bg-green-600 hover:bg-green-700 text-white font-bold px-4 rounded-lg shadow-sm transition flex items-center justify-center gap-2 text-xs uppercase h-[40px] whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Export Laporan
                         <svg class="w-4 h-4 ml-1" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -56,31 +56,31 @@
                     Pilih Format Cetak
                 </div>
 
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-d'), 'end_date' => date('Y-m-d')]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <a href="{{ route('laporan.cetak_pdf', ['start_date' => date('Y-m-d'), 'end_date' => date('Y-m-d')]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     Laporan Hari Ini
                 </a>
                 
-                <button type="button" @click="open = false; openMonthModal()" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <button type="button" @click="open = false; openMonthModal()" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     Laporan Bulanan...
                 </button>
 
                 <div class="border-t border-gray-50 my-1"></div>
 
-                <a href="{{ route('laporan.cetak_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-900 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 bg-gray-50 font-bold">
-                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                <a href="{{ route('laporan.cetak_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" target="_blank" class="block px-4 py-2 text-sm text-gray-900 hover:bg-green-50 hover:text-green-700 flex items-center gap-2 bg-gray-50 font-bold tracking-tighter">
+                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                     Cetak Hasil Filter
                 </a>
 
                 <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-2 rounded-b-xl">
-                    <a :href="'{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}' + (idObat ? '&id_obat=' + idObat : '')" target="_blank" class="flex-1 py-1 text-[11px] text-gray-700 hover:text-orange-700 flex items-center gap-1.5 transition font-bold leading-tight">
-                        <svg class="w-4 h-4 text-orange-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <a :href="'{{ route('laporan.penjualan_sebelum_kadaluarsa_pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}' + (idObat ? '&id_obat=' + idObat : '')" target="_blank" class="flex-1 py-1 text-[11px] text-gray-700 hover:text-green-700 flex items-center gap-1.5 transition font-bold leading-tight uppercase tracking-tighter">
+                        <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Penjualan Sblm Exp
                     </a>
                     
                     <div class="w-28 shrink-0">
-                        <select x-model="idObat" class="w-full bg-white border border-gray-200 rounded px-1.5 py-1 text-[10px] focus:ring-1 focus:ring-orange-500 font-bold uppercase text-gray-700 outline-none cursor-pointer">
+                        <select x-model="idObat" class="w-full bg-white border border-gray-200 rounded px-1.5 py-1 text-[10px] focus:ring-1 focus:ring-green-600 font-bold uppercase text-gray-700 outline-none cursor-pointer">
                             <option value="">Semua</option>
                             @foreach($obats as $o)
                                 <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
@@ -112,7 +112,6 @@
                         <th class="py-4 px-3 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">No</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-left w-32 border border-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Satuan</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-center w-20 border border-gray-300 uppercase text-xs tracking-wider">Sisa Stok</th>
                         <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Harga</th>
                         <th class="py-4 px-2 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">Qty</th>
@@ -124,39 +123,47 @@
                     @php $no = ($penjualans->currentPage()-1) * $penjualans->perPage() + 1; $grandTotal = 0; @endphp
                     @forelse($penjualans as $penjualan)
                         @php 
-                            // Prepare items for this transaction for the receipt modal
                             $itemsJson = $penjualan->details->map(function($d) {
                                 return [
-                                    'nama' => $d->obat->nama_obat ?? '-',
+                                    'nama' => optional($d->obat)->nama_obat ?? '-',
                                     'qty' => $d->qty,
                                     'harga' => number_format($d->harga_jual, 0, ',', '.'),
                                     'sub' => number_format($d->subtotal, 0, ',', '.')
                                 ];
                             });
+
+                            $strukData = [
+                                "id" => $penjualan->id,
+                                "tgl" => \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format("d/m/Y"),
+                                "jam" => \Carbon\Carbon::parse($penjualan->created_at)->format("H:i"),
+                                "total" => number_format($penjualan->total_harga, 0, ",", "."),
+                                "bayar" => number_format($penjualan->nominal_bayar, 0, ",", "."),
+                                "kembalian" => number_format($penjualan->kembalian, 0, ",", "."),
+                                "items" => $itemsJson
+                            ];
                         @endphp
                         @foreach($penjualan->details as $detail)
-                            <tr class="hover:bg-gray-50 transition text-sm">
+                            <tr class="hover:bg-gray-50 transition text-xs">
                                 <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">{{ $no++ }}</td>
                                 <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left whitespace-nowrap">
                                     {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
-                                    <span class="text-[10px] text-gray-400 block font-normal">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
+                                    <span class="text-[10px] text-gray-900 block font-black uppercase tracking-tighter">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
                                 </td>
                                 <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left uppercase tracking-wide">
-                                    {{ $detail->obat->nama_obat ?? '-' }}
-                                    <span class="text-[10px] text-gray-400 block font-normal normal-case">{{ $detail->obat->kategori->nama_kategori ?? '-' }}</span>
-                                    @if($detail->obat->tanggal_kadaluarsa)
+                                    {{ optional($detail->obat)->nama_obat ?? '-' }}
+                                    <span class="text-[10px] text-gray-900 block font-medium normal-case mt-0.5">{{ optional($detail->obat)->kategori->nama_kategori ?? '-' }}</span>
+                                    @if($detail->obat && $detail->obat->tanggal_kadaluarsa)
                                         <span class="text-[9px] block {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->isPast() ? 'text-red-500 font-bold' : 'text-gray-400' }}">
                                             Exp: {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->format('d/m/Y') }}
                                         </span>
                                     @endif
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-center">{{ $detail->obat->satuan->nama_satuan ?? '-' }}</td>
                                 <td class="py-2 px-3 text-center border border-gray-300">
-                                    @if(($detail->obat->kategori->nama_kategori ?? '') === 'CEK')
-                                        <span class="text-gray-400 font-semibold">—</span>
+                                    @if(optional(optional($detail->obat)->kategori)->nama_kategori === 'CEK')
+                                        <span class="text-gray-900 font-black">—</span>
                                     @else
-                                        <span class="font-bold {{ ($detail->obat->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
-                                            {{ $detail->obat->total_stok ?? 0 }}
+                                        <span class="font-bold {{ (optional($detail->obat)->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
+                                            {{ optional($detail->obat)->total_stok ?? 0 }}
                                         </span>
                                     @endif
                                 </td>
@@ -168,15 +175,8 @@
                                 <td class="py-2 px-3 text-center border border-gray-300">
                                     {{-- Tombol Lihat Struk --}}
                                     <button type="button" 
-                                        onclick='showStruk({
-                                            id: "{{ $penjualan->id }}",
-                                            tgl: "{{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}",
-                                            jam: "{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}",
-                                            total: "{{ number_format($penjualan->total_harga, 0, ',', '.') }}",
-                                            bayar: "{{ number_format($penjualan->nominal_bayar, 0, ',', '.') }}",
-                                            kembalian: "{{ number_format($penjualan->kembalian, 0, ',', '.') }}",
-                                            items: {!! $itemsJson->toJson() !!}
-                                        })'
+                                        data-struk='@json($strukData)'
+                                        onclick="showStruk(this)"
                                         class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm group"
                                         title="Lihat Struk">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
@@ -187,7 +187,7 @@
                         @endforeach
                     @empty
                         <tr>
-                            <td colspan="9" class="py-8 text-center text-gray-400 italic border border-gray-300">Belum ada data penjualan pada rentang tanggal ini.</td>
+                            <td colspan="9" class="py-12 text-center text-[13px] text-gray-400 font-medium border border-gray-300">Belum ada data penjualan pada rentang tanggal ini.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -287,7 +287,7 @@
 
             <!-- Footer Message -->
             <div class="text-center mt-8 pt-4 border-t border-gray-100">
-                <p class="italic text-gray-400 mb-4">Terima kasih atas kepercayaannya.<br>Semoga lekas sembuh.</p>
+                <p class="text-gray-400 font-bold uppercase tracking-widest text-[10px] mb-4">Terima kasih atas kepercayaannya.<br>Semoga lekas sembuh.</p>
                 <button type="button" onclick="closeStruk()" 
                     class="bg-green-600 hover:bg-green-700 text-white px-8 py-2.5 rounded-xl text-xs font-bold transition uppercase tracking-widest no-print shadow-lg shadow-green-100">
                     Tutup
@@ -333,12 +333,16 @@
 
 <script>
     function openMonthModal() {
-        document.getElementById('monthModal').classList.remove('hidden');
-        document.getElementById('monthModal').classList.add('flex');
+        const modal = document.getElementById('monthModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        modal.style.display = 'flex';
     }
     function closeMonthModal() {
-        document.getElementById('monthModal').classList.add('hidden');
-        document.getElementById('monthModal').classList.remove('flex');
+        const modal = document.getElementById('monthModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modal.style.display = 'none';
     }
     function filterByMonth() {
         const m = document.getElementById('modal_month').value;
@@ -354,8 +358,8 @@
         window.open(`{{ route('laporan.cetak_pdf') }}?start_date=${startDate}&end_date=${endDate}`, '_blank');
     }
 
-    // Modal show/hide logic (existing for detail)
-    function showStruk(data) {
+    function showStruk(element) {
+        const data = JSON.parse(element.getAttribute('data-struk'));
         const modal = document.getElementById('modalStruk');
         const container = document.getElementById('struk-items');
         
@@ -366,12 +370,8 @@
         document.getElementById('struk-bayar').textContent = 'Rp' + data.bayar;
         document.getElementById('struk-kembalian').textContent = 'Rp' + data.kembalian;
         
-        // Hide kembalian row if zero
-        if (data.kembalian == '0') {
-            document.getElementById('struk-kembalian-row').style.display = 'none';
-        } else {
-            document.getElementById('struk-kembalian-row').style.display = 'flex';
-        }
+        // Always show kembalian row
+        document.getElementById('struk-kembalian-row').style.display = 'flex';
 
         // Populate Items
         container.innerHTML = '';
@@ -470,8 +470,8 @@
             <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
         </div>
         <div class="px-6 pt-6 pb-4 text-center">
-            <p class="text-base font-semibold text-gray-800 mb-2">Hapus Transaksi ini?</p>
-            <p class="text-[11px] text-gray-500 italic leading-relaxed">
+            <p class="text-base font-black text-gray-800 mb-2 uppercase tracking-tight">Hapus Transaksi ini?</p>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
                 Stok barang pada transaksi ini akan dikembalikan ke data stok.
             </p>
         </div>
@@ -510,7 +510,7 @@
 
 @section('modals')
     {{-- Modal Pilih Bulan --}}
-    <div id="monthModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
+    <div id="monthModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" style="display: none;">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeMonthModal()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-visible border border-gray-100 flex flex-col" x-data="{ 
             month: '{{ date('n') }}', 
@@ -525,7 +525,7 @@
             ],
             years: Array.from({length: 15}, (v, i) => 2026 + i)
         }">
-            <div class="bg-gray-800 px-6 py-5 flex items-center justify-between text-white shrink-0 rounded-t-2xl">
+            <div class="bg-blue-600 px-6 py-5 flex items-center justify-between text-white shrink-0 rounded-t-2xl">
                 <h3 class="font-bold uppercase tracking-wider text-sm">Pilih Bulan Laporan</h3>
                 <button onclick="closeMonthModal()" class="text-white/80 hover:text-white text-2xl transition">&times;</button>
             </div>
@@ -569,8 +569,8 @@
                 <input type="hidden" id="modal_year" :value="year">
 
                 <div class="flex flex-col gap-2">
-                    <button onclick="downloadMonthPdf()" class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition shadow-lg flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <button onclick="downloadMonthPdf()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition shadow-lg flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Export PDF
                     </button>
                 </div>

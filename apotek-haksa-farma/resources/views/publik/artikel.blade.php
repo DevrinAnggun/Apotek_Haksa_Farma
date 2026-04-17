@@ -1,4 +1,4 @@
-@extends('layouts.publik')
+@extends('layouts.frontend')
 
 @section('title', 'Artikel Kesehatan')
 @section('meta_desc', 'Baca artikel seputar kesehatan dan informasi obat dari Apotek Haksa Farma.')
@@ -6,9 +6,9 @@
 @section('content')
 
 {{-- Header --}}
-<div class="bg-white border-b border-gray-100 py-10 text-center">
-    <h1 class="text-3xl font-extrabold tracking-wide mb-2 text-gray-800 uppercase">Artikel Kesehatan</h1>
-    <p class="text-gray-400 text-sm font-medium">Tips dan informasi seputar kesehatan dari Apotek Haksa Farma</p>
+<div class="bg-green-700 border-b border-green-800 py-10 text-center">
+    <h1 class="text-3xl font-extrabold tracking-wide mb-2 text-white uppercase">Artikel Kesehatan</h1>
+    <p class="text-green-100 text-sm font-medium">Tips dan informasi seputar kesehatan dari Apotek Haksa Farma</p>
 </div>
 
 <div class="max-w-6xl mx-auto px-4 py-10">

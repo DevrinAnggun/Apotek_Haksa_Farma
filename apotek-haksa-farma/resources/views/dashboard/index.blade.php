@@ -9,6 +9,19 @@
     </h2>
 </div>
 
+
+@if(session('error'))
+    <div id="flash-error" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-xl mb-6 shadow-sm flex items-center justify-between animate-modal">
+        <div class="flex items-center">
+            <div class="bg-red-500 rounded-full p-1 mr-3 shadow-sm flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </div>
+            <span class="font-bold text-sm">{{ session('error') }}</span>
+        </div>
+        <button onclick="dismissAlert('flash-error')" class="text-red-500 hover:text-red-700 transition font-bold text-xl leading-none">&times;</button>
+    </div>
+@endif
+
 <!-- Welcome Notification Banner -->
 <div id="welcome-banner" class="flex justify-between items-center bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-sm mb-8 transition-opacity duration-300">
     <div class="flex items-center">
@@ -132,24 +145,26 @@
         <!-- bg icon abstrak -->
         <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/><path d="M7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
     </div>
-
 </div>
 
+@endsection
+
+@section('modals')
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
-<div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden">
+<div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" style="display: none;">
     <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden flex flex-col max-h-[90vh]" x-data="{ reportType: 'penjualan', showMonthly: false, kadaluarsaType: 'stok', idObat: '' }">
         <!-- Header -->
-        <div class="bg-gray-800 px-6 py-6 flex items-center justify-between text-white rounded-t-2xl">
+        <div class="bg-blue-700 px-6 py-6 flex items-center justify-between text-white rounded-t-2xl">
             <div class="flex items-center gap-3">
-                <div class="bg-blue-500 bg-opacity-30 p-2 rounded-lg">
+                <div class="bg-white/20 p-2 rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </div>
                 <div>
                     <h3 class="font-bold text-lg leading-tight uppercase tracking-wide text-white">Unduh Laporan</h3>
                 </div>
             </div>
-            <button onclick="closeReportModal()" class="text-blue-100 hover:text-white transition text-2xl leading-none">&times;</button>
+            <button onclick="closeReportModal()" class="text-white/80 hover:text-white transition text-2xl leading-none">&times;</button>
         </div>
 
         <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
@@ -167,7 +182,7 @@
                         Stok Masuk
                     </button>
                     <button @click="reportType = 'kadaluarsa'" 
-                            :class="reportType === 'kadaluarsa' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                            :class="reportType === 'kadaluarsa' ? 'bg-orange-500 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
                             class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
                         Kadaluarsa
                     </button>
@@ -197,7 +212,7 @@
                        :class="showMonthly ? 'bg-blue-600 border-blue-600 shadow-lg scale-105' : 'bg-blue-50 border-blue-100 hover:border-blue-500'">
                         <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
                              :class="showMonthly ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-600'">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                         </div>
                         <span class="font-bold text-[11px] uppercase" :class="showMonthly ? 'text-white' : 'text-blue-700'">Bulanan</span>
                     </button>
@@ -222,7 +237,7 @@
 
                        <div class="p-2.5 rounded-full mb-2 transition-transform group-hover:scale-110"
                             :class="kadaluarsaType === 'penjualan' ? 'bg-white/20' : 'bg-orange-100 text-orange-600'">
-                            <svg class="w-5 h-5" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            <svg class="w-5 h-5" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                        </div>
                         <span class="font-bold text-[10px] uppercase text-center tracking-normal leading-relaxed mt-1" :class="kadaluarsaType === 'penjualan' ? 'text-white' : 'text-orange-700'">Penjualan Sblm<br>Expired</span>
                     </button>
@@ -234,13 +249,14 @@
                     <select x-model="idObat" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-blue-500 font-bold uppercase text-gray-700">
                         <option value="" class="normal-case">-- Semua Obat --</option>
                         @foreach($obats as $o)
+                            @if(isset($o->kategori) && strtoupper($o->kategori->nama_kategori) === 'CEK') @continue @endif
                             <option value="{{ $o->id }}">{{ $o->nama_obat }}</option>
                         @endforeach
                     </select>
                 </div>
 
-                <!-- Download Per Bulan (Hidden by default, always shown for Retur) -->
-                <div x-show="(showMonthly && reportType !== 'kadaluarsa' && reportType !== 'retur')" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-2 animate-fadeIn">
+                <!-- Download Per Bulan (Hidden by default) -->
+                <div x-show="(showMonthly && reportType !== 'kadaluarsa')" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-2 animate-fadeIn">
                     <header class="flex items-center gap-2 mb-3">
                         <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>
                     </header>
@@ -267,7 +283,7 @@
                 <!-- Opsi Semua Riwayat / Custom Date (Hanya untuk Retur) -->
                 <div x-show="reportType === 'retur'" class="mb-6">
                     <button type="button" @click="downloadCustom(reportType)"
-                        class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold text-[10px] uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Unduh Semua Riwayat
                     </button>
@@ -276,7 +292,7 @@
                 <!-- Filter Custom -->
                 <div x-show="reportType !== 'retur'" class="bg-gray-50 rounded-xl p-5 border border-gray-100">
                     <header class="flex items-center gap-2 mb-4">
-                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                         <span class="text-sm font-bold text-gray-700 uppercase tracking-wider">Filter Tanggal Spesifik</span>
                     </header>
 
@@ -294,7 +310,8 @@
                             </div>
                         </div>
                         <button type="button" @click="downloadCustom(reportType, kadaluarsaType)"
-                            class="w-full bg-gray-800 hover:bg-black text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                            :class="reportType === 'kadaluarsa' ? 'bg-orange-500 hover:bg-orange-600' : 'bg-blue-600 hover:bg-blue-700'"
+                            class="w-full text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition shadow-lg mt-2 flex items-center justify-center gap-2 hover:scale-[1.02]">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                             Export PDF
                         </button>
@@ -310,16 +327,22 @@
         </div>
     </div>
 </div>
+@endsection
 
+@push('scripts')
 <script>
     function openReportModal() {
-        document.getElementById('reportModal').classList.remove('hidden');
-        document.getElementById('reportModal').classList.add('flex');
+        const modal = document.getElementById('reportModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
     function closeReportModal() {
-        document.getElementById('reportModal').classList.add('hidden');
-        document.getElementById('reportModal').classList.remove('flex');
+        const modal = document.getElementById('reportModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modal.style.display = 'none';
         document.body.style.overflow = '';
     }
     function downloadDashMonthly(type, kadaluarsaType) {
@@ -337,7 +360,7 @@
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
 
-        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObat = document.querySelector('[x-model="idObat"]').value;
         const idObatParam = idObat ? `&id_obat=${idObat}` : '';
 
         window.open(`${route}?start_date=${startDate}&end_date=${endDate}${idObatParam}`, '_blank');
@@ -353,7 +376,7 @@
         }
 
         const date = new Date().toISOString().split('T')[0];
-        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObat = document.querySelector('[x-model="idObat"]').value;
         const idObatParam = idObat ? `&id_obat=${idObat}` : '';
 
         window.open(`${route}?start_date=${date}&end_date=${date}${idObatParam}`, '_blank');
@@ -371,7 +394,7 @@
              route = kadaluarsaType === 'stok' ? '{{ route("kadaluarsa.pdf") }}' : '{{ route("laporan.penjualan_sebelum_kadaluarsa_pdf") }}';
         }
 
-        const idObat = document.querySelector('[x-model=\"idObat\"]').value;
+        const idObat = document.querySelector('[x-model="idObat"]').value;
         const idObatParam = idObat ? `&id_obat=${idObat}` : '';
 
         // Jika retur dan panggil download semua riwayat (custom tanpa tgl), kirim tanpa tgl agar default
@@ -383,5 +406,4 @@
         window.open(`${route}?start_date=${s}&end_date=${e}${idObatParam}`, '_blank');
     }
 </script>
-
-@endsection
+@endpush

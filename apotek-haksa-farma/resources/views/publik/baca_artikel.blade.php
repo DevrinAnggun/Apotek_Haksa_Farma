@@ -1,4 +1,4 @@
-@extends('layouts.publik')
+@extends('layouts.frontend')
 
 @section('title', $artikel->judul . ' - Apotek Haksa Farma')
 @section('meta_desc', $artikel->ringkasan)

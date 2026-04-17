@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Data Kadaluarsa (PDF)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Helvetica, sans-serif; font-size: 10pt; color: #000; }
+        body { font-family: 'Poppins', Helvetica, sans-serif; font-size: 9pt; color: #000; }
         .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
         .title { font-size: 16pt; font-weight: bold; margin: 0; color: #000; }
         .subtitle { font-size: 9pt; color: #000; margin-top: 5px; }
@@ -75,5 +76,16 @@
         <p style="font-size: 9pt;">Dicetak pada: {{ date('H:i:s') }}</p>
     </div>
 
+    <!-- Halaman -->
+    <script type="text/php">
+        if ( isset($pdf) ) {
+            $x = 750;
+            $y = 560;
+            $text = "Hal {PAGE_NUM} / {PAGE_COUNT}";
+            $font = $fontMetrics->get_font("helvetica", "italic");
+            $size = 8;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
 </body>
 </html>
