@@ -70,7 +70,7 @@
                                 {{ strtolower($obat->kategori->nama_kategori ?? '-') }}
                             </span>
                             @php 
-                                $isCek = ($obat->kategori->nama_kategori ?? '') === 'CEK';
+                                $isCek = isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK';
                             @endphp
                             @if($obat->tanggal_kadaluarsa && !$isCek)
                                 <span class="text-[10px] block mt-0.5 {{ \Carbon\Carbon::parse($obat->tanggal_kadaluarsa)->isPast() ? 'text-red-600 font-bold' : 'text-gray-400' }}">
@@ -79,7 +79,7 @@
                             @endif
                         </td>
                         <td class="py-2.5 px-2 text-center">
-                            @if(($obat->kategori->nama_kategori ?? '') === 'CEK')
+                            @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK')
                                 <span class="text-gray-900 font-black">—</span>
                             @else
                                 <span class="font-bold {{ $stok <= 0 ? 'text-red-500' : ($stok < 5 ? 'text-yellow-600' : 'text-green-600') }}">

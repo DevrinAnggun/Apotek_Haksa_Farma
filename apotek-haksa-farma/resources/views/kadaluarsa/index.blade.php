@@ -85,16 +85,15 @@
 
 {{-- Tabel Data Kadaluarsa --}}
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
+    <table class="w-full text-left border-collapse min-w-max border-2 border-gray-500 shadow-sm rounded-lg overflow-hidden">
         <thead>
             <tr class="bg-gray-100">
-                <th class="py-4 px-4 font-bold text-gray-800 text-center w-14 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Stok Sisa</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center w-40 border border-gray-300 uppercase text-xs tracking-wider">Tgl Kadaluarsa</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center w-24 border border-gray-300 uppercase text-xs tracking-wider">Terjual</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Status</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center w-28 border border-gray-300 uppercase text-xs tracking-wider">Aksi</th>
+                <th class="py-4 px-4 font-bold text-gray-800 text-center w-14 border border-gray-400 uppercase text-xs tracking-wider">No</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-left border border-gray-400 uppercase text-xs tracking-wider">Nama Obat</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-400 uppercase text-xs tracking-wider">Stok Sisa</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-40 border border-gray-400 uppercase text-xs tracking-wider">Tgl Kadaluarsa</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-24 border border-gray-400 uppercase text-xs tracking-wider">Terjual</th>
+                <th class="py-4 px-5 font-bold text-gray-800 text-center w-32 border border-gray-400 uppercase text-xs tracking-wider">Status</th>
             </tr>
         </thead>
         <tbody id="kadaluarsaTableBody">
@@ -119,16 +118,17 @@
                     $rowClass    = $diffDays <= 150 ? 'bg-red-50' : 'bg-blue-50';
                 }
             @endphp
-            <tr class="hover:bg-gray-100 transition text-xs {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 150 ? 'bg-red-50' : 'bg-blue-50') }}">
-                <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-300">{{ (($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage()) + ($displayCounter++) }}</td>
-                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-300 text-left">
+            <tr class="kadaluarsa-row hover:bg-gray-100 transition text-xs {{ \Carbon\Carbon::parse($item->earliest_expired)->isPast() ? 'bg-red-50' : (\Carbon\Carbon::parse($item->earliest_expired)->diffInDays(now()) <= 150 ? 'bg-red-50' : 'bg-blue-50') }}"
+                data-nama="{{ strtolower($item->obat->nama_obat ?? '') }}">
+                <td class="py-3 px-4 text-center font-medium text-gray-800 border border-gray-400">{{ (($kadaluarsas->currentPage()-1) * $kadaluarsas->perPage()) + ($displayCounter++) }}</td>
+                <td class="py-3 px-5 font-semibold text-gray-800 uppercase border border-gray-400 text-left">
                     {{ $item->obat->nama_obat ?? '—' }}
                     <span class="text-xs font-medium text-gray-900 block normal-case mt-0.5">{{ $item->obat->kategori->nama_kategori ?? '—' }}</span>
                 </td>
-                <td class="py-3 px-5 text-center font-bold border border-gray-300 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
+                <td class="py-3 px-5 text-center font-bold border border-gray-400 {{ $item->total_sisa <= 0 ? 'text-red-500' : 'text-gray-800' }}">
                     {{ number_format($item->total_sisa, 0, ',', '.') }}
                 </td>
-                <td class="py-3 px-5 text-center border border-gray-300">
+                <td class="py-3 px-5 text-center border border-gray-400">
                     <span class="font-semibold {{ $diffDays < 0 ? 'text-red-600' : 'text-gray-800' }}">
                         @if($item->obat->kategori && strtoupper($item->obat->kategori->nama_kategori) === 'CEK')
                             <span class="text-gray-400 font-normal">-</span>
@@ -137,36 +137,18 @@
                         @endif
                     </span>
                 </td>
-                <td class="py-3 px-5 text-center border border-gray-300">
+                <td class="py-3 px-5 text-center border border-gray-400">
                     <span class="bg-blue-50 text-blue-700 font-bold px-2 py-0.5 rounded shadow-sm text-xs border border-blue-100">
                         {{ $item->obat->total_terjual ?? 0 }}
                     </span>
                 </td>
-                <td class="py-3 px-5 text-center border border-gray-300">
+                <td class="py-3 px-5 text-center border border-gray-400">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">{{ $statusLabel }}</span>
-                </td>
-                <td class="py-3 px-5 border border-gray-300">
-                    <div class="flex items-center justify-center gap-1">
-
-
-                        {{-- Form hapus tersembunyi (Sekarang per Obat id) --}}
-                        <form id="formHapus-{{ $item->id_obat }}"
-                            action="{{ route('kadaluarsa.destroy', $item->id_obat) }}" method="POST" class="hidden">
-                            @csrf @method('DELETE')
-                        </form>
-                        {{-- Tombol Hapus (trigger modal konfirmasi) --}}
-                        <button type="button" title="Bersihkan Data Kadaluarsa"
-                            data-form="formHapus-{{ $item->id_obat }}"
-                            data-nama="{{ $item->obat->nama_obat ?? '' }}"
-                            class="btn-hapus bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                    </div>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="py-10 text-center border border-gray-300">
+                <td colspan="6" class="py-10 text-center border border-gray-300">
                     <div class="flex flex-col items-center gap-2">
                         <p class="text-gray-400 font-medium text-[13px]">Tidak ada obat yang kadaluarsa atau mendekati H-5 Bulan.</p>
                     </div>
@@ -185,29 +167,8 @@
 
 
 
-{{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
-<div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="tutupHapus()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-[320px] mx-4 overflow-hidden animate-modal">
-        <div class="bg-red-600 py-3 text-center">
-            <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
-        </div>
-        <div class="px-6 pt-8 pb-4 text-center">
-            <p class="text-base font-bold text-gray-800 mb-2 leading-relaxed">
-                Yakin ingin menghapus <span id="hapusNamaObat" class="text-red-600"></span>?
-            </p>
-            <p class="text-[11px] text-gray-400 leading-relaxed uppercase font-bold tracking-widest">
-                Data yang dihapus tidak dapat dikembalikan.
-            </p>
-        </div>
-        <div class="flex gap-3 px-6 pb-8 mt-4">
-            <button type="button" onclick="tutupHapus()"
-                class="flex-1 py-2.5 text-xs font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 rounded-xl transition uppercase tracking-widest">Batal</button>
-            <button type="button" id="btnKonfirmasiHapus" onclick="konfirmasiHapus()"
-                class="flex-1 py-2.5 text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition uppercase tracking-widest">Ya, Hapus</button>
-        </div>
-    </div>
-</div>
+ {{-- Modal Hapus Dihapus --}} 
+
 
 
 
@@ -263,39 +224,11 @@ function filterTable(keyword) {
 
 
 
-let activeFormHapus = null;
-function tutupHapus() {
-    const modal = document.getElementById('modalHapus');
-    modal.classList.add('hidden');
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-    activeFormHapus = null;
-}
-function konfirmasiHapus() {
-    if (activeFormHapus) {
-        showSuccessAnimation(activeFormHapus.id, 'Data Berhasil Dihapus!');
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-
-
-    // Tombol Hapus → modal konfirmasi
-    document.querySelectorAll('.btn-hapus').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            activeFormHapus = document.getElementById(this.dataset.form);
-            document.getElementById('hapusNamaObat').textContent = this.dataset.nama || '';
-            const modal = document.getElementById('modalHapus');
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
     // Escape tutup semua modal
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { 
-            tutupHapus(); 
+            // modal ops cleanup
         }
     });
 });

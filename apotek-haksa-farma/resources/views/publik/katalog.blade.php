@@ -111,7 +111,9 @@
                                     </div>
                                     <div class="text-right">
                                         <p class="text-[10px] text-gray-900 font-black uppercase tracking-widest leading-none mb-1">Stok</p>
-                                        @if($obat->total_stok > 0)
+                                        @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK')
+                                            <p class="text-sm font-extrabold text-gray-900">-</p>
+                                        @elseif($obat->total_stok > 0)
                                             <p class="text-sm font-extrabold text-gray-900">{{ (int) $obat->total_stok }} <span class="text-[10px] text-gray-900 font-black">Pcs</span></p>
                                         @else
                                             <p class="text-sm font-extrabold text-red-600 uppercase tracking-tighter">Habis</p>

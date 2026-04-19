@@ -107,7 +107,11 @@
                         </div>
                         <div class="text-right">
                             <p class="text-[10px] text-gray-900 font-black uppercase tracking-widest leading-none mb-1">Stok</p>
-                            <p class="text-sm font-extrabold text-gray-900">{{ $obat->total_stok }} <span class="text-[10px] text-gray-900 font-black">Pcs</span></p>
+                            @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK')
+                                <p class="text-sm font-extrabold text-gray-900">-</p>
+                            @else
+                                <p class="text-sm font-extrabold text-gray-900">{{ $obat->total_stok ?? 0 }} <span class="text-[10px] text-gray-900 font-black">Pcs</span></p>
+                            @endif
                         </div>
                     </div>
                 </div>

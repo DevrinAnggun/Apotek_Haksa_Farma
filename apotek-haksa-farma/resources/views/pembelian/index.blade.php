@@ -74,19 +74,18 @@
 
 {{-- ===== TABEL RIWAYAT STOK MASUK ===== --}}
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
+    <table class="w-full text-left border-collapse min-w-max border-2 border-gray-500 shadow-sm rounded-lg overflow-hidden">
         <thead>
-            <tr class="bg-gray-100">
-                <th class="py-4 px-4 font-bold text-gray-800 text-center w-16 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Barang</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-40">Tgl Terima</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-44">Tgl Kadaluarsa</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Supplier</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-20">Qty</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-32">Harga Beli</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-32">Harga Jual</th>
-                <th class="py-4 px-5 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-40">Subtotal</th>
-                <th class="py-4 px-6 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider w-28">Aksi</th>
+            <tr class="bg-gray-100 uppercase text-xs font-bold text-gray-800 text-center">
+                <th class="border border-gray-400 p-2 w-10">No</th>
+                <th class="border border-gray-400 p-2 min-w-[120px]">Tanggal</th>
+                <th class="border border-gray-400 p-2 min-w-[150px]">Supplier</th>
+                <th class="border border-gray-400 p-2 min-w-[200px]">Nama Barang</th>
+                <th class="border border-gray-400 p-2 w-24">Qty</th>
+                <th class="border border-gray-400 p-2 w-32">Harga Beli</th>
+                <th class="border border-gray-400 p-2 w-32">Harga Jual</th>
+                <th class="border border-gray-400 p-2 w-40">Tgl Kadaluarsa</th>
+                <th class="border border-gray-400 p-2 w-48">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -97,38 +96,35 @@
                     $batch = $detail->obat->stokBatches()->where('id_pembelian', $beli->id)->first();
                 @endphp
                 <tr class="hover:bg-gray-50 transition text-xs">
-                    <td class="py-3 px-4 text-center text-gray-800 font-medium border border-gray-300">
+                    <td class="py-2 px-2 text-center text-gray-800 font-medium border border-gray-400">
                         {{ $no++ }}
                     </td>
-                    <td class="py-3 px-5 text-left text-gray-800 font-bold uppercase border border-gray-300">
-                        {{ $detail->obat->nama_obat ?? '-' }}
-                    </td>
-                    <td class="py-3 px-5 text-center text-gray-800 font-medium border border-gray-300">
+                    <td class="py-2 px-3 text-center text-gray-800 font-medium border border-gray-400">
                         {{ \Carbon\Carbon::parse($beli->tgl_pembelian)->format('d-m-Y') }}
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-900 font-bold border border-gray-300">
+                    <td class="py-2 px-3 text-center text-gray-900 font-bold uppercase border border-gray-400">
+                        {{ $beli->supplier->nama_suplier ?? '-' }}
+                    </td>
+                    <td class="py-2 px-3 text-left text-gray-800 font-bold uppercase border border-gray-400">
+                        {{ $detail->obat->nama_obat ?? '-' }}
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400 font-bold">
+                        {{ $detail->qty }}
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400 font-medium whitespace-nowrap">
+                        Rp{{ number_format($detail->harga_beli, 0, ',', '.') }}
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400 font-bold text-gray-900 whitespace-nowrap">
+                        Rp{{ number_format($detail->obat->harga_jual ?? 0, 0, ',', '.') }}
+                    </td>
+                    <td class="py-2 px-3 text-center border border-gray-400 font-bold text-gray-900">
                         @if($detail->obat->kategori && strtoupper($detail->obat->kategori->nama_kategori) === 'CEK')
                             <span class="text-gray-400 font-normal">-</span>
                         @else
                             {{ \Carbon\Carbon::parse($batch->tgl_expired ?? now())->format('d-m-Y') }}
                         @endif
                     </td>
-                    <td class="py-3 px-5 text-center text-gray-900 font-bold uppercase border border-gray-300">
-                        {{ $beli->supplier->nama_suplier ?? '-' }}
-                    </td>
-                    <td class="py-3 px-5 text-center border border-gray-300 font-bold">
-                        {{ $detail->qty }}
-                    </td>
-                    <td class="py-3 px-5 text-center border border-gray-300 font-medium">
-                        Rp{{ number_format($detail->harga_beli, 0, ',', '.') }}
-                    </td>
-                    <td class="py-3 px-5 text-center border border-gray-300 font-bold text-gray-900">
-                        Rp{{ number_format($detail->obat->harga_jual ?? 0, 0, ',', '.') }}
-                    </td>
-                    <td class="py-3 px-5 text-center border border-gray-300 font-bold text-gray-900">
-                        Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
-                    </td>
-                    <td class="py-3 px-6 border border-gray-300">
+                    <td class="py-3 px-6 border border-gray-400">
                         <div class="flex justify-center items-center gap-1">
                         <!-- Tombol Riwayat -->
                         <button type="button"
@@ -164,13 +160,6 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         </button>
 
-                        <!-- Tombol Hapus -->
-                        <button type="button"
-                            onclick="confirmDeletePembelian('{{ $beli->id }}')"
-                            class="bg-red-600 hover:bg-red-700 text-white p-1.5 rounded transition shadow-sm"
-                            title="Hapus">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
                     </td>
                 </tr>
                 @endforeach
@@ -692,27 +681,8 @@
     </div>
 </div>
 
-{{-- ===== MODAL KONFIRMASI HAPUS ===== --}}
-<div id="modalHapusPembelian" class="fixed inset-0 z-[110] hidden items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeletePembelian()"></div>
-    <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden">
-        <div class="bg-red-600 py-3 text-center">
-            <h4 class="text-white font-bold uppercase tracking-widest text-sm">Konfirmasi Hapus</h4>
-        </div>
-        <div class="px-6 pt-6 pb-4 text-center">
-            <p class="text-base font-semibold text-gray-800 mb-2">
-                Hapus Riwayat ini?
-            </p>
-            <p class="text-[11px] text-gray-500 leading-relaxed italic">
-                * PERHATIAN: Penghapusan rincian ini akan menghapus batch stok terkait secara permanen.
-            </p>
-        </div>
-        <div class="flex gap-3 px-6 pb-6 mt-2">
-            <button type="button" onclick="closeDeletePembelian()" class="flex-1 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition uppercase tracking-wider">Batal</button>
-            <button type="button" onclick="executeDeletePembelian()" class="flex-1 py-2 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg shadow transition uppercase tracking-wider">Ya, Hapus</button>
-        </div>
-    </div>
-</div>
+ {{-- Modal Hapus Dihapus --}} 
+
 
 {{-- ===== MODAL RETUR PEMBELIAN ===== --}}
 <div id="modalReturPembelian" class="fixed inset-0 z-[120] hidden items-center justify-center" style="display: none;">
@@ -904,35 +874,8 @@
         document.body.style.overflow = '';
     }
 
-    /* ===== LOGIKA HAPUS RIWAYAT ===== */
-    let activeDeletePembelianId = null;
+    /* Delete Logic Removed */
 
-    function confirmDeletePembelian(id) {
-        activeDeletePembelianId = id;
-        const modal = document.getElementById('modalHapusPembelian');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeDeletePembelian() {
-        const modal = document.getElementById('modalHapusPembelian');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-        activeDeletePembelianId = null;
-    }
-
-    function executeDeletePembelian() {
-        if (activeDeletePembelianId) {
-            const form = document.getElementById('form-delete-pembelian');
-            form.action = '/pembelian/' + activeDeletePembelianId;
-            closeDeletePembelian(); // ID sekarang tetap aman karena form sudah diset actionnya
-            showSuccessAnimation('form-delete-pembelian', 'Riwayat Berhasil Dihapus!');
-        }
-    }
 
     /* ===== LOGIKA RETUR ===== */
     function openReturModal(idPembelian, idObat, namaObat) {

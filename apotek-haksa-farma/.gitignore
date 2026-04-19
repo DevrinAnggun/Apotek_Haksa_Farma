@@ -22,3 +22,9 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# User Uploaded Assets (Ignored for deployment)
+/public/images/obat/*
+/public/uploads/artikel/*
+!public/images/obat/.gitkeep
+!public/uploads/artikel/.gitkeep

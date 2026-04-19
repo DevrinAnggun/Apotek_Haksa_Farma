@@ -106,80 +106,80 @@
         </h3>
     
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="py-4 px-3 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">No</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-left w-32 border border-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-left border border-gray-300 uppercase text-xs tracking-wider">Nama Obat</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-20 border border-gray-300 uppercase text-xs tracking-wider">Sisa Stok</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-32 border border-gray-300 uppercase text-xs tracking-wider">Harga</th>
-                        <th class="py-4 px-2 font-bold text-gray-800 text-center w-12 border border-gray-300 uppercase text-xs tracking-wider">Qty</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center w-36 border border-gray-300 uppercase text-xs tracking-wider">Total</th>
-                        <th class="py-4 px-4 font-bold text-gray-800 text-center border border-gray-300 uppercase text-xs tracking-wider">Aksi</th>
+            <table class="w-full text-left border-collapse min-w-max border-2 border-gray-500 shadow-sm rounded-lg overflow-hidden">
+                <thead class="sticky top-0 z-10">
+                    <tr class="bg-gray-100 uppercase text-[10px] font-bold text-gray-800 text-center">
+                        <th class="border border-gray-400 p-2 w-10">No</th>
+                        <th class="border border-gray-400 p-2 w-32">Waktu</th>
+                        <th class="border border-gray-400 p-2 min-w-[200px]">Nama Obat</th>
+                        <th class="border border-gray-400 p-2 w-20">Stok</th>
+                        <th class="border border-gray-400 p-2 w-28">Harga</th>
+                        <th class="border border-gray-400 p-2 w-14">Qty</th>
+                        <th class="border border-gray-400 p-2 w-32">Total</th>
+                        <th class="border border-gray-400 p-2 w-16">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php $no = ($penjualans->currentPage()-1) * $penjualans->perPage() + 1; $grandTotal = 0; @endphp
                     @forelse($penjualans as $penjualan)
-                        @php 
-                            $itemsJson = $penjualan->details->map(function($d) {
-                                return [
-                                    'nama' => optional($d->obat)->nama_obat ?? '-',
-                                    'qty' => $d->qty,
-                                    'harga' => number_format($d->harga_jual, 0, ',', '.'),
-                                    'sub' => number_format($d->subtotal, 0, ',', '.')
-                                ];
-                            });
-
-                            $strukData = [
-                                "id" => $penjualan->id,
-                                "tgl" => \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format("d/m/Y"),
-                                "jam" => \Carbon\Carbon::parse($penjualan->created_at)->format("H:i"),
-                                "total" => number_format($penjualan->total_harga, 0, ",", "."),
-                                "bayar" => number_format($penjualan->nominal_bayar, 0, ",", "."),
-                                "kembalian" => number_format($penjualan->kembalian, 0, ",", "."),
-                                "items" => $itemsJson
-                            ];
-                        @endphp
                         @foreach($penjualan->details as $detail)
                             <tr class="hover:bg-gray-50 transition text-xs">
-                                <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">{{ $no++ }}</td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left whitespace-nowrap">
-                                    {{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}
-                                    <span class="text-[10px] text-gray-900 block font-black uppercase tracking-tighter">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }}</span>
+                                <td class="py-2 px-2 text-center text-gray-800 font-medium border border-gray-400">
+                                    {{ $no++ }}
                                 </td>
-                                <td class="py-2 px-3 font-medium text-gray-800 border border-gray-300 text-left uppercase tracking-wide">
+                                <td class="py-2 px-3 text-center text-gray-800 font-medium border border-gray-400 whitespace-nowrap">
+                                    <div class="font-bold">{{ \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format('d/m/Y') }}</div>
+                                    <div class="text-[9px] text-gray-500 uppercase">{{ \Carbon\Carbon::parse($penjualan->created_at)->format('H:i') }} WIB</div>
+                                </td>
+                                <td class="py-2 px-3 text-left text-gray-800 font-bold uppercase border border-gray-400">
                                     {{ optional($detail->obat)->nama_obat ?? '-' }}
-                                    <span class="text-[10px] text-gray-900 block font-medium normal-case mt-0.5">{{ optional($detail->obat)->kategori->nama_kategori ?? '-' }}</span>
-                                    @if($detail->obat && $detail->obat->tanggal_kadaluarsa)
-                                        <span class="text-[9px] block {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->isPast() ? 'text-red-500 font-bold' : 'text-gray-400' }}">
-                                            Exp: {{ \Carbon\Carbon::parse($detail->obat->tanggal_kadaluarsa)->format('d/m/Y') }}
-                                        </span>
-                                    @endif
+                                    <div class="text-[9px] text-gray-400 normal-case font-medium">{{ optional($detail->obat)->kategori->nama_kategori ?? '-' }}</div>
                                 </td>
-                                <td class="py-2 px-3 text-center border border-gray-300">
+                                <td class="py-2 px-3 text-center border border-gray-400">
                                     @if(optional(optional($detail->obat)->kategori)->nama_kategori === 'CEK')
-                                        <span class="text-gray-900 font-black">—</span>
+                                        <span class="text-gray-400">—</span>
                                     @else
                                         <span class="font-bold {{ (optional($detail->obat)->total_stok ?? 0) < 5 ? 'text-red-500' : 'text-green-600' }}">
                                             {{ optional($detail->obat)->total_stok ?? 0 }}
                                         </span>
                                     @endif
                                 </td>
-                                <td class="py-2 px-3 text-center font-medium text-gray-800 border border-gray-300">Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
-                                <td class="py-2 px-2 text-center border border-gray-300">
-                                    <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold text-xs border border-blue-100">{{ $detail->qty }}</span>
+                                <td class="py-2 px-3 text-right font-medium text-gray-800 border border-gray-400 whitespace-nowrap">
+                                    Rp{{ number_format($detail->harga_jual, 0, ',', '.') }}
                                 </td>
-                                <td class="py-2 px-3 text-center font-bold text-gray-900 border border-gray-300">Rp{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
-                                <td class="py-2 px-3 text-center border border-gray-300">
-                                    {{-- Tombol Lihat Struk --}}
+                                <td class="py-2 px-2 text-center border border-gray-400">
+                                    <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-black text-[10px] border border-blue-100">{{ $detail->qty }}</span>
+                                </td>
+                                <td class="py-2 px-3 text-right font-bold text-gray-900 border border-gray-400 whitespace-nowrap">
+                                    Rp{{ number_format($detail->subtotal, 0, ',', '.') }}
+                                </td>
+                                <td class="py-2 px-2 border border-gray-400 text-center">
+                                    @php 
+                                        $itemsJson = $penjualan->details->map(function($d) {
+                                            return [
+                                                'nama' => optional($d->obat)->nama_obat ?? '-',
+                                                'qty' => $d->qty,
+                                                'harga' => number_format($d->harga_jual, 0, ',', '.'),
+                                                'sub' => number_format($d->subtotal, 0, ',', '.')
+                                            ];
+                                        });
+
+                                        $strukData = [
+                                            "id" => $penjualan->id,
+                                            "tgl" => \Carbon\Carbon::parse($penjualan->tgl_penjualan)->format("d/m/Y"),
+                                            "jam" => \Carbon\Carbon::parse($penjualan->created_at)->format("H:i"),
+                                            "total" => number_format($penjualan->total_harga, 0, ",", "."),
+                                            "bayar" => number_format($penjualan->nominal_bayar, 0, ",", "."),
+                                            "kembalian" => number_format($penjualan->kembalian, 0, ",", "."),
+                                            "items" => $itemsJson
+                                        ];
+                                    @endphp
                                     <button type="button" 
                                         data-struk='@json($strukData)'
                                         onclick="showStruk(this)"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded transition shadow-sm group"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded transition shadow-sm"
                                         title="Lihat Struk">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                                     </button>
                                 </td>
                             </tr>

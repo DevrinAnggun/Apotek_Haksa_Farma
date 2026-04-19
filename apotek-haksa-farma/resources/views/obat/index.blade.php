@@ -132,30 +132,30 @@
 
 {{-- Table --}}
 <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse min-w-max border border-gray-400 shadow-sm rounded-lg overflow-hidden">
+    <table class="w-full text-left border-collapse min-w-max border-2 border-gray-500 shadow-sm rounded-lg overflow-hidden">
         <thead>
             <tr class="bg-gray-100 uppercase text-xs font-bold text-gray-800 text-center">
-                <th class="border border-gray-300 p-2 w-10">No</th>
-                <th class="border border-gray-300 p-2 min-w-[200px]">NAMA BARANG</th>
-                <th class="border border-gray-300 p-2 min-w-[120px]">Kategori</th>
-                <th class="border border-gray-300 p-2 min-w-[100px]">HARGA</th>
-                <th class="border border-gray-300 p-2 min-w-[80px]">SATUAN</th>
-                <th class="border border-gray-300 p-2 min-w-[80px]">STOK AWAL</th>
-                <th class="border border-gray-300 p-2 min-w-[90px] leading-tight">TOTAL<br>PENJUALAN</th>
-                <th class="border border-gray-300 p-2 min-w-[90px] leading-tight">SISA<br>STOK</th>
-                <th class="border border-gray-300 p-2 min-w-[120px] leading-tight">TOTAL HARGA<br>PENJUALAN</th>
-                <th class="border border-gray-300 p-2 min-w-[120px]">TGL KADALUARSA</th>
-                <th class="border border-gray-300 p-2 min-w-[100px]">AKSI</th>
+                <th class="border border-gray-400 p-2 w-10">No</th>
+                <th class="border border-gray-400 p-2 min-w-[200px]">NAMA BARANG</th>
+                <th class="border border-gray-400 p-2 min-w-[120px]">Kategori</th>
+                <th class="border border-gray-400 p-2 min-w-[100px]">HARGA</th>
+                <th class="border border-gray-400 p-2 min-w-[80px]">SATUAN</th>
+                <th class="border border-gray-400 p-2 min-w-[80px]">STOK AWAL</th>
+                <th class="border border-gray-400 p-2 min-w-[90px] leading-tight">TOTAL<br>PENJUALAN</th>
+                <th class="border border-gray-400 p-2 min-w-[90px] leading-tight">SISA<br>STOK</th>
+                <th class="border border-gray-400 p-2 min-w-[120px] leading-tight">TOTAL HARGA<br>PENJUALAN</th>
+                <th class="border border-gray-400 p-2 min-w-[120px]">TGL KADALUARSA</th>
+                <th class="border border-gray-400 p-2 min-w-[100px]">AKSI</th>
             </tr>
         </thead>
         <tbody>
             @forelse($obats as $index => $obat)
             @php $totalRow = $obat->stok_awal + $obat->masuk_bulan_ini; @endphp
             <tr class="hover:bg-gray-50 transition text-xs">
-                <td class="py-2 px-2 text-center text-gray-800 font-medium border border-gray-300">
+                <td class="py-2 px-2 text-center text-gray-800 font-medium border border-gray-400">
                     {{ $obats->firstItem() + $index }}
                 </td>
-                <td class="py-2 px-3 text-left text-gray-800 border border-gray-300">
+                <td class="py-2 px-3 text-left text-gray-800 border border-gray-400">
                     <div class="flex items-center justify-between gap-2 group">
                         <span class="font-bold">{{ $obat->nama_obat }}</span>
                         @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) !== 'CEK')
@@ -167,28 +167,28 @@
                         @endif
                     </div>
                 </td>
-                <td class="py-2 px-3 text-left text-gray-800 font-medium border border-gray-300">
+                <td class="py-2 px-3 text-left text-gray-800 font-medium border border-gray-400">
                     {{ $obat->kategori->nama_kategori ?? '-' }}
                 </td>
-                <td class="py-2 px-3 text-left text-gray-900 border border-gray-300 whitespace-nowrap">
+                <td class="py-2 px-3 text-left text-gray-900 border border-gray-400 whitespace-nowrap">
                     Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}
                 </td>
-                <td class="py-2 px-3 text-center text-gray-800 border border-gray-300">
+                <td class="py-2 px-3 text-center text-gray-800 border border-gray-400">
                     {{ (isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK') ? '-' : ($obat->satuan->nama_satuan ?? '-') }}
                 </td>
-                <td class="py-2 px-3 text-center border border-gray-300 font-bold">
+                <td class="py-2 px-3 text-center border border-gray-400 font-bold">
                     {{ (isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK') ? '-' : $obat->stok_awal }}
                 </td>
-                <td class="py-2 px-3 text-center border border-gray-300 font-bold text-red-600">
+                <td class="py-2 px-3 text-center border border-gray-400 font-bold text-red-600">
                     {{ $obat->terjual_bulan_ini }}
                 </td>
-                <td class="py-2 px-3 text-center border border-gray-300 font-bold {{ (isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) !== 'CEK' && $obat->current_stok <= 5) ? 'text-red-500' : 'text-green-700' }}">
+                <td class="py-2 px-3 text-center border border-gray-400 font-bold {{ (isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) !== 'CEK' && $obat->current_stok <= 5) ? 'text-red-500' : 'text-green-700' }}">
                     {{ (isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK') ? '-' : $obat->current_stok }}
                 </td>
-                <td class="py-2 px-3 text-left text-gray-900 font-bold border border-gray-300 whitespace-nowrap">
+                <td class="py-2 px-3 text-left text-gray-900 font-bold border border-gray-400 whitespace-nowrap">
                     Rp{{ number_format($obat->terjual_bulan_ini * $obat->harga_jual, 0, ',', '.') }}
                 </td>
-                <td class="py-2 px-3 text-center text-gray-900 border border-gray-300 whitespace-nowrap">
+                <td class="py-2 px-3 text-center text-gray-900 border border-gray-400 whitespace-nowrap">
                     @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK')
                         <span class="text-gray-400 font-normal">-</span>
                     @elseif($obat->tanggal_kadaluarsa)
@@ -199,7 +199,7 @@
                         <span class="text-gray-300">-</span>
                     @endif
                 </td>
-                <td class="py-2 px-2 border border-gray-300">
+                <td class="py-2 px-2 border border-gray-400">
                     <div class="flex justify-center items-center gap-1">
                         <button type="button"
                             data-id="{{ $obat->id }}"
@@ -746,7 +746,7 @@
         const sel = document.getElementById(prefix + '_id_kategori');
         if (!sel) return;
         const selectedOption = sel.options[sel.selectedIndex];
-        const isCek = selectedOption && selectedOption.getAttribute('data-nama') === 'CEK';
+        const isCek = selectedOption && selectedOption.getAttribute('data-nama') && selectedOption.getAttribute('data-nama').toUpperCase() === 'CEK';
         
         const stokWrapper = document.getElementById(prefix + '_stok_wrapper');
         const sisaStokWrapper = document.getElementById(prefix + '_sisa_stok_wrapper');

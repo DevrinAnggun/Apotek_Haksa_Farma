@@ -332,7 +332,6 @@ class PembelianController extends Controller
             'qty_retur' => 'required|integer|min:1',
             'alasan' => 'required|string',
             'nominal_potongan' => 'required|numeric|min:0',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         try {

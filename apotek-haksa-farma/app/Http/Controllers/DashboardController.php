@@ -69,14 +69,18 @@ class DashboardController extends Controller
             ->get();
             
         // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-5 Bulan)
+        // (Opsi Tambahan Laporan Realita: List Obat yang sudah BENAR-BENAR EXPIRED atau H-5 Bulan)
         $batasKadaluarsa = Carbon::now()->addMonths(5);
-        $obatSudahExpired = StokBatch::whereHas('obat', function($q) {
+        $jumlahObatKadaluarsa = StokBatch::whereHas('obat', function($q) {
                 $q->whereNull('deleted_at');
+                $q->whereHas('kategori', function($q2) {
+                    $q2->where('nama_kategori', '!=', 'CEK');
+                });
             })
-            ->with('obat')
             ->where('stok_sisa', '>', 0)
             ->whereDate('tgl_expired', '<=', $batasKadaluarsa)
-            ->get();
+            ->distinct('id_obat')
+            ->count('id_obat');
 
         // 5. Variabel Tambahan Untuk Desain Dashboard (Data Barang & Semua Penjualan)
         $totalDataBarang = Obat::count();
@@ -86,7 +90,6 @@ class DashboardController extends Controller
         
         $totalPenjualan = $penjualanValid->count();
         $totalSemuaPenjualan = $penjualanValid->sum('total_harga');
-        $jumlahObatKadaluarsa = $obatSudahExpired->count();
 
         // Ambil daftar obat untuk filter laporan
         $obats = Obat::orderBy('nama_obat', 'asc')->get();
@@ -97,7 +100,6 @@ class DashboardController extends Controller
             'totalRestockBulanIni',
             'obatStokMenipis',
             'obatMendekatiExpired',
-            'obatSudahExpired',
             'totalDataBarang',
             'totalPenjualan',
             'totalSemuaPenjualan',

@@ -32,9 +32,23 @@
         .img-crop-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
         .img-crop-container img { max-width: 100%; display: block; }
         body { font-family: 'Poppins', sans-serif; background-color: #f7fafc; }
-        .sidebar-active { background-color: #f0fdf4; color: #16a34a; border-left: 4px solid #16a34a; font-weight: 600; }
-        .sidebar-link { transition: all 0.2s ease-in-out; }
-        .sidebar-link:hover:not(.sidebar-active) { background-color: #f3f4f6; color: #16a34a; }
+        .sidebar-active { 
+            background-color: #16a34a; 
+            color: #ffffff !important; 
+            font-weight: 700; 
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+            margin: 0 12px;
+            border-radius: 12px;
+        }
+        .sidebar-link { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            margin: 0 12px;
+            border-radius: 12px;
+        }
+        .sidebar-link:hover:not(.sidebar-active) { 
+            background-color: #f0fdf4; 
+            color: #16a34a; 
+        }
 
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -166,7 +180,7 @@
     </div>
 
     <!-- ===== MODAL EDIT PROFIL & PASSWORD ===== -->
-    <div id="profileModal" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
+    <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onclick="closeProfileModal()"></div>
 
@@ -333,11 +347,13 @@
                 setTimeout(() => dropdown.classList.add('hidden'), 200);
             }
             document.getElementById('profileModal').classList.remove('hidden');
+            document.getElementById('profileModal').classList.add('flex');
             document.body.style.overflow = 'hidden';
         }
 
         function closeProfileModal() {
             document.getElementById('profileModal').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('flex');
             document.body.style.overflow = '';
         }
 
