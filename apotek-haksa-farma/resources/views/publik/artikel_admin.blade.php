@@ -38,12 +38,12 @@
         <div class="absolute top-3 right-3 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
             <button type="button" 
                 onclick="openEditArtikelModal({{ json_encode($artikel) }})"
-                class="p-2 bg-white/95 backdrop-blur-sm text-green-600 rounded-xl shadow-lg hover:scale-105 hover:bg-green-600 hover:text-white transition-all outline-none">
+                class="p-2 bg-white/95 text-green-600 rounded-xl shadow-lg hover:scale-105 hover:bg-green-600 hover:text-white transition-all outline-none">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
             </button>
             <button type="button" 
                 onclick="openDeleteModal('{{ route('artikel.destroy', $artikel->id) }}')"
-                class="p-2 bg-white/95 backdrop-blur-sm text-red-600 rounded-xl shadow-lg hover:scale-105 hover:bg-red-600 hover:text-white transition-all outline-none">
+                class="p-2 bg-white/95 text-red-600 rounded-xl shadow-lg hover:scale-105 hover:bg-red-600 hover:text-white transition-all outline-none">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             </button>
         </div>
@@ -89,7 +89,7 @@
 
 {{-- MODAL CREATE --}}
 <div id="modalCreateArtikel" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeCreateArtikelModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeCreateArtikelModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Tulis Artikel Baru</h3>
@@ -106,7 +106,8 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori <span class="text-red-500">*</span></label>
-                            <select name="kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
+                            <select name="kategori" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
                                 <option value="Edukasi">Edukasi</option>
                                 <option value="Tips Kesehatan">Tips Kesehatan</option>
                                 <option value="Keamanan">Keamanan</option>
@@ -139,7 +140,7 @@
 
 {{-- MODAL EDIT --}}
 <div id="modalEditArtikel" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditArtikelModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeEditArtikelModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Artikel</h3>
@@ -156,7 +157,8 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Kategori <span class="text-red-500">*</span></label>
-                            <select name="kategori" id="edit_kategori" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
+                            <select name="kategori" id="edit_kategori" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 transition shadow-sm font-medium">
+                                <option value="" disabled>-- Pilih Kategori --</option>
                                 <option value="Edukasi">Edukasi</option>
                                 <option value="Tips Kesehatan">Tips Kesehatan</option>
                                 <option value="Keamanan">Keamanan</option>
@@ -189,7 +191,7 @@
 
 {{-- ========== MODAL KONFIRMASI HAPUS ========== --}}
 <div id="modalHapusArtikel" class="fixed inset-0 z-[100] hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeDeleteModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-[320px] mx-4 overflow-hidden animate-modal">
         <div class="bg-red-600 py-3 text-center">
             <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
@@ -211,21 +213,6 @@
                     class="w-full py-2.5 text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition uppercase tracking-widest">YA, HAPUS</button>
             </form>
         </div>
-    </div>
-</div>
-
-{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
-        <div class="flex justify-center mb-5">
-            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
-                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
-            </svg>
-        </div>
-        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
-        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
     </div>
 </div>
 
@@ -263,7 +250,6 @@
         document.body.style.overflow = '';
     }
 
-    /* ===== DELETE MODAL LOGIC ===== */
     function openDeleteModal(actionUrl) {
         const modal = document.getElementById('modalHapusArtikel');
         const form = document.getElementById('formDeleteArtikel');
@@ -282,7 +268,6 @@
         document.body.style.overflow = '';
     }
 
-    /* ===== IMPROVED CROP LOGIC FOR ARTIKEL ===== */
     let activeCroppers = {};
 
     function initCropHandler(input, imgId, placeholderId, ratio) {
@@ -347,41 +332,10 @@
             }, 1500);
         }, 'image/jpeg', 0.9);
     }
-
-    /* ===== ANIMASI SUKSES SEBELUM SUBMIT ===== */
-    function showSuccessAnimation(formId, titleText) {
-        const modal = document.getElementById('modalSukses');
-        document.getElementById('sukses_title').textContent = titleText;
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        modal.style.display = 'flex';
-
-        // Restart animasi SVG
-        const circle = modal.querySelector('.circle-anim');
-        const check  = modal.querySelector('.check-anim');
-        circle.style.animation = 'none';
-        check.style.animation  = 'none';
-        circle.getBoundingClientRect(); // trigger reflow
-        check.getBoundingClientRect();
-        circle.style.animation = '';
-        check.style.animation  = '';
-
-        setTimeout(() => {
-            document.getElementById(formId).submit();
-        }, 800);
-    }
 </script>
 
 <style>
     @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
-
-    .sukses-box { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
-    .circle-anim { animation: drawCircle 0.65s ease forwards; }
-    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
-    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
 @endsection

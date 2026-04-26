@@ -59,19 +59,26 @@
 <body class="flex flex-col h-screen overflow-hidden text-sm">
 
     <!-- Top Navbar (Style = User Page Header) -->
-    <header class="flex items-center justify-between px-6 py-3 bg-white shadow-sm z-10 border-b border-gray-100">
-        <!-- Logo + Nama -->
-        <div class="flex items-center gap-3">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Apotek Haksa Farma" class="h-10 object-contain">
-            <span class="font-bold text-green-700 text-sm leading-tight hidden sm:block">Apotek<br>Haksa Farma</span>
+    <header class="flex items-center justify-between px-4 sm:px-6 py-3 bg-white shadow-sm z-30 border-b border-gray-100">
+        <!-- Hamburger Menu Button & Logo -->
+        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors focus:outline-none flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Apotek Haksa Farma" class="h-8 sm:h-10 object-contain flex-shrink-0">
+                <span class="font-bold text-green-700 text-[10px] sm:text-sm leading-tight hidden md:block">Apotek<br>Haksa Farma</span>
+            </div>
         </div>
         <!-- Profile Dropdown Component -->
-        <div class="relative inline-block text-left" id="profile-menu-container">
+        <div class="relative inline-block text-left flex-shrink-0" id="profile-menu-container">
             <!-- Toggle Button -->
-            <button onclick="toggleDropdown()" class="flex items-center gap-2 text-gray-700 hover:text-green-700 focus:outline-none transition py-1.5 px-3 rounded-full hover:bg-green-50 border border-gray-200 hover:border-green-300">
-                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span class="font-semibold text-sm">Hi, {{ auth()->user()->nama ?? 'Admin' }}</span>
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <button onclick="toggleDropdown()" class="flex items-center gap-1 sm:gap-2 text-gray-700 hover:text-green-700 focus:outline-none transition py-1 sm:py-1.5 px-2 sm:px-3 rounded-full hover:bg-green-50 border border-gray-200 hover:border-green-300">
+                <svg class="w-5 h-5 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span class="font-semibold text-[11px] sm:text-sm truncate max-w-[80px] sm:max-w-none">Hi, {{ auth()->user()->nama ?? 'Admin' }}</span>
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
 
             <!-- Dropdown Panel -->
@@ -105,7 +112,7 @@
     <div class="flex flex-1 overflow-hidden">
         
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-lg border-r border-gray-100 hidden lg:flex flex-col flex-shrink-0 relative z-0">
+        <aside id="sidebar" class="w-64 bg-white shadow-lg border-r border-gray-100 flex flex-col flex-shrink-0 relative z-20">
             <div class="flex-1 py-6 space-y-1">
                 
                 <!-- Dashboard -->
@@ -170,7 +177,7 @@
 
 
         <!-- Main Workspace Area -->
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-white p-6 md:p-10">
+        <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto bg-white p-6 md:p-10">
             <div class="max-w-full mx-auto">
                 <!-- Blade Template Injection Point -->
                 @yield('content')
@@ -182,7 +189,7 @@
     <!-- ===== MODAL EDIT PROFIL & PASSWORD ===== -->
     <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center">
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onclick="closeProfileModal()"></div>
+        <div class="absolute inset-0 bg-black/60" onclick="closeProfileModal()"></div>
 
         <!-- Modal Box -->
         <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-modal">
@@ -301,6 +308,48 @@
                 setTimeout(() => el.style.display = 'none', 300);
             }
         }
+
+        // Sidebar Toggle Logic
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                // Simpan status di localStorage agar ingat pilihan user saat refresh
+                localStorage.setItem('sidebarStatus', 'open');
+            } else {
+                sidebar.classList.add('hidden');
+                localStorage.setItem('sidebarStatus', 'closed');
+            }
+        }
+
+        // Initial setup for responsiveness
+        function setupResponsiveSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const savedStatus = localStorage.getItem('sidebarStatus');
+
+            if (window.innerWidth < 1024) {
+                // Di layar kecil (mobile), default tertutup atau sesuai status
+                if (savedStatus === 'open') {
+                    sidebar.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('hidden');
+                }
+            } else {
+                // Di layar besar, default terbuka atau sesuai status
+                if (savedStatus === 'closed') {
+                    sidebar.classList.add('hidden');
+                } else {
+                    sidebar.classList.remove('hidden');
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            // Kita tidak otomatis tutup/buka saat resize agar tidak mengganggu user,
+            // tapi kita pastikan sidebar tidak dalam mode fixed/absolute.
+        });
+        document.addEventListener('DOMContentLoaded', setupResponsiveSidebar);
 
         // Toggle Profile Dropdown
         function toggleDropdown() {
@@ -441,6 +490,117 @@
                 }
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+    </script>
+    <!-- ===== GLOBAL SUCCESS MODAL ===== -->
+    <div id="modalSukses" class="fixed inset-0 z-[999] hidden items-center justify-center">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-64 py-8 px-6 text-center animasi-pop">
+            <div class="flex justify-center mb-5">
+                <svg class="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
+                    <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
+                </svg>
+            </div>
+            <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
+            <p id="sukses_message" class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
+        </div>
+    </div>
+
+    <style>
+        .animasi-pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        @keyframes pop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+        .circle-anim { animation: drawCircle 0.6s ease forwards; }
+        .check-anim { animation: drawCheck 0.4s ease 0.5s forwards; }
+        @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+        @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+    </style>
+
+    <script>
+        function showSuccessAnimation(formId, titleText) {
+            const form = document.getElementById(formId);
+            
+            // Check form validity
+            if (form && !form.checkValidity()) {
+                // Find fields with asterisk but not filled
+                const requiredFields = form.querySelectorAll('[required]');
+                let missingFields = [];
+                requiredFields.forEach(field => {
+                    if (!field.value || field.value.trim() === '') {
+                        const label = field.closest('div').querySelector('label');
+                        const labelText = label ? label.textContent.replace('*', '').trim() : field.name;
+                        missingFields.push(labelText);
+                        
+                        // Flash red border
+                        field.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                        setTimeout(() => {
+                            field.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+                        }, 3000);
+                    }
+                });
+
+                if (missingFields.length > 0) {
+                    // Using browser's native reporting if available, or just focus first one
+                    form.reportValidity();
+                    return;
+                }
+            }
+
+            const modal = document.getElementById('modalSukses');
+            if (!modal) {
+                // Fallback if modal not in DOM
+                if (form) form.submit();
+                return;
+            }
+            
+            document.getElementById('sukses_title').textContent = titleText;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            modal.style.display = 'flex';
+
+            // Restart animations
+            const circle = modal.querySelector('.circle-anim');
+            const check  = modal.querySelector('.check-anim');
+            circle.style.animation = 'none';
+            check.style.animation  = 'none';
+            circle.getBoundingClientRect(); 
+            check.getBoundingClientRect();
+            circle.style.animation = '';
+            check.style.animation  = '';
+
+            setTimeout(() => {
+                if (form) form.submit();
+                else window.location.reload();
+            }, 800);
+        }
+
+        function showSuccessPopup(titleText, callback) {
+            const modal = document.getElementById('modalSukses');
+            if (!modal) {
+                if (callback) callback();
+                return;
+            }
+            
+            document.getElementById('sukses_title').textContent = titleText;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            modal.style.display = 'flex';
+
+            // Restart animations
+            const circle = modal.querySelector('.circle-anim');
+            const check  = modal.querySelector('.check-anim');
+            circle.style.animation = 'none';
+            check.style.animation  = 'none';
+            circle.getBoundingClientRect(); 
+            check.getBoundingClientRect();
+            circle.style.animation = '';
+            check.style.animation  = '';
+
+            setTimeout(() => {
+                if (callback) callback();
+            }, 800);
         }
     </script>
     @stack('scripts')

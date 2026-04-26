@@ -149,12 +149,11 @@ class ObatController extends Controller
             'stok_awal'   => 'nullable|integer|min:0',
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
-            'deskripsi'   => 'nullable|string',
-            'cara_pakai'  => 'nullable|string',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
+        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
+        $obatData['batas_stok_minimal'] = $request->input('batas_stok_minimal', 10);
         
         // Default values for CEK category if empty
         if ($isCek) {
@@ -168,7 +167,6 @@ class ObatController extends Controller
                 $obatData['harga_jual'] = 0;
             }
         }
-        $obatData['batas_stok_minimal'] = 5;
 
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
@@ -219,12 +217,10 @@ class ObatController extends Controller
             'stok_awal'   => 'nullable|integer|min:0',
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
-            'deskripsi'   => 'nullable|string',
-            'cara_pakai'  => 'nullable|string',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $obatData = $request->except(['stok_awal', 'barang_datang', 'expired_date', 'gambar']);
+        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
 
         // Default values for CEK category if empty
         if ($isCek) {
@@ -238,7 +234,6 @@ class ObatController extends Controller
                 $obatData['harga_jual'] = 0;
             }
         }
-        $obatData['batas_stok_minimal'] = 5;
 
         if ($request->hasFile('gambar')) {
             if ($obat->gambar && file_exists(public_path($obat->gambar))) {

@@ -138,7 +138,7 @@
 
 {{--  MODAL EDIT BARANG --}}
 <div id="modalEdit" class="fixed inset-0 z-50 hidden flex items-center justify-center">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-800 px-6 py-4 flex items-center justify-between text-white border-b border-green-900">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Katalog</h3>
@@ -175,12 +175,12 @@
                 <div class="space-y-4 pt-4 border-t border-gray-50">
                     <div class="space-y-1">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Deskripsi Obat <span class="text-red-500">*</span></label>
-                        <textarea name="deskripsi" id="edit_deskripsi" rows="3" placeholder="Tambahkan informasi lengkap mengenai obat..." class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
+                        <textarea name="deskripsi" id="edit_deskripsi" rows="3" required placeholder="Tambahkan informasi lengkap mengenai obat..." class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
                     </div>
 
                     <div class="space-y-1">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Kegunaan / Cara Pakai <span class="text-red-500">*</span></label>
-                        <textarea name="cara_pakai" id="edit_cara_pakai" rows="3" placeholder="Contoh: Dewasa 3x1 sehari setelah makan" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
+                        <textarea name="cara_pakai" id="edit_cara_pakai" rows="3" required placeholder="Contoh: Dewasa 3x1 sehari setelah makan" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium"></textarea>
                     </div>
                 </div>
             </form>
@@ -193,29 +193,10 @@
 </div>
 
 
-{{-- MODAL SUKSES --}}
-<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-64 py-8 px-6 text-center animasi-pop">
-        <div class="flex justify-center mb-5">
-            <svg class="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
-                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
-            </svg>
-        </div>
-        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
-    </div>
-</div>
 
 <style>
     @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
-    .animasi-pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-    @keyframes pop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
-    .circle-anim { animation: drawCircle 0.6s ease forwards; }
-    .check-anim { animation: drawCheck 0.4s ease 0.5s forwards; }
-    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
 
 @push('scripts')
@@ -246,14 +227,6 @@
     
     function closeEditModal() { document.getElementById('modalEdit').classList.add('hidden'); document.getElementById('modalEdit').classList.remove('flex'); document.body.style.overflow = ''; }
 
-    function showSuccessAnimation(formId, titleText) {
-        const form = document.getElementById(formId);
-        if (!form.checkValidity()) { form.reportValidity(); return; }
-        document.getElementById('sukses_title').textContent = titleText;
-        document.getElementById('modalSukses').classList.remove('hidden');
-        document.getElementById('modalSukses').classList.add('flex');
-        setTimeout(() => form.submit(), 1200);
-    }
 </script>
 @endpush
 @endsection

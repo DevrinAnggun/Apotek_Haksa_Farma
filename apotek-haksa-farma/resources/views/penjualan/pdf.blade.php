@@ -49,7 +49,13 @@
                     <td class="text-center">{{ \Carbon\Carbon::parse($trx->tgl_penjualan)->format('d-m-Y') }}</td>
                     <td>{{ $detail->obat->nama_obat ?? 'Barang Terhapus' }}</td>
                     <td class="text-center">Rp. {{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
-                    <td class="text-center">{{ $detail->obat->total_stok ?? 0 }}</td>
+                    <td class="text-center">
+                        @if(isset($detail->obat->kategori) && strtoupper($detail->obat->kategori->nama_kategori) === 'CEK')
+                            -
+                        @else
+                            {{ $detail->obat->total_stok ?? 0 }}
+                        @endif
+                    </td>
                     <td class="text-center">{{ $detail->qty }}</td>
                     <td class="text-center">Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                 </tr>

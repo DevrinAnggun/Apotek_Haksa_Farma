@@ -152,7 +152,7 @@
 @section('modals')
 {{-- ===== MODAL OPSI UNDUH LAPORAN ===== --}}
 <div id="reportModal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" style="display: none;">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeReportModal()"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeReportModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden flex flex-col max-h-[90vh]" x-data="{ reportType: 'penjualan', showMonthly: false, kadaluarsaType: 'stok', idObat: '' }">
         <!-- Header -->
         <div class="bg-blue-700 px-6 py-6 flex items-center justify-between text-white rounded-t-2xl">

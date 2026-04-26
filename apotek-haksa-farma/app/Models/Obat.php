@@ -17,10 +17,6 @@ class Obat extends Model
         'harga_jual',
         'batas_stok_minimal',
         'gambar',
-        'deskripsi',
-        'dosis_min',
-        'dosis_max',
-        'cara_pakai',
     ];
 
     public function kategori()

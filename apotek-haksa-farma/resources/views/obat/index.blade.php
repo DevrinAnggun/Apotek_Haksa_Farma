@@ -213,6 +213,7 @@
                             data-kode-obat="{{ $obat->kode_obat }}"
                             data-harga-beli="{{ $obat->harga_beli }}"
                             data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
+                            data-stok-minimal="{{ $obat->batas_stok_minimal }}"
                             onclick="openEditModal(this)"
                             class="bg-green-600 hover:bg-green-700 text-white p-1 rounded transition shadow-sm" title="Edit">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -268,7 +269,7 @@
 @section('modals')
 {{--  MODAL TAMBAH BARANG --}}
 <div id="modalTambah" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTambahModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeTambahModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Tambah Barang</h3>
@@ -341,6 +342,11 @@
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
                     <input type="number" id="tambah_sisa_stok" min="0" placeholder="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-bold cursor-not-allowed">
                 </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Batas Stok Minimal <span class="text-red-500">*</span></label>
+                    <input type="number" name="batas_stok_minimal" id="tambah_batas_stok_minimal" min="0" value="10" required placeholder="Contoh: 10" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                </div>
             </form>
         </div>
         <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
@@ -352,7 +358,7 @@
 
 {{--  MODAL EDIT BARANG --}}
 <div id="modalEdit" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden animate-modal flex flex-col">
         <div class="bg-green-800 px-6 py-4 flex items-center justify-between text-white border-b border-green-900">
             <h3 class="text-xl font-bold tracking-wide w-full text-center uppercase">Edit Obat</h3>
@@ -425,6 +431,11 @@
                     <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
                     <input type="number" id="edit_sisa_stok" min="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-medium cursor-not-allowed">
                 </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Batas Stok Minimal <span class="text-red-500">*</span></label>
+                    <input type="number" name="batas_stok_minimal" id="edit_batas_stok_minimal" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
+                </div>
             </form>
         </div>
         <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
@@ -436,7 +447,7 @@
 
 {{--  MODAL KONFIRMASI HAPUS --}}
 <div id="modalHapus" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeHapusModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeHapusModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden animate-modal">
         <div class="bg-red-600 py-3 text-center">
             <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
@@ -459,7 +470,7 @@
 
 {{-- MODAL TAMBAH KATEGORI --}}
 <div id="modalTambahKat" class="fixed inset-0 z-50 hidden flex items-start sm:items-center justify-center p-4 overflow-y-auto" style="display: none;">
-    <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTambahKatModal()"></div>
+    <div class="fixed inset-0 bg-black/60" onclick="closeTambahKatModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md my-8 overflow-hidden animate-modal flex flex-col max-h-[90vh]">
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white shrink-0">
             <h3 class="text-xl font-bold tracking-wide w-full text-center">Kategori</h3>
@@ -492,7 +503,7 @@
 
 {{-- MODAL KONFIRMASI HAPUS KATEGORI --}}
 <div id="modalHapusKat" class="fixed inset-0 z-[110] hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeHapusKatModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeHapusKatModal()"></div>
     <div class="relative bg-white rounded-xl shadow-2xl w-80 mx-4 overflow-hidden animate-modal">
         <div class="bg-red-600 py-3 text-center">
             <h4 class="text-white font-bold uppercase tracking-widest text-sm">KONFIRMASI HAPUS</h4>
@@ -515,7 +526,7 @@
 
 {{-- MODAL SO --}}
 <div id="modalSO" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeSOModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeSOModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto overflow-hidden animate-modal flex flex-col max-h-[90vh]">
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white shrink-0">
             <h3 class="text-xl font-bold tracking-wide uppercase flex items-center gap-2">
@@ -569,29 +580,10 @@
     </div>
 </div>
 
-{{-- MODAL SUKSES --}}
-<div id="modalSukses" class="fixed inset-0 z-[999] hidden items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-64 py-8 px-6 text-center animasi-pop">
-        <div class="flex justify-center mb-5">
-            <svg class="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6" stroke-dasharray="276" stroke-dashoffset="276" class="circle-anim"></circle>
-                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="80" stroke-dashoffset="80" class="check-anim"></polyline>
-            </svg>
-        </div>
-        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
-    </div>
-</div>
 
 <style>
     @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
-    .animasi-pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-    @keyframes pop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
-    .circle-anim { animation: drawCircle 0.6s ease forwards; }
-    .check-anim { animation: drawCheck 0.4s ease 0.5s forwards; }
-    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
     .no-spinners::-webkit-outer-spin-button,
     .no-spinners::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -754,6 +746,8 @@
         const hargaBeliWrapper = document.getElementById(prefix + '_harga_beli_wrapper');
         const gambarWrapper = document.getElementById(prefix + '_gambar_wrapper');
         const satuanWrapper = document.getElementById(prefix + '_satuan_wrapper');
+        const minStokInput = document.getElementById(prefix + '_batas_stok_minimal');
+        const minStokWrapper = minStokInput ? minStokInput.parentElement : null;
         
         const namaLabel = document.getElementById(prefix + '_nama_label');
         
@@ -778,6 +772,7 @@
             if (hargaBeliWrapper) hargaBeliWrapper.classList.add('hidden');
             if (gambarWrapper) gambarWrapper.classList.add('hidden');
             if (satuanWrapper) satuanWrapper.classList.add('hidden');
+            if (minStokWrapper) minStokWrapper.classList.add('hidden');
             
             // Rename Label
             if (namaLabel) {
@@ -799,6 +794,8 @@
                 }
             });
 
+            if (minStokInput) minStokInput.required = false;
+
             // Set internal defaults
             if (prefix === 'tambah') {
                 const stokInput = document.getElementById('tambah_stok_awal');
@@ -812,6 +809,7 @@
             if (hargaBeliWrapper) hargaBeliWrapper.classList.remove('hidden');
             if (gambarWrapper) gambarWrapper.classList.remove('hidden');
             if (satuanWrapper) satuanWrapper.classList.remove('hidden');
+            if (minStokWrapper) minStokWrapper.classList.remove('hidden');
             
             // Restore Label
             if (namaLabel) {
@@ -826,6 +824,8 @@
                 const el = document.getElementById(id);
                 if (el) el.required = true;
             });
+
+            if (minStokInput) minStokInput.required = true;
         }
     }
 
@@ -848,6 +848,7 @@
         document.getElementById('edit_harga_beli').value = d.hargaBeli;
         document.getElementById('edit_nama_obat').value = d.nama;
         document.getElementById('edit_harga_jual').value = d.hargaJual;
+        document.getElementById('edit_batas_stok_minimal').value = d.stokMinimal || 10;
         
         document.getElementById('edit_stok_awal').value = d.stokAwal || 0;
         document.getElementById('edit_barang_datang').value = d.barangDatang || 0;
@@ -909,27 +910,6 @@
         modal.style.display = 'none';
         document.body.style.overflow = '';
     }
-    function showSuccessAnimation(formId, titleText) {
-        const form = document.getElementById(formId);
-        if (!form.checkValidity()) { form.reportValidity(); return; }
-        document.getElementById('sukses_title').textContent = titleText;
-        const modal = document.getElementById('modalSukses');
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-        setTimeout(() => form.submit(), 1200);
-    }
-
-    function showSuccessPopup(titleText, callback) {
-        const modal = document.getElementById('modalSukses');
-        document.getElementById('sukses_title').textContent = titleText;
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.style.display = 'none';
-            if (callback) callback();
-        }, 1200);
-    }
 
     function simpanSOModal() {
         if (document.activeElement && document.activeElement.tagName === 'INPUT') {
@@ -966,7 +946,7 @@
 
 {{-- MODAL REKAP STOCK OPNAME --}}
 <div id="modalRekapSO" class="fixed inset-0 z-50 hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeRekapSOModal()"></div>
+    <div class="absolute inset-0 bg-black/60 transition-opacity" onclick="closeRekapSOModal()"></div>
     <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl mx-4 animate-modal overflow-hidden flex flex-col max-h-[90vh] border border-gray-100">
         <div class="flex items-center justify-between px-8 py-5 bg-green-700 text-white shadow-lg">
             <div class="flex items-center gap-3">

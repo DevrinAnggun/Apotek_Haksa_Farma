@@ -203,27 +203,6 @@
 @endsection
 
 @section('modals')
-{{-- ===== MODAL SUKSES DENGAN ANIMASI CENTANG ===== --}}
-<div id="modalSukses" class="fixed inset-0 z-[200] hidden items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-72 mx-4 py-8 px-6 text-center sukses-box">
-        <div class="flex justify-center mb-5">
-            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="44" stroke="#16a34a" stroke-width="6"
-                    stroke-dasharray="276" stroke-dashoffset="276"
-                    class="circle-anim">
-                </circle>
-                <polyline points="28,52 44,68 73,34" stroke="#16a34a" stroke-width="7"
-                    stroke-linecap="round" stroke-linejoin="round"
-                    stroke-dasharray="80" stroke-dashoffset="80"
-                    class="check-anim">
-                </polyline>
-            </svg>
-        </div>
-        <h3 id="sukses_title" class="text-xl font-extrabold text-gray-800 mb-1">Berhasil!</h3>
-        <p class="text-sm text-gray-400 mt-1">Sedang memperbarui data...</p>
-    </div>
-</div>
 
 <style>
     @keyframes modalIn {
@@ -231,18 +210,11 @@
         to   { opacity: 1; transform: scale(1)    translateY(0); }
     }
     .animate-modal { animation: modalIn 0.2s ease-out both; }
-
-    .sukses-box { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
-    .circle-anim { animation: drawCircle 0.65s ease forwards; }
-    .check-anim { animation: drawCheck 0.45s ease 0.55s forwards; }
-    @keyframes drawCircle { to { stroke-dashoffset: 0; } }
-    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
 </style>
 
 {{-- ===== MODAL TERPADU REKAP & LAPORAN RETUR ===== --}}
 <div id="modalUnifiedRetur" class="fixed inset-0 z-[150] hidden flex items-center justify-center font-sans" x-data="{ tab: 'rekap' }" style="display: none;">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeUnifiedReturModal()"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeUnifiedReturModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col max-h-[90vh]">
         <!-- Header -->
         <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white">
@@ -376,7 +348,7 @@
         }
     }"
     @set-edit-obat.window="initFromId($event.detail.id)">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeEditModal()"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeEditModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
         <!-- Header -->
         <div class="bg-green-600 px-6 py-4 flex items-center justify-between text-white text-center">
@@ -501,7 +473,7 @@
 
 {{-- ===== MODAL STOK MASUK (SUPPLIER) ===== --}}
 <div id="modalStokMasuk" class="fixed inset-0 z-[100] hidden flex items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeModalStokMasuk()"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeModalStokMasuk()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col"
         x-data="{ 
             openObat: false, 
@@ -650,7 +622,7 @@
 
 {{-- ===== MODAL RIWAYAT STOK MASUK ===== --}}
 <div id="modalRiwayatStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center font-sans" style="display: none;">
-    <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm" onclick="closeRiwayatModal()"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeRiwayatModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden animate-modal flex flex-col">
         <!-- Header -->
         <div class="bg-green-700 px-6 py-4 flex items-center justify-between text-white text-center">
@@ -686,7 +658,7 @@
 
 {{-- ===== MODAL RETUR PEMBELIAN ===== --}}
 <div id="modalReturPembelian" class="fixed inset-0 z-[120] hidden items-center justify-center" style="display: none;">
-    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeReturModal()"></div>
+    <div class="absolute inset-0 bg-black/60" onclick="closeReturModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-modal flex flex-col">
         <!-- Header -->
         <div class="bg-blue-600 px-6 py-4 flex items-center justify-between text-white text-center">
@@ -967,28 +939,5 @@
 
 
 
-    /* ===== ANIMASI SUKSES ===== */
-    function showSuccessAnimation(formId, message) {
-        const modal = document.getElementById('modalSukses');
-        const title = document.getElementById('sukses_title');
-        title.innerText = message;
-        
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        modal.style.display = 'flex';
-
-        // Restart animasi centang
-        const circle = modal.querySelector('.circle-anim');
-        const check  = modal.querySelector('.check-anim');
-        if(circle && check) {
-            circle.style.animation = 'none';
-            check.style.animation  = 'none';
-            circle.offsetHeight; // trigger reflow
-            circle.style.animation = '';
-            check.style.animation  = '';
-        }
-
-        setTimeout(() => { document.getElementById(formId).submit(); }, 800);
-    }
 </script>
 @endpush
