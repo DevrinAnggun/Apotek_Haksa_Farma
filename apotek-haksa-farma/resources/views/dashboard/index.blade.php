@@ -397,7 +397,6 @@
         const idObat = document.querySelector('[x-model="idObat"]').value;
         const idObatParam = idObat ? `&id_obat=${idObat}` : '';
 
-        // Jika retur dan panggil download semua riwayat (custom tanpa tgl), kirim tanpa tgl agar default
         if (type === 'retur' && !s && !e) {
              window.open(`${route}?all=true${idObatParam}`, '_blank');
              return;

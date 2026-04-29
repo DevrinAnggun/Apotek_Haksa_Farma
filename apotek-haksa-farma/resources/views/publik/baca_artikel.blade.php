@@ -94,7 +94,6 @@
 </script>
 
 <style>
-    /* Subtle typography improvements */
     .prose p { margin-bottom: 1.5rem; }
 </style>
 @endsection

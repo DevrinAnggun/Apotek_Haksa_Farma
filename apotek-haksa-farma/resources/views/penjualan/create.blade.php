@@ -187,9 +187,6 @@
         renderKeranjang();
     }
 
-    // ==============================
-    // Render ulang tampilan keranjang
-    // ==============================
     function renderKeranjang() {
         const list = document.getElementById('keranjangList');
         const emptyNote = document.getElementById('emptyCart');
@@ -223,9 +220,6 @@
         updateTotals();
     }
 
-    // ==============================
-    // Ubah qty dari keranjang
-    // ==============================
     function ubahQty(idx, delta) {
         const item = keranjang[idx];
         const newQty = item.qty + delta;
@@ -240,17 +234,11 @@
         renderKeranjang();
     }
 
-    // ==============================
-    // Hapus item dari keranjang
-    // ==============================
     function hapusItem(idx) {
         keranjang.splice(idx, 1);
         renderKeranjang();
     }
 
-    // ==============================
-    // Kosongkan seluruh keranjang
-    // ==============================
     function kosongkanKeranjang() {
         if (keranjang.length === 0) return;
         if (confirm('Kosongkan seluruh keranjang belanja?')) {
@@ -259,9 +247,6 @@
         }
     }
 
-    // ==============================
-    // Update total & kembalian
-    // ==============================
     function updateTotals() {
         const total = keranjang.reduce((sum, item) => sum + (item.qty * item.harga_jual), 0);
         document.getElementById('displayTotal').textContent = 'Rp ' + numberFormat(total);
@@ -286,9 +271,6 @@
         }
     }
 
-    // ==============================
-    // Submit Transaksi
-    // ==============================
     function submitTransaksi() {
         if (keranjang.length === 0) {
             alert('Keranjang masih kosong! Tambahkan obat terlebih dahulu.');
@@ -308,7 +290,6 @@
             return;
         }
 
-        // Isi hidden inputs untuk form submission
         document.getElementById('hidden_nominal_bayar').value = bayar;
 
         const hiddenContainer = document.getElementById('hiddenItems');
@@ -344,9 +325,6 @@
         }, 1800);
     }
 
-    // ==============================
-    // Filter pencarian obat
-    // ==============================
     function filterObat(keyword) {
         const q = keyword.toLowerCase().trim();
         document.querySelectorAll('.obat-row').forEach(row => {
@@ -356,9 +334,6 @@
         });
     }
 
-    // ==============================
-    // Helper format angka
-    // ==============================
     function numberFormat(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }

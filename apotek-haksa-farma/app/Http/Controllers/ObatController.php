@@ -154,8 +154,7 @@ class ObatController extends Controller
 
         $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
         $obatData['batas_stok_minimal'] = $request->input('batas_stok_minimal', 10);
-        
-        // Default values for CEK category if empty
+
         if ($isCek) {
             if (!$request->filled('id_satuan')) {
                 $obatData['id_satuan'] = \App\Models\Satuan::first()->id;
@@ -181,7 +180,6 @@ class ObatController extends Controller
         $barangDatang = $request->input('barang_datang', 0);
         $sisaStok = $stokAwal + $barangDatang;
 
-        // Inject initial stok directly to StokBatch table if user filled it
         if ($sisaStok > 0) {
             $expiredDate = $request->filled('expired_date') ? $request->expired_date : Carbon::now()->addYears(2)->format('Y-m-d');
             StokBatch::create([
@@ -192,7 +190,6 @@ class ObatController extends Controller
                 'stok_sisa' => $sisaStok,
             ]);
             
-            // If there's barang datang, we might want to log it if needed, but for now we just add it to initial batch.
         }
 
         return redirect()->back()->with('success', 'Data Obat berhasil ditambahkan!');
@@ -222,7 +219,6 @@ class ObatController extends Controller
 
         $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
 
-        // Default values for CEK category if empty
         if ($isCek) {
             if (!$request->filled('id_satuan')) {
                 $obatData['id_satuan'] = \App\Models\Satuan::first()->id;
@@ -247,25 +243,21 @@ class ObatController extends Controller
 
         $obat->update($obatData);
 
-        // Handle direct edit stok
         $stokAwal = $request->input('stok_awal', 0);
         $barangDatang = $request->input('barang_datang', 0);
         $sisaStok = $stokAwal + $barangDatang;
 
         if ($request->filled('stok_awal') || $request->filled('barang_datang')) {
-            // Find existing generic batch or get any first batch
             $batch = StokBatch::where('id_obat', $obat->id)->orderBy('created_at', 'asc')->first();
             $expiredDate = $request->filled('expired_date') ? $request->expired_date : Carbon::now()->addYears(2)->format('Y-m-d');
             
             if ($batch) {
-                // Update existing batch
                 $batch->update([
                     'stok_sisa' => $sisaStok,
-                    'stok_awal' => $stokAwal, // Maybe we shouldn't overwrite existing stok_awal actually, but to be consistent with form we will
+                    'stok_awal' => $stokAwal, 
                     'tgl_expired' => $expiredDate,
                 ]);
             } else if ($sisaStok > 0) {
-                // Generate a new one if completely empty and user put > 0
                 StokBatch::create([
                     'id_obat' => $obat->id,
                     'no_batch' => 'BATCH-ADJ-' . time(),
@@ -293,7 +285,7 @@ class ObatController extends Controller
     public function saveStockOpname(Request $request)
     {
         $id_obat = $request->id_obat;
-        $tanggal = $request->tanggal; // Expected Y-m-d
+        $tanggal = $request->tanggal;
         $jumlah = $request->jumlah;
 
         \App\Models\StockOpname::updateOrCreate(
@@ -397,7 +389,7 @@ class ObatController extends Controller
             if ($isCurrentMonth) {
                 $obat->stok_awal = $obat->current_stok - $obat->masuk_bulan_ini + $obat->retur_bulan_ini + $obat->terjual_bulan_ini;
             } else {
-                $obat->stok_awal = 0; // fallback untuk bulan lalu
+                $obat->stok_awal = 0;
             }
 
             // Stok Sistem Akhir (Expected)

@@ -7,23 +7,9 @@ use Illuminate\Database\Seeder;
 
 class ObatGambarSeeder extends Seeder
 {
-    /**
-     * ============================================================
-     *  EDIT DI SINI — Pasangkan nama obat dengan nama file foto
-     * ============================================================
-     *
-     *  1. Taruh file foto di folder:
-     *     public/images/obat/
-     *
-     *  2. Isi array di bawah:
-     *     'Nama Obat Persis'  =>  'nama-file.jpg'
-     *
-     *  3. Jalankan perintah di terminal:
-     *     php artisan db:seed --class=ObatGambarSeeder
-     * ============================================================
-     */
+
     protected array $mapping = [
-        // Nama obat (harus PERSIS sama dengan di database)  =>  Nama file gambar
+
         'Bisolvon'             => 'bisolvon.jpg',
         'Masker Medis'         => 'masker.jpg',
         'Panadol Extra'        => 'panadol.jpg',
@@ -32,7 +18,6 @@ class ObatGambarSeeder extends Seeder
         'Teh Sari Sehat'       => 'teh-sari-sehat.jpg',
         'Tolak Angin Cair'     => 'tolak-angin.jpg',
         'Vitamin C'            => 'vitamin-c.jpg',
-        // Tambah baris baru di sini jika perlu...
     ];
 
     public function run(): void

@@ -80,21 +80,18 @@ class LaporanController extends Controller
 
         $totalPendapatan = $penjualans->sum('total_harga');
 
-        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
         $customTitle = 'LAPORAN PENJUALAN';
         if ($startDate === $endDate) {
             $customTitle = 'LAPORAN PENJUALAN HARIAN';
         } else {
             $start = \Carbon\Carbon::parse($startDate);
             $end = \Carbon\Carbon::parse($endDate);
-            // Jika rentang adalah satu bulan penuh
+
             if ($start->day === 1 && $end->day === $start->daysInMonth && $start->month === $end->month && $start->year === $end->year) {
                 $customTitle = 'LAPORAN PENJUALAN BULANAN';
             }
         }
 
-        // Render blade view menjadi halaman HTML untuk PDF
-        // Load view 'penjualan.pdf' dan passing datanya
         $pdf = Pdf::loadView('penjualan.pdf', compact(
             'penjualans', 
             'startDate', 
@@ -103,10 +100,8 @@ class LaporanController extends Controller
             'customTitle'
         ));
 
-        // Set ukuran kertas (A4 Landscape agar tabel lebar tidak terpotong)
         $pdf->setPaper('A4', 'landscape');
 
-        // Memberikan file PDF tersebut untuk diunduh (downloadable)
         return $pdf->download("Laporan_Penjualan_{$startDate}_sampai_{$endDate}.pdf");
     }
 
@@ -121,7 +116,7 @@ class LaporanController extends Controller
             ->whereDate('tgl_penjualan', '<=', $endDate)
             ->whereHas('details.obat', function($q) use ($id_obat) {
                 $q->whereNull('deleted_at'); 
-                if($id_obat) $q->where('id', $id_obat); // Filter obat jika dipilih
+                if($id_obat) $q->where('id', $id_obat); 
                 $q->whereHas('kategori', function($qKat) {
                     $qKat->where('nama_kategori', '!=', 'CEK');
                 })->whereHas('stokBatches', function($qBatch) {
@@ -170,7 +165,7 @@ class LaporanController extends Controller
         $penjualans = Penjualan::whereDate('tgl_penjualan', '>=', $startDate)
             ->whereDate('tgl_penjualan', '<=', $endDate)
             ->whereHas('details.obat', function($q) {
-                $q->whereNull('deleted_at'); // Filter obat yang belum dihapus
+                $q->whereNull('deleted_at'); 
                 $q->whereHas('kategori', function($qKat) {
                     $qKat->where('nama_kategori', '!=', 'CEK');
                 })->whereHas('stokBatches', function($qBatch) {
@@ -239,7 +234,6 @@ class LaporanController extends Controller
 
         $totalPotongan = $returs->sum('nominal_potongan');
 
-        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
         $customTitle = 'LAPORAN RETUR OBAT';
         if ($startDate === $endDate) {
             $customTitle = 'LAPORAN RETUR OBAT HARIAN';

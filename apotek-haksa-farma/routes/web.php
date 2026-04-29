@@ -12,7 +12,7 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KadaluarsaController;
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\PembelianController; // Import PembelianController
+use App\Http\Controllers\PembelianController;
 
 // ===== HALAMAN PUBLIK USER (tanpa login) =====
 Route::get('/publik/katalog', [PublicController::class, 'katalog'])->name('publik.katalog');
@@ -73,7 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,kasir'])->group(function () {
         Route::get('/kasir/pos', [PenjualanController::class, 'create'])->name('kasir.pos');
         Route::post('/kasir/transaksi', [PenjualanController::class, 'store'])->name('kasir.store');
-        Route::get('/kasir/riwayat', [PenjualanController::class, 'index']); // Hanya lihat riwayat dirinya
+        Route::get('/kasir/riwayat', [PenjualanController::class, 'index']);
     });
 });
 

@@ -15,40 +15,29 @@ use Carbon\Carbon;
 
 class PembelianController extends Controller
 {
-    /**
-     * Menampilkan daftar riwayat penerimaan barang (pembelian).
-     */
+
     public function index()
     {
-        // Tampilkan riwayat pembelian yang obat-obatnya belum dihapus (Soft Delete)
         $pembelians = Pembelian::whereHas('details.obat', function($q) {
                                    $q->whereNull('deleted_at');
                                })
                                ->with(['supplier', 'user', 'details.obat'])
                                ->latest()
                                ->paginate(10);
-
-        // Data for the modal (Add Stock)
         $suppliers = \App\Models\Supplier::all();
         $obats = \App\Models\Obat::all();
 
         return view('pembelian.index', compact('pembelians', 'suppliers', 'obats'));
-    }
 
-    /**
-     * Menampilkan form untuk menambah/merestock barang masuk.
-     */
+    }
     public function create()
     {
         return view('pembelian.create');
     }
 
-    /**
-     * Menyimpan transaksi pembelian dan men-generate stok batch (DB Transaction).
-     */
     public function store(Request $request)
     {
-        // 1. Validasi Input Array Request
+
         $request->validate([
             'nama_suplier' => 'required|string|max:255',
             'no_faktur' => 'required|string|max:100',
@@ -115,7 +104,6 @@ class PembelianController extends Controller
                     'harga_jual' => $item['harga_jual']
                 ]);
 
-                // Auto-fill Stock Opname pada tanggal penerimaan
                 $tglTerima = $request->tgl_pembelian;
                 $existing = StockOpname::where('id_obat', $item['id_obat'])
                     ->where('tanggal', $tglTerima)->first();
@@ -143,9 +131,6 @@ class PembelianController extends Controller
         }
     }
 
-    /**
-     * Mengekspor data laporan pembelian/supplier ke PDF.
-     */
     public function cetakPdf(Request $request)
     {
         $startDate = $request->input('start_date', Carbon::now()->subMonths(3)->format('Y-m-d'));
@@ -162,7 +147,6 @@ class PembelianController extends Controller
 
         $totalPembelian = $pembelians->sum('total_bayar');
 
-        // Logic untuk menentukan judul laporan agar tidak tercampur (Harian/Bulanan)
         $customTitle = 'LAPORAN STOK MASUK';
         if ($startDate === $endDate) {
             $customTitle = 'LAPORAN STOK MASUK HARIAN';
@@ -187,9 +171,6 @@ class PembelianController extends Controller
         return $pdf->download("Laporan_Stok_Masuk_{$startDate}_sampai_{$endDate}.pdf");
     }
 
-    /**
-     * Memperbarui data riwayat pembelian dan stok batch.
-     */
     public function update(Request $request, Pembelian $pembelian)
     {
         $request->validate([
@@ -254,7 +235,6 @@ class PembelianController extends Controller
                         'keterangan' => 'Penambahan Stok Baru (Edit)'
                     ]);
 
-                    // Auto-fill Stock Opname pada tanggal hari ini (saat stok baru ditambahkan)
                     $tglTerima = now()->toDateString();
                     $existingSO = StockOpname::where('id_obat', $request->id_obat)
                         ->where('tanggal', $tglTerima)->first();
@@ -289,9 +269,6 @@ class PembelianController extends Controller
         }
     }
 
-    /**
-     * Menghapus riwayat pembelian dan stok batch terkait.
-     */
     public function destroy(Pembelian $pembelian)
     {
         try {
@@ -313,9 +290,6 @@ class PembelianController extends Controller
         }
     }
 
-    /**
-     * Mendapatkan data JSON riwayat penambahan stok untuk popup.
-     */
     public function getRiwayat($id_detail)
     {
         $riwayat = RiwayatStokMasuk::where('id_pembelian_detail', $id_detail)
@@ -354,8 +328,7 @@ class PembelianController extends Controller
             // 2. Kurangi stok batch dan stok sisa
             $batch = StokBatch::where('id_pembelian', $pembelian->id)->where('id_obat', $obat->id)->first();
             if ($batch) {
-                // Jangan kurangi stok awal agar historis masuknya tetap ada,
-                // tapi kurangi stok_sisa karena barang dikembalikan.
+
                 $batch->stok_sisa -= $request->qty_retur;
                 if ($batch->stok_sisa < 0) {
                     $batch->stok_sisa = 0;
@@ -369,7 +342,7 @@ class PembelianController extends Controller
                 RiwayatStokMasuk::create([
                     'id_pembelian_detail' => $detail->id,
                     'id_obat' => $obat->id,
-                    'qty_masuk' => -$request->qty_retur, // negatif karena retur
+                    'qty_masuk' => -$request->qty_retur,
                     'harga_beli' => $detail->harga_beli,
                     'harga_jual' => $obat->harga_jual,
                     'tgl_expired' => $batch ? $batch->tgl_expired : null,

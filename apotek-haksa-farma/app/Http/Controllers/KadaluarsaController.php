@@ -11,21 +11,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class KadaluarsaController extends Controller
 {
-    /**
-     * Menampilkan daftar semua data batch obat yang sudah/mendekati kadaluarsa.
-     */
+
     public function index()
     {
-        // Tampilkan obat yang memiliki batch SUDAH expired atau H-5 Bulan (≤ 5 bulan lagi akan expired)
         $batasHari = Carbon::now()->addMonths(5);
         $kadaluarsas = $this->getKadaluarsaQuery($batasHari)->paginate(10);
 
         return view('kadaluarsa.index', compact('kadaluarsas', 'batasHari'));
     }
 
-    /**
-     * Helper untuk query data kadaluarsa agar konsisten antara index & cetak PDF
-     */
     private function getKadaluarsaQuery($batasHari)
     {
         return StokBatch::select(
@@ -40,7 +34,6 @@ class KadaluarsaController extends Controller
                 'obat.kategori'
             ])
             ->whereHas('obat', function($q) {
-                // Dimana obat tersebut TIDAK dalam status terhapus (deleted_at IS NULL)
                 $q->whereNull('deleted_at');
                 $q->whereHas('kategori', function($q2) {
                     $q2->where('nama_kategori', '!=', 'CEK');
@@ -52,9 +45,6 @@ class KadaluarsaController extends Controller
             ->orderBy('earliest_expired', 'asc');
     }
 
-    /**
-     * Mengekspor data kadaluarsa ke PDF
-     */
     public function cetakPdf(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -103,24 +93,17 @@ class KadaluarsaController extends Controller
         return $pdf->download($filename);
     }
 
-    /**
-     * Menampilkan detail satu data batch kadaluarsa.
-     */
     public function show(StokBatch $kadaluarsa)
     {
         $kadaluarsa->load(['obat.kategori', 'obat.satuan']);
         return view('kadaluarsa.show', compact('kadaluarsa'));
     }
 
-    /**
-     * Menghapus data batch dari database (Mungkin untuk membersihkan log lama).
-     */
     public function destroy($id_obat)
     {
         try {
             $batasHari = Carbon::now()->addMonths(5);
             
-            // Hapus semua batch obat ini yang sudah expired / H-5 Bulan
             StokBatch::where('id_obat', $id_obat)
                 ->where('stok_sisa', '>', 0)
                 ->whereDate('tgl_expired', '<=', $batasHari)

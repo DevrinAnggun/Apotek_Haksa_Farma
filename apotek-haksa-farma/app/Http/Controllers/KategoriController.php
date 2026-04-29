@@ -40,7 +40,6 @@ class KategoriController extends Controller
 
     public function update(Request $request, Kategori $kategori)
     {
-        // Validasi dan abaikan validasi unique untuk nama yang sama (milik id ini sendiri)
         $request->validate([
             'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori,' . $kategori->id,
         ]);

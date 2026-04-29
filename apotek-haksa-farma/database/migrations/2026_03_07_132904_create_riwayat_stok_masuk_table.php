@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('riwayat_stok_masuk', function (Blueprint $row) {
@@ -18,17 +16,15 @@ return new class extends Migration
             $row->integer('qty_masuk');
             $row->integer('harga_beli');
             $row->integer('harga_jual');
-            $row->string('keterangan')->nullable(); // Misal: "Penerimaan Awal" atau "Update Stok Baru"
+            $row->string('keterangan')->nullable(); 
             $row->timestamps();
 
-            // Foreign keys
+           
             $row->foreign('id_obat')->references('id')->on('obats')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+   
     public function down(): void
     {
         Schema::dropIfExists('riwayat_stok_masuk');

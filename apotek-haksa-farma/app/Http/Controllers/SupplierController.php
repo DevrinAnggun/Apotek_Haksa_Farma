@@ -31,5 +31,4 @@ class SupplierController extends Controller
         return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan.');
     }
 
-    // method edit(), update(), destroy() dapat dibuat dengan pola yang sama seperti Kategori
 }
