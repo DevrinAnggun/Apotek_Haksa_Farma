@@ -327,25 +327,21 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 items-start" id="tambah_stok_wrapper">
-                    <div class="space-y-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1" id="tambah_stok_wrapper">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Stok Awal <span class="text-red-500 star-required">*</span></label>
                         <input type="number" name="stok_awal" id="tambah_stok_awal" min="0" placeholder="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold" oninput="calculateSisaStokTambah()">
                     </div>
-                    <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Barang Datang</label>
-                        <input type="number" name="barang_datang" id="tambah_barang_datang" min="0" placeholder="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold" oninput="calculateSisaStokTambah()">
+
+                    <div class="space-y-1" id="tambah_sisa_stok_wrapper">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
+                        <input type="number" id="tambah_sisa_stok" min="0" placeholder="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-bold cursor-not-allowed">
                     </div>
                 </div>
 
-                <div class="space-y-1" id="tambah_sisa_stok_wrapper">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
-                    <input type="number" id="tambah_sisa_stok" min="0" placeholder="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-bold cursor-not-allowed">
-                </div>
-
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Batas Stok Minimal <span class="text-red-500">*</span></label>
-                    <input type="number" name="batas_stok_minimal" id="tambah_batas_stok_minimal" min="0" value="10" required placeholder="Contoh: 10" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
+                    <input type="number" name="batas_stok_minimal" id="tambah_batas_stok_minimal" min="0" value="5" required placeholder="Contoh: 5" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
                 </div>
             </form>
         </div>
@@ -416,26 +412,23 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 items-start" id="edit_stok_wrapper">
-                    <div class="space-y-1">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1" id="edit_stok_wrapper">
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Stok Awal <span class="text-red-500 star-required">*</span></label>
                         <input type="number" name="stok_awal" id="edit_stok_awal" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium" oninput="calculateSisaStokEdit()">
                     </div>
-                    <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Barang Datang</label>
-                        <input type="number" name="barang_datang" id="edit_barang_datang" min="0" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium" oninput="calculateSisaStokEdit()">
+
+                    <div class="space-y-1" id="edit_sisa_stok_wrapper">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
+                        <input type="number" id="edit_sisa_stok" min="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-medium cursor-not-allowed">
                     </div>
                 </div>
 
-                <div class="space-y-1" id="edit_sisa_stok_wrapper">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sisa Stok</label>
-                    <input type="number" id="edit_sisa_stok" min="0" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-500 bg-gray-100 shadow-sm focus:outline-none focus:ring-0 text-sm font-medium cursor-not-allowed">
-                </div>
-
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Batas Stok Minimal <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
                     <input type="number" name="batas_stok_minimal" id="edit_batas_stok_minimal" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
                 </div>
+                    
             </form>
         </div>
         <div class="flex justify-between items-center px-8 py-5 border-t border-gray-100 bg-gray-50">
@@ -831,13 +824,11 @@
 
     function calculateSisaStokTambah() {
         let awal = parseInt(document.getElementById('tambah_stok_awal').value) || 0;
-        let datang = parseInt(document.getElementById('tambah_barang_datang').value) || 0;
-        document.getElementById('tambah_sisa_stok').value = awal + datang;
+        document.getElementById('tambah_sisa_stok').value = awal;
     }
     function calculateSisaStokEdit() {
         let awal = parseInt(document.getElementById('edit_stok_awal').value) || 0;
-        let datang = parseInt(document.getElementById('edit_barang_datang').value) || 0;
-        document.getElementById('edit_sisa_stok').value = awal + datang;
+        document.getElementById('edit_sisa_stok').value = awal;
     }
     
     function openEditModal(el) {
@@ -851,7 +842,6 @@
         document.getElementById('edit_batas_stok_minimal').value = d.stokMinimal || 10;
         
         document.getElementById('edit_stok_awal').value = d.stokAwal || 0;
-        document.getElementById('edit_barang_datang').value = d.barangDatang || 0;
         calculateSisaStokEdit();
         
         document.getElementById('edit_expired_date').value = d.expiredDate;

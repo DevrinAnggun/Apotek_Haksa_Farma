@@ -137,15 +137,15 @@
 
 <!-- Product Detail Modal -->
 <div id="productModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity duration-300" onclick="hideProductDetail()"></div>
-    <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md mx-auto overflow-hidden animate-modal">
+    <div class="absolute inset-0 bg-black/60 transition-opacity duration-300" onclick="hideProductDetail()"></div>
+    <div class="relative bg-white rounded-[32px] shadow-2xl w-full max-w-md mx-auto overflow-hidden animate-modal max-h-[90vh] flex flex-col">
         <!-- Close Button -->
-        <button onclick="hideProductDetail()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition-all z-20 hover:bg-gray-100">
+        <button onclick="hideProductDetail()" class="absolute top-4 right-4 text-green-600 bg-green-50 hover:bg-green-600 hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition-all z-20 shadow-sm border border-green-100">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
 
         <!-- Body Modal -->
-        <div class="p-6 bg-white">
+        <div class="p-6 bg-white overflow-y-auto custom-scrollbar flex-1">
             <!-- Top Section: Image & Basic Info Side by Side -->
             <div class="flex flex-col sm:flex-row gap-5 mb-6">
                 <!-- Image Wrapper -->
@@ -211,6 +211,21 @@
     }
     .animate-modal {
         animation: modalIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    }
+    
+    /* Custom Scrollbar for Modal */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #e5e7eb;
+        border-radius: 10px;
+    }
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background-color: #d1d5db;
     }
 </style>
 

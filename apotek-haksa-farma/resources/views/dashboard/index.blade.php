@@ -82,10 +82,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                 </svg>
             </div>
-            <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Supplier</div>
+            <div class="text-green-100 font-semibold text-base tracking-wide uppercase">Pembelian</div>
         </div>
         <div class="relative z-10 flex items-center text-[10px] font-bold bg-white bg-opacity-10 py-1.5 px-3 rounded-lg w-max hover:bg-opacity-20 transition">
-            Lihat Stok Masuk <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            Lihat Pembelian <svg class="w-3 h-3 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </div>
         <!-- bg icon abstrak -->
         <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@
                     <button @click="reportType = 'pembelian'" 
                             :class="reportType === 'pembelian' ? 'bg-blue-600 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
                             class="py-2.5 rounded-xl text-[10px] font-extrabold uppercase tracking-tighter transition-all">
-                        Stok Masuk
+                        Pembelian
                     </button>
                     <button @click="reportType = 'kadaluarsa'" 
                             :class="reportType === 'kadaluarsa' ? 'bg-orange-500 text-white shadow-md scale-105' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"

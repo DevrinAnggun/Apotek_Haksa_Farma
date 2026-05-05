@@ -147,15 +147,15 @@ class PembelianController extends Controller
 
         $totalPembelian = $pembelians->sum('total_bayar');
 
-        $customTitle = 'LAPORAN STOK MASUK';
+        $customTitle = 'LAPORAN PEMBELIAN';
         if ($startDate === $endDate) {
-            $customTitle = 'LAPORAN STOK MASUK HARIAN';
+            $customTitle = 'LAPORAN PEMBELIAN HARIAN';
         } else {
             $start = \Carbon\Carbon::parse($startDate);
             $end = \Carbon\Carbon::parse($endDate);
             // Jika rentang adalah satu bulan penuh
             if ($start->day === 1 && $end->day === $start->daysInMonth && $start->month === $end->month && $start->year === $end->year) {
-                $customTitle = 'LAPORAN STOK MASUK BULANAN';
+                $customTitle = 'LAPORAN PEMBELIAN BULANAN';
             }
         }
 
@@ -168,7 +168,7 @@ class PembelianController extends Controller
         ));
 
         $pdf->setPaper('A4', 'landscape');
-        return $pdf->download("Laporan_Stok_Masuk_{$startDate}_sampai_{$endDate}.pdf");
+        return $pdf->download("Laporan_Pembelian_{$startDate}_sampai_{$endDate}.pdf");
     }
 
     public function update(Request $request, Pembelian $pembelian)

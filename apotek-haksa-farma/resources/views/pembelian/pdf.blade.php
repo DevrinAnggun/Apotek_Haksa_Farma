@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Stok Masuk Supplier (PDF)</title>
+    <title>Laporan Pembelian Supplier (PDF)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', Helvetica, sans-serif; font-size: 9pt; color: #000; }
@@ -26,7 +26,7 @@
     <div class="header">
         <h1 class="title">APOTEK HAKSA FARMA</h1>
         <p class="subtitle">Jl. Purwareja No.82, Dusun Rw. Gembol, Purworejo, Kec. Purwareja Klampok, Kab. Banjarnegara, Jawa Tengah 53474<br>
-        {{ $customTitle ?? 'LAPORAN STOK MASUK' }}<br>
+        {{ $customTitle ?? 'LAPORAN PEMBELIAN' }}<br>
         Periode: {{ \Carbon\Carbon::parse($startDate)->format('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d M Y') }}</p>
     </div>
 
@@ -63,7 +63,7 @@
                 @endforeach
             @empty
                 <tr>
-                    <td colspan="8" class="text-center" style="padding: 20px;">Belum ada riwayat stok masuk pada periode ini.</td>
+                    <td colspan="8" class="text-center" style="padding: 20px;">Belum ada riwayat pembelian pada periode ini.</td>
                 </tr>
             @endforelse
         </tbody>

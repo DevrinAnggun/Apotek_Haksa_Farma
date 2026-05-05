@@ -38,15 +38,23 @@
             <h2 class="text-xl font-bold text-green-700 tracking-tight uppercase">Apotek Haksa Farma</h2>
         </div>
 
-        @if(session('error'))
+        @if($errors->any() || session('error'))
             <div id="login-error" class="bg-red-50 border-l-4 border-red-500 text-red-800 p-3 rounded-lg mb-4 shadow-sm flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="bg-red-500 rounded-full p-1 mr-2 flex items-center justify-center">
                         <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </div>
-                    <span class="text-xs font-bold">{{ session('error') }}</span>
+                    <span class="text-xs font-bold">
+                        @if($errors->has('username') && $errors->first('username') == 'Username atau Password salah.')
+                            Gagal login. Username atau Password salah.
+                        @elseif($errors->any())
+                            Gagal login. Pastikan Username dan Password telah diisi.
+                        @else
+                            {{ session('error') }}
+                        @endif
+                    </span>
                 </div>
-                <button onclick="this.parentElement.style.display='none'" class="text-red-500 hover:text-red-700 font-bold text-lg leading-none">&times;</button>
+                <button type="button" onclick="this.parentElement.style.display='none'" class="text-red-500 hover:text-red-700 font-bold text-lg leading-none">&times;</button>
             </div>
         @endif
 
@@ -70,16 +78,13 @@
                 <input type="text" name="username" id="username" value="{{ old('username') }}"
                     class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 @error('username') border-red-500 @enderror text-sm" 
                     placeholder="Username">
-                @error('username')
-                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                @enderror
             </div>
 
             <div class="mb-6">
                 <label for="password" class="block text-gray-700 font-bold mb-1 text-sm">Password</label>
                 <div class="relative">
                     <input type="password" name="password" id="password"
-                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 pr-11 text-sm" 
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-green-500 @error('password') border-red-500 @enderror pr-11 text-sm" 
                         placeholder="••••••••">
                     <button type="button" id="togglePassword"
                         onclick="togglePasswordVisibility()"

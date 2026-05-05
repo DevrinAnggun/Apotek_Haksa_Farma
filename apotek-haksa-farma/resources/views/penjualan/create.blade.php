@@ -91,9 +91,9 @@
                             Rp{{ number_format($obat->harga_jual, 0, ',', '.') }}
                         </td>
                         <td class="py-2.5 px-2 text-center">
-                            @if($stok > 0 && !$isExpired)
+                            @if(($stok > 0 && !$isExpired) || $isCek)
                             <button type="button"
-                                onclick="tambahKeKeranjang({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}', {{ $obat->harga_jual }}, {{ $stok }})"
+                                onclick="tambahKeKeranjang({{ $obat->id }}, '{{ addslashes($obat->nama_obat) }}', {{ $obat->harga_jual }}, {{ $isCek ? 9999 : $stok }})"
                                 class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow-sm">
                                 + Tambah
                             </button>

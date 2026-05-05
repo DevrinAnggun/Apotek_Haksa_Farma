@@ -150,9 +150,11 @@ class ObatController extends Controller
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsi'   => 'nullable|string',
+            'cara_pakai'  => 'nullable|string',
         ]);
 
-        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
+        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal', 'deskripsi', 'cara_pakai']);
         $obatData['batas_stok_minimal'] = $request->input('batas_stok_minimal', 10);
 
         if ($isCek) {
@@ -215,9 +217,11 @@ class ObatController extends Controller
             'barang_datang'=> 'nullable|integer|min:0',
             'expired_date'=> 'nullable|date',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsi'   => 'nullable|string',
+            'cara_pakai'  => 'nullable|string',
         ]);
 
-        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal']);
+        $obatData = $request->only(['id_kategori', 'id_satuan', 'kode_obat', 'nama_obat', 'harga_beli', 'harga_jual', 'batas_stok_minimal', 'deskripsi', 'cara_pakai']);
 
         if ($isCek) {
             if (!$request->filled('id_satuan')) {

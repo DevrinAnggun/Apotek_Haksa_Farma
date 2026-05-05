@@ -20,9 +20,13 @@ class PenjualanController extends Controller
 
     public function create()
     {
-        $obats = Obat::whereHas('stokBatches', function($query) {
-            $query->where('stok_sisa', '>', 0)
-                  ->where('tgl_expired', '>=', date('Y-m-d'));
+        $obats = Obat::where(function($q) {
+            $q->whereHas('stokBatches', function($query) {
+                $query->where('stok_sisa', '>', 0)
+                      ->where('tgl_expired', '>=', date('Y-m-d'));
+            })->orWhereHas('kategori', function($query) {
+                $query->where('nama_kategori', 'CEK');
+            });
         })->get();
 
         return view('penjualan.create', compact('obats'));
@@ -61,57 +65,71 @@ class PenjualanController extends Controller
                 $totalHarga += $subtotal;
 
                 $obat = Obat::findOrFail($item['id_obat']);
-                $totalStokTersedia = $obat->total_stok;
+                
+                $isCek = $obat->kategori && strtoupper($obat->kategori->nama_kategori) === 'CEK';
 
-                if ($totalStokTersedia < $qtyKebutuhanPembeli) {
-                    throw new \Exception("Stok tidak mencukupi untuk Obat: {$obat->nama_obat}. Sisa seluruh stok di apotek: {$totalStokTersedia}");
-                }
+                if (!$isCek) {
+                    $totalStokTersedia = $obat->total_stok;
 
-                $batches = StokBatch::where('id_obat', $item['id_obat'])
-                            ->where('stok_sisa', '>', 0)
-                            ->orderBy('tgl_expired', 'asc')
-                            ->orderBy('id', 'asc') 
-                            ->get();
-
-                foreach ($batches as $batch) {
-                    
-                    if ($qtyKebutuhanPembeli <= 0) {
-                        break;
+                    if ($totalStokTersedia < $qtyKebutuhanPembeli) {
+                        throw new \Exception("Stok tidak mencukupi untuk Obat: {$obat->nama_obat}. Sisa seluruh stok di apotek: {$totalStokTersedia}");
                     }
-                    if ($batch->stok_sisa >= $qtyKebutuhanPembeli) {
-                        
-                        DetailPenjualan::create([
-                            'id_penjualan'  => $penjualan->id,
-                            'id_obat'       => $item['id_obat'],
-                            'id_stok_batch' => $batch->id,
-                            'qty'           => $qtyKebutuhanPembeli,
-                            'harga_jual'    => $hargaJualObat,
-                            'subtotal'      => $qtyKebutuhanPembeli * $hargaJualObat,
-                        ]);
-                        
-                        $batch->stok_sisa = $batch->stok_sisa - $qtyKebutuhanPembeli;
-                        $batch->save();
 
-                        $qtyKebutuhanPembeli = 0; 
-                    } 
-                    
-                    else {
-                        $stokDikubas = $batch->stok_sisa; 
+                    $batches = StokBatch::where('id_obat', $item['id_obat'])
+                                ->where('stok_sisa', '>', 0)
+                                ->orderBy('tgl_expired', 'asc')
+                                ->orderBy('id', 'asc') 
+                                ->get();
+
+                    foreach ($batches as $batch) {
                         
-                        DetailPenjualan::create([
-                            'id_penjualan'  => $penjualan->id,
-                            'id_obat'       => $item['id_obat'],
-                            'id_stok_batch' => $batch->id,
-                            'qty'           => $stokDikubas,
-                            'harga_jual'    => $hargaJualObat,
-                            'subtotal'      => $stokDikubas * $hargaJualObat,
-                        ]);
+                        if ($qtyKebutuhanPembeli <= 0) {
+                            break;
+                        }
+                        if ($batch->stok_sisa >= $qtyKebutuhanPembeli) {
+                            
+                            DetailPenjualan::create([
+                                'id_penjualan'  => $penjualan->id,
+                                'id_obat'       => $item['id_obat'],
+                                'id_stok_batch' => $batch->id,
+                                'qty'           => $qtyKebutuhanPembeli,
+                                'harga_jual'    => $hargaJualObat,
+                                'subtotal'      => $qtyKebutuhanPembeli * $hargaJualObat,
+                            ]);
+                            
+                            $batch->stok_sisa = $batch->stok_sisa - $qtyKebutuhanPembeli;
+                            $batch->save();
 
-                        $batch->stok_sisa = 0;
-                        $batch->save();
+                            $qtyKebutuhanPembeli = 0; 
+                        } 
+                        
+                        else {
+                            $stokDikubas = $batch->stok_sisa; 
+                            
+                            DetailPenjualan::create([
+                                'id_penjualan'  => $penjualan->id,
+                                'id_obat'       => $item['id_obat'],
+                                'id_stok_batch' => $batch->id,
+                                'qty'           => $stokDikubas,
+                                'harga_jual'    => $hargaJualObat,
+                                'subtotal'      => $stokDikubas * $hargaJualObat,
+                            ]);
 
-                        $qtyKebutuhanPembeli = $qtyKebutuhanPembeli - $stokDikubas;
+                            $batch->stok_sisa = 0;
+                            $batch->save();
+
+                            $qtyKebutuhanPembeli = $qtyKebutuhanPembeli - $stokDikubas;
+                        }
                     }
+                } else {
+                    DetailPenjualan::create([
+                        'id_penjualan'  => $penjualan->id,
+                        'id_obat'       => $item['id_obat'],
+                        'id_stok_batch' => null,
+                        'qty'           => $qtyKebutuhanPembeli,
+                        'harga_jual'    => $hargaJualObat,
+                        'subtotal'      => $qtyKebutuhanPembeli * $hargaJualObat,
+                    ]);
                 }
             }
 

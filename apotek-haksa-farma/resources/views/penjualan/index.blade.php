@@ -245,12 +245,11 @@
             <!-- Header Apotek -->
             <div class="text-center mb-6">
                 <h2 class="font-bold text-xl mb-1 tracking-tight uppercase">APOTEK HAKSA FARMA</h2>
-                <div class="text-[9px] text-gray-500 leading-tight mb-2">
+                <div class="text-[9px] text-gray-500 leading-tight mb-3">
                     Jl. Purwareja No.82, Purwareja Klampok<br>
                     Banjarnegara, Jawa Tengah 53474<br>
                     Telp/WA: 0822-1234-5678
                 </div>
-                <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-3">Struk Pembayaran Sah</p>
                 <div class="border-y border-dashed border-gray-300 py-1 flex justify-between px-1">
                     <span id="struk-tgl">--/--/----</span>
                     <span id="struk-jam">--:-- WIB</span>
