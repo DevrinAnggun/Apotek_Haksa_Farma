@@ -25,7 +25,7 @@ class PembelianController extends Controller
                                ->latest()
                                ->paginate(10);
         $suppliers = \App\Models\Supplier::all();
-        $obats = \App\Models\Obat::all();
+        $obats = \App\Models\Obat::orderBy('nama_obat', 'asc')->get();
 
         return view('pembelian.index', compact('pembelians', 'suppliers', 'obats'));
 
@@ -174,6 +174,7 @@ class PembelianController extends Controller
     public function update(Request $request, Pembelian $pembelian)
     {
         $request->validate([
+            'id_detail' => 'nullable|exists:detail_pembelians,id',
             'id_obat' => 'required|exists:obats,id',
             'tgl_pembelian' => 'required|date',
             'nama_suplier' => 'required|string|max:255',
@@ -196,7 +197,14 @@ class PembelianController extends Controller
                 'tgl_pembelian' => $request->tgl_pembelian,
             ]);
 
-            $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->first();
+            // Find the specific detail if id_detail is provided, else fallback to first detail
+            $detail = null;
+            if ($request->id_detail) {
+                $detail = DetailPembelian::find($request->id_detail);
+            } else {
+                $detail = DetailPembelian::where('id_pembelian', $pembelian->id)->first();
+            }
+
             if ($detail) {
                 $qtyLama = $detail->qty;
                 $tambahStok = $request->tambah_stok ?? 0;
@@ -209,7 +217,16 @@ class PembelianController extends Controller
                     'subtotal' => $newQtyTotal * $request->harga_beli,
                 ]);
 
-                $batch = StokBatch::where('id_pembelian', $pembelian->id)->first();
+                // Update StokBatch associated with this detail/pembelian
+                $batch = StokBatch::where('id_pembelian', $pembelian->id)
+                                 ->where('id_obat', $detail->id_obat_lama ?? $detail->id_obat) // handle case where obat might have changed
+                                 ->first();
+                
+                // If not found by obat, just try to get the one for this pembelian
+                if (!$batch) {
+                    $batch = StokBatch::where('id_pembelian', $pembelian->id)->first();
+                }
+
                 if ($batch) {
                     if ($tambahStok > 0) {
                         $batch->stok_awal = $newQtyTotal;
@@ -265,6 +282,7 @@ class PembelianController extends Controller
             return redirect()->route('pembelian.index')->with('success', 'Riwayat stok berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Gagal update pembelian: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal memperbarui riwayat: ' . $e->getMessage());
         }
     }

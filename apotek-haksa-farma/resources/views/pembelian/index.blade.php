@@ -453,11 +453,13 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         Tambah Pembelian (Opsional)
                     </label>
-                    <input type="number" name="tambah_pembelian" id="edit_tambah_pembelian" min="0" placeholder="0"
+                    <input type="number" name="tambah_stok" id="edit_tambah_stok" min="0" placeholder="0"
                         class="w-full bg-white border border-green-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition font-bold text-green-700 shadow-sm"
                         title="Isi jika ada stok masuk baru untuk item ini tanpa merubah data awal">
                     <p class="text-[10px] text-green-400 italic mt-1 font-medium">* Stok ini akan ditambahkan ke jumlah yang sudah ada.</p>
                 </div>
+                {{-- Hidden input for detail ID --}}
+                <input type="hidden" name="id_detail" id="edit_id_detail">
             </div>
 
             <!-- Footer -->
@@ -620,153 +622,7 @@
     </div>
 </div>
 
-{{-- ===== MODAL EDIT STOK MASUK ===== --}}
-<div id="modalEditStok" class="fixed inset-0 z-[110] hidden items-center justify-center font-sans" style="display: none;">
-    <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeEditModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden animate-modal flex flex-col"
-        x-data="{
-            openObat: false, 
-            searchObat: '', 
-            selectedObatId: '', 
-            selectedObatName: '-- Pilih Barang / Obat --',
-            obats: [
-                @foreach($obats as $obat)
-                    @if(isset($obat->kategori) && strtoupper($obat->kategori->nama_kategori) === 'CEK') @continue @endif
-                    { id: '{{ $obat->id }}', name: '{{ strtoupper($obat->nama_obat) }}' },
-                @endforeach
-            ],
-            selectObat(id, name) {
-                this.selectedObatId = id;
-                this.selectedObatName = name;
-                this.openObat = false;
-                this.searchObat = '';
-            },
-            setEditObat(id) {
-                let found = this.obats.find(o => o.id == id);
-                if(found) {
-                    this.selectedObatId = found.id;
-                    this.selectedObatName = found.name;
-                }
-            }
-        }"
-        @set-edit-obat.window="setEditObat($event.detail.id)">
-        
-        <!-- Header -->
-        <div class="bg-yellow-500 px-6 py-4 flex items-center justify-between text-white text-center">
-            <h3 class="font-bold text-xl uppercase tracking-widest w-full">Edit Penerimaan Stok</h3>
-            <button onclick="closeEditModal()" class="absolute right-5 text-yellow-100 hover:text-white transition text-3xl font-light">&times;</button>
-        </div>
 
-        <form action="" method="POST" id="formEditStok" onsubmit="event.preventDefault(); showSuccessAnimation('formEditStok', 'Perubahan Berhasil Disimpan!');">
-            @csrf
-            @method('PUT')
-            
-            <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-                <!-- Data Header -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Terima -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Terima <span class="text-red-500">*</span></label>
-                        <input type="date" name="tgl_pembelian" id="edit_tgl_pembelian" required
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Nama Supplier -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Nama Supplier <span class="text-red-500">*</span></label>
-                        <input list="edit_supplier_list" name="nama_suplier" id="edit_nama_suplier" required placeholder="Ketik nama supplier..."
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-medium shadow-sm">
-                        <datalist id="edit_supplier_list">
-                            @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->nama_suplier }}">
-                            @endforeach
-                        </datalist>
-                    </div>
-                </div>
-
-                <!-- Nama Barang -->
-                <div class="relative">
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Nama Barang <span class="text-red-500">*</span></label>
-                    <button type="button" @click="openObat = !openObat" 
-                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm flex justify-between items-center focus:ring-2 focus:ring-yellow-500 transition font-bold uppercase text-gray-800 shadow-sm">
-                        <span x-text="selectedObatName"></span>
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    
-                    <div x-show="openObat" @click.away="openObat = false" x-transition
-                        class="absolute z-[110] mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden animate-modal">
-                        <div class="p-2 border-b border-gray-100 bg-gray-50">
-                            <input type="text" x-model="searchObat" placeholder="Cari nama obat..." 
-                                class="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg focus:ring-1 focus:ring-yellow-500 outline-none uppercase font-bold">
-                        </div>
-                        <ul class="max-h-60 overflow-y-auto py-1">
-                            <template x-for="obat in obats.filter(o => o.name.includes(searchObat.toUpperCase()))" :key="obat.id">
-                                <li @click="selectObat(obat.id, obat.name)" 
-                                    class="px-4 py-2.5 text-xs font-bold uppercase text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 cursor-pointer transition flex items-center justify-between">
-                                    <span x-text="obat.name"></span>
-                                    <svg x-show="selectedObatId == obat.id" class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                </li>
-                            </template>
-                        </ul>
-                    </div>
-                    <input type="hidden" name="items[0][id_obat]" id="edit_id_obat" x-model="selectedObatId" required>
-                </div>
-
-                <!-- Detail Barang -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Tanggal Kadaluarsa -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tanggal Kadaluarsa</label>
-                        <input type="date" name="items[0][tgl_expired]" id="edit_tgl_expired" required
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-medium shadow-sm">
-                    </div>
-                    <!-- Barang Masuk (Qty) -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Qty Pembelian Awal <span class="text-red-500">*</span></label>
-                        <input type="number" name="items[0][qty]" id="edit_qty" min="1" required placeholder="0"
-                            class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-bold text-gray-800 shadow-sm cursor-not-allowed" readonly>
-                    </div>
-                </div>
-
-                <!-- Tambah Stok / Kurangi Stok (optional adjustments usually provided here in edits) -->
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Tambah / Koreksi Qty Masuk (Opsional)</label>
-                    <input type="number" name="tambah_stok" id="edit_tambah_stok" placeholder="Contoh: 5 (menambah) atau -2 (mengurangi)"
-                        class="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-bold text-yellow-600 shadow-sm">
-                </div>
-
-                <!-- Harga Beli & Jual -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Harga Beli -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Beli Per Item <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
-                            <input type="number" name="items[0][harga_beli]" id="edit_harga_beli" min="0" required placeholder="0"
-                                class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-bold text-gray-800 shadow-sm">
-                        </div>
-                    </div>
-                    <!-- Harga Jual -->
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide text-left">Harga Jual Per Item <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3 text-gray-400 font-bold">Rp</span>
-                            <input type="number" name="items[0][harga_jual]" id="edit_harga_jual" min="0" required placeholder="0"
-                                class="w-full bg-white border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 transition font-bold text-gray-800 shadow-sm">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-t border-gray-100">
-                <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 text-gray-500 hover:text-gray-700 font-bold transition text-xs uppercase tracking-widest">Batal</button>
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-extrabold py-3 px-8 rounded-xl transition shadow-lg text-xs flex items-center gap-2 uppercase tracking-widest active:scale-95">
-                    Simpan Perubahan
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
 {{-- ===== MODAL RIWAYAT STOK MASUK ===== --}}
 <div id="modalRiwayatStok" class="fixed inset-0 z-[100] hidden flex items-center justify-center font-sans" style="display: none;">
@@ -953,6 +809,7 @@
     /* ===== LOGIKA EDIT RIWAYAT ===== */
     function openEditRestockModal(btn) {
         const idPembelian = btn.getAttribute('data-id-pembelian');
+        const idDetail = btn.getAttribute('data-id-detail');
         const idObat = btn.getAttribute('data-id-obat');
         const tglBeli = btn.getAttribute('data-tgl-pembelian');
         const supplier = btn.getAttribute('data-nama-suplier');
@@ -966,6 +823,7 @@
 
         // Populate Fields
         document.getElementById('edit_id_obat').value = idObat;
+        document.getElementById('edit_id_detail').value = idDetail;
         
         // Notify Alpine to update its internal state for the searchable dropdown
         window.dispatchEvent(new CustomEvent('set-edit-obat', { detail: { id: idObat } }));
@@ -976,7 +834,10 @@
         document.getElementById('edit_qty').value = qty;
         document.getElementById('edit_harga_beli').value = hargaBeli;
         document.getElementById('edit_harga_jual').value = hargaJual;
-        document.getElementById('edit_tambah_stok').value = '';
+        
+        // Fix for field name mismatch
+        const tambahField = document.getElementById('edit_tambah_stok');
+        if (tambahField) tambahField.value = '';
 
         // Show Modal
         const modal = document.getElementById('modalEditStok');

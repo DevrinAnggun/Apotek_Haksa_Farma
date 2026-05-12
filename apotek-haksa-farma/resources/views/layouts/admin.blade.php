@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - Apotek Haksa Farma</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -108,11 +109,11 @@
     </header>
 
     <!-- Main Content Layout -->
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden relative">
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 bg-white shadow-lg border-r border-gray-100 flex flex-col flex-shrink-0 relative z-20">
-            <div class="flex-1 py-6 space-y-1">
+        <aside id="sidebar" class="w-64 bg-white shadow-lg border-r border-gray-100 flex flex-col flex-shrink-0 absolute lg:relative z-40 h-full">
+            <div class="flex-1 py-6 space-y-1 overflow-y-auto custom-scrollbar">
                 
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" class="sidebar-link flex items-center px-6 py-3 text-gray-600 {{ request()->is('dashboard*') || request()->is('/') ? 'sidebar-active' : '' }}">

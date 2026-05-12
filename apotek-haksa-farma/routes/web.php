@@ -14,7 +14,7 @@ use App\Http\Controllers\KadaluarsaController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\PembelianController;
 
-// ===== HALAMAN PUBLIK USER (tanpa login) =====
+// HALAMAN PUBLIK USER (tanpa login)
 Route::get('/publik/katalog', [PublicController::class, 'katalog'])->name('publik.katalog');
 Route::get('/publik/artikel', [PublicController::class, 'artikel'])->name('publik.artikel');
 Route::get('/publik/artikel/{slug}', [PublicController::class, 'bacaArtikel'])->name('publik.artikel.detail');

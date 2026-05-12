@@ -27,7 +27,7 @@ class PenjualanController extends Controller
             })->orWhereHas('kategori', function($query) {
                 $query->where('nama_kategori', 'CEK');
             });
-        })->get();
+        })->orderBy('nama_obat', 'asc')->get();
 
         return view('penjualan.create', compact('obats'));
     }

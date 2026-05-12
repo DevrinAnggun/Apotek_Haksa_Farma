@@ -50,9 +50,8 @@ class ObatController extends Controller
             $query->where('id_kategori', $request->kategori);
         }
 
-        $obats = $query->paginate(10)->withQueryString();
-
-        $obats->getCollection()->transform(function ($obat) use ($daysInMonth, $month, $year) {
+        // Buat fungsi closure untuk mapping agar bisa dipakai dua kali
+        $mapObat = function ($obat) use ($daysInMonth, $month, $year) {
             $obat->current_stok = $obat->stokBatches->sum('stok_sisa');
             $obat->masuk_bulan_ini = $obat->pembelianDetails->sum('qty');
             $obat->retur_bulan_ini = $obat->returPembelians->sum('qty_retur');
@@ -89,12 +88,20 @@ class ObatController extends Controller
             $obat->daily_so = $dailySO;
             
             return $obat;
-        });
+        };
+
+        // Ambil semua data untuk keperluan modal Rekap Stock Opname tanpa pagination
+        $queryForSO = clone $query;
+        $allObatsForSO = $queryForSO->orderBy('nama_obat', 'asc')->get()->map($mapObat);
+
+        // Tampilkan obat sesuai abjad A-Z dan maksimal 50 per halaman
+        $obats = $query->orderBy('nama_obat', 'asc')->paginate(50)->withQueryString();
+        $obats->getCollection()->transform($mapObat);
 
         $kategoris = Kategori::all();
         $satuans   = Satuan::all();
         
-        return view('obat.index', compact('obats', 'kategoris', 'satuans', 'daysInMonth', 'monthName', 'month', 'year'));
+        return view('obat.index', compact('obats', 'allObatsForSO', 'kategoris', 'satuans', 'daysInMonth', 'monthName', 'month', 'year'));
     }
 
     public function katalogAdmin(Request $request)
@@ -120,7 +127,7 @@ class ObatController extends Controller
             $query->where('id_kategori', $request->kategori);
         }
 
-        $obats = $query->paginate(12)->withQueryString();
+        $obats = $query->orderBy('nama_obat', 'asc')->paginate(12)->withQueryString();
 
         // Exclude 'CEK' from filter options
         $kategoris = Kategori::where('nama_kategori', '!=', 'CEK')->get();

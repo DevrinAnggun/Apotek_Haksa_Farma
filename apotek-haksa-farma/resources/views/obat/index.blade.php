@@ -999,7 +999,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @php $totalKerugian = 0; $counter = 1; @endphp
-                        @foreach($obats as $o)
+                        @foreach($allObatsForSO as $o)
                         @if(isset($o->kategori) && strtoupper($o->kategori->nama_kategori) === 'CEK') @continue @endif
                         @php 
                             $nominalSelisih = $o->selisih * $o->harga_beli; 

@@ -23,10 +23,11 @@ class KadaluarsaController extends Controller
     private function getKadaluarsaQuery($batasHari)
     {
         return StokBatch::select(
-                'id_obat',
-                DB::raw('SUM(stok_sisa) as total_sisa'),
-                DB::raw('MIN(tgl_expired) as earliest_expired')
+                'stok_batches.id_obat',
+                DB::raw('SUM(stok_batches.stok_sisa) as total_sisa'),
+                DB::raw('MIN(stok_batches.tgl_expired) as earliest_expired')
             )
+            ->join('obats', 'stok_batches.id_obat', '=', 'obats.id')
             ->with([
                 'obat' => function($q) {
                     $q->withSum('penjualanDetails as total_terjual', 'qty');
@@ -39,10 +40,10 @@ class KadaluarsaController extends Controller
                     $q2->where('nama_kategori', '!=', 'CEK');
                 });
             })
-            ->where('stok_sisa', '>', 0)
-            ->whereDate('tgl_expired', '<=', $batasHari)
-            ->groupBy('id_obat')
-            ->orderBy('earliest_expired', 'asc');
+            ->where('stok_batches.stok_sisa', '>', 0)
+            ->whereDate('stok_batches.tgl_expired', '<=', $batasHari)
+            ->groupBy('stok_batches.id_obat', 'obats.nama_obat')
+            ->orderBy('obats.nama_obat', 'asc');
     }
 
     public function cetakPdf(Request $request)
@@ -51,10 +52,11 @@ class KadaluarsaController extends Controller
         $endDate = $request->input('end_date');
 
         $query = StokBatch::select(
-                'id_obat',
-                DB::raw('SUM(stok_sisa) as total_sisa'),
-                DB::raw('MIN(tgl_expired) as earliest_expired')
+                'stok_batches.id_obat',
+                DB::raw('SUM(stok_batches.stok_sisa) as total_sisa'),
+                DB::raw('MIN(stok_batches.tgl_expired) as earliest_expired')
             )
+            ->join('obats', 'stok_batches.id_obat', '=', 'obats.id')
             ->with([
                 'obat' => function($q) {
                     $q->withSum('penjualanDetails as total_terjual', 'qty');
@@ -67,18 +69,18 @@ class KadaluarsaController extends Controller
                     $q2->where('nama_kategori', '!=', 'CEK');
                 });
             })
-            ->where('stok_sisa', '>', 0);
+            ->where('stok_batches.stok_sisa', '>', 0);
             
         if ($startDate && $endDate) {
-            $query->whereBetween('tgl_expired', [$startDate, $endDate]);
+            $query->whereBetween('stok_batches.tgl_expired', [$startDate, $endDate]);
             $batasHari = Carbon::parse($endDate);
         } else {
             $batasHari = Carbon::now()->addMonths(5);
-            $query->whereDate('tgl_expired', '<=', $batasHari);
+            $query->whereDate('stok_batches.tgl_expired', '<=', $batasHari);
         }
 
-        $kadaluarsas = $query->groupBy('id_obat')
-            ->orderBy('earliest_expired', 'asc')->get();
+        $kadaluarsas = $query->groupBy('stok_batches.id_obat', 'obats.nama_obat')
+            ->orderBy('obats.nama_obat', 'asc')->get();
 
         $pdf = Pdf::loadView('kadaluarsa.pdf', compact('kadaluarsas', 'batasHari'));
         $pdf->setPaper('A4', 'landscape');

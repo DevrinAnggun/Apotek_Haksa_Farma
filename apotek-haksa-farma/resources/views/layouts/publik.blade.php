@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Apotek Haksa Farma')</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
     <meta name="description" content="@yield('meta_desc', 'Apotek Haksa Farma - Katalog Obat, Artikel Kesehatan, dan Informasi Kontak.')">
     <script src="https://cdn.tailwindcss.com"></script>
 
