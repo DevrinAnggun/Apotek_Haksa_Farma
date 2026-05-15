@@ -1049,11 +1049,6 @@
                                     <span id="nominal_wrapper_{{ $o->id }}" class="font-black {{ $nominalSelisih < 0 ? 'text-red-600' : ($nominalSelisih > 0 ? 'text-green-600' : 'text-gray-900') }}">
                                         {{ $nominalSelisih == 0 ? 'Rp 0' : ($nominalSelisih > 0 ? '+' : '-') . ' Rp' . number_format(abs($nominalSelisih), 0, ',', '.') }}
                                     </span>
-                                    <button type="button" id="btn_sync_{{ $o->id }}"
-                                        onclick="syncStockQuick({{ $o->id }}, '{{ addslashes($o->nama_obat) }}')"
-                                        class="text-xs font-black text-red-600 uppercase border-b border-red-200 hover:border-red-600 transition-all {{ $o->selisih == 0 ? 'hidden' : '' }}">
-                                        Sesuaikan
-                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -1073,8 +1068,7 @@
                 </div>
                 <div class="bg-green-50/50 p-3 rounded-xl border border-green-100 flex items-center">
                     <p class="text-xs text-gray-900 font-bold">
-                        * Selisih Keuangan = (Fisik - Sistem) × Modal. <br>
-                        * Klik "Sesuaikan" untuk memperbarui stok sistem.
+                        * Selisih Keuangan = (Fisik - Sistem) × Modal.
                     </p>
                 </div>
             </div>
@@ -1149,25 +1143,6 @@
             
             // Update color
             totalEl.className = `text-sm font-black ${total < 0 ? 'text-red-700' : (total > 0 ? 'text-green-700' : 'text-gray-900')}`;
-        }
-    }
-    function syncStockQuick(id, nama) {
-        const fisik = parseInt(document.getElementById(`rekap_fisik_${id}`).value) || 0;
-        const date = "{{ $year }}-{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}-01";
-        if(confirm(`Sinkronkan "${nama}" ke ${fisik} unit untuk periode {{ $monthName }}?`)) {
-            fetch("{{ route('obat.save_so') }}", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-                body: JSON.stringify({ id_obat: id, tanggal: date, jumlah: fisik })
-            }).then(() => {
-                return fetch("{{ route('obat.sync_stock') }}", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": "{{ csrf_token() }}" },
-                    body: JSON.stringify({ id_obat: id, fisik: fisik })
-                });
-            }).then(r => r.json()).then(data => {
-                if(data.success) showSuccessPopup('Sinkronisasi Berhasil!', () => window.location.reload());
-            });
         }
     }
 
