@@ -163,22 +163,9 @@
 <div class="mt-6">
     {{ $kadaluarsas->links() }}
 </div>
-
-
-
-
  {{-- Modal Hapus Dihapus --}} 
-
-
-
-
-
-
-
-
+ 
 <script>
-
-
 function filterTable(keyword) {
     const q = keyword.toLowerCase().trim();
     document.querySelectorAll('.kadaluarsa-row').forEach(row => {
@@ -186,8 +173,6 @@ function filterTable(keyword) {
         row.style.display = nama.includes(q) ? '' : 'none';
     });
 }
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     // Escape tutup semua modal

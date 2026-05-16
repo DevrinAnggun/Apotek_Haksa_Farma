@@ -22,7 +22,7 @@
     </div>
 @endif
 
-<!-- Welcome Notification Banner -->
+<!-- Notifikasi dashboard -->
 <div id="welcome-banner" class="flex justify-between items-center bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-sm mb-8 transition-opacity duration-300">
     <div class="flex items-center">
         <div class="text-sm border-l-0">
@@ -30,14 +30,14 @@
             <span class="text-green-700">Selamat Datang di Website Apotek Haksa Farma</span>
         </div>
     </div>
-    <!-- Close cross -->
+    <!-- hide menu -->
     <button onclick="dismissAlert('welcome-banner')" class="text-green-500 hover:text-green-800 focus:outline-none ml-4 text-xl font-bold">&times;</button>
 </div>
 
-<!-- Grid System for all cards -->
+<!-- grid card -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
     
-    <!-- Card: Data Barang → Emerald -->
+    <!-- Card: Data Barang -->
     <a href="{{ route('obat.index') }}" class="block bg-emerald-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -57,7 +57,7 @@
         </svg>
     </a>
     
-    <!-- Card: Transaksi Penjualan → Indigo -->
+    <!-- Card: Transaksi Penjualan -->
     <a href="{{ route('kasir.pos') }}" class="block bg-indigo-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -74,7 +74,7 @@
         <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
     </a>
     
-    <!-- Card: Stok Supplier → Green -->
+    <!-- Card: Stok Supplier  -->
     <a href="{{ route('pembelian.index') }}" class="block bg-green-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer h-44 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -93,7 +93,7 @@
         </svg>
     </a>
 
-    <!-- Card: Barang Kadaluarsa → Orange -->
+    <!-- Card: Barang Kadaluarsa -->
     <a href="{{ route('kadaluarsa.index') }}" class="block bg-orange-500 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer overflow-hidden relative group h-44 flex flex-col justify-between">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -111,7 +111,7 @@
         <svg class="absolute -bottom-4 -right-4 w-32 h-32 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
     </a>
 
-    <!-- Card: Semua Penjualan (Rupiah) → Purple -->
+    <!-- Card: Semua Penjualan (Rupiah)  -->
     <a href="{{ route('laporan.penjualan') }}" class="block bg-purple-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer relative overflow-hidden group h-44 flex flex-col justify-between">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -129,7 +129,7 @@
         <svg class="absolute -bottom-4 -right-4 w-28 h-28 text-white opacity-20 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3z"/><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" clip-rule="evenodd"/></svg>
     </a>
 
-    <!-- Card: Unduh Laporan → Blue -->
+    <!-- Card: Unduh Laporan -->
     <div onclick="openReportModal()" class="block bg-blue-600 rounded-xl shadow p-6 text-white hover:shadow-xl hover:scale-[1.02] transition-all duration-200 cursor-pointer overflow-hidden relative group h-44 flex flex-col justify-between">
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-2">
@@ -255,7 +255,7 @@
                     </select>
                 </div>
 
-                <!-- Download Per Bulan (Hidden by default) -->
+                <!-- Download Per Bulan  -->
                 <div x-show="(showMonthly && reportType !== 'kadaluarsa')" x-transition class="bg-blue-50 rounded-xl p-4 border border-blue-200 mb-2 animate-fadeIn">
                     <header class="flex items-center gap-2 mb-3">
                         <span class="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Pilih Bulan & Tahun</span>

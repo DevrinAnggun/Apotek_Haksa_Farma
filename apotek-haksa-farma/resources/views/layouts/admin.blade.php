@@ -28,7 +28,7 @@
     <style>
         .cropper-container { z-index: 100 !important; }
         .cropper-view-box, .cropper-face { border-radius: 8px; }
-        /* Pastikan gambar preview punya container yang pas */
+
         .img-crop-container { width: 100%; height: 100%; position: relative; overflow: hidden; }
         .img-crop-container img { max-width: 100%; display: block; }
         body { font-family: 'Poppins', sans-serif; background-color: #f7fafc; }
@@ -84,7 +84,7 @@
             <!-- Dropdown Panel -->
             <div id="profileDropdown" class="hidden absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl py-2 ring-1 ring-black ring-opacity-5 z-50 transform opacity-0 scale-95 transition-all duration-200 origin-top-right">
                 
-                <!-- Label Info (Dari Mockup) -->
+                <!-- Label Info -->
                 <div class="px-4 py-2 border-b border-gray-100 flex items-center mb-1">
                     <span class="font-bold text-gray-800 uppercase tracking-wider">Haksa Farma {{ auth()->user()->role == 'admin' ? 'Admin' : 'Kasir' }}</span>
                 </div>
@@ -179,7 +179,6 @@
         <!-- Main Workspace Area -->
         <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto bg-white p-6 md:p-10">
             <div class="max-w-full mx-auto">
-                <!-- Blade Template Injection Point -->
                 @yield('content')
             </div>
         </main>
@@ -208,9 +207,6 @@
 
             <!-- Body -->
             <div class="px-6 py-5 overflow-y-auto max-h-[75vh]">
-
-                <!-- Alerts moved to main content area to avoid confusing user -->
-
 
                 <form action="{{ route('profile.update') }}" method="POST" id="profileForm">
                     @csrf
@@ -300,7 +296,6 @@
 
     <!-- Scripts -->
     <script>
-        // Dismiss alert notification function
         function dismissAlert(elementId) {
             const el = document.getElementById(elementId);
             if(el) {
@@ -315,7 +310,7 @@
             
             if (sidebar.classList.contains('hidden')) {
                 sidebar.classList.remove('hidden');
-                // Simpan status di localStorage agar ingat pilihan user saat refresh
+                // Simpan status di localStorage agar ingat 
                 localStorage.setItem('sidebarStatus', 'open');
             } else {
                 sidebar.classList.add('hidden');
@@ -329,7 +324,7 @@
             const savedStatus = localStorage.getItem('sidebarStatus');
 
             if (window.innerWidth < 1024) {
-                // Di layar kecil (mobile), default tertutup atau sesuai status
+                // Di layar kecil, default tertutup atau sesuai status
                 if (savedStatus === 'open') {
                     sidebar.classList.remove('hidden');
                 } else {
@@ -346,8 +341,6 @@
         }
 
         window.addEventListener('resize', () => {
-            // Kita tidak otomatis tutup/buka saat resize agar tidak mengganggu user,
-            // tapi kita pastikan sidebar tidak dalam mode fixed/absolute.
         });
         document.addEventListener('DOMContentLoaded', setupResponsiveSidebar);
 
@@ -356,7 +349,7 @@
             const dropdown = document.getElementById('profileDropdown');
             if(dropdown.classList.contains('hidden')) {
                 dropdown.classList.remove('hidden');
-                // timeout to allow display:block to apply before animating opacity
+
                 setTimeout(() => {
                     dropdown.classList.remove('opacity-0', 'scale-95');
                     dropdown.classList.add('opacity-100', 'scale-100');
@@ -366,11 +359,11 @@
                 dropdown.classList.add('opacity-0', 'scale-95');
                 setTimeout(() => {
                     dropdown.classList.add('hidden');
-                }, 200); // match duration-200
+                }, 200); 
             }
         }
 
-        // Tutup dropdown jika user klik di sembarang tempat (luar panel)
+        // Tutup dropdown jika user klik di sembarang tempat
         document.addEventListener('click', function(event) {
             const container = document.getElementById('profile-menu-container');
             const dropdown = document.getElementById('profileDropdown');
@@ -540,7 +533,6 @@
                 });
 
                 if (missingFields.length > 0) {
-                    // Using browser's native reporting if available, or just focus first one
                     form.reportValidity();
                     return;
                 }
@@ -548,7 +540,6 @@
 
             const modal = document.getElementById('modalSukses');
             if (!modal) {
-                // Fallback if modal not in DOM
                 if (form) form.submit();
                 return;
             }

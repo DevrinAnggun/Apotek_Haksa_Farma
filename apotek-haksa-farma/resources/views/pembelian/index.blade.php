@@ -938,8 +938,6 @@
     }
 
     function openRekapReturModal(idPembelian, idObat, namaObat) {
-        // Reuse unified modal but filter or show specific message if needed
-        // For simplicity, we now use the Global/Unified view as requested
         openUnifiedReturModal();
     }
 
