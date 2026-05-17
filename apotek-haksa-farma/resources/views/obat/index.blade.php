@@ -911,14 +911,10 @@
         document.body.style.overflow = ''; 
     }
 
-    // Toggle on/off tampil di pelanggan (AJAX, langsung di tabel)
-    function toggleTampilPelanggan(id, btn) {
+    // Helper: hanya ubah visual toggle tanpa AJAX
+    function setToggleVisual(id, btn, isOn) {
         const knob = document.getElementById('toggle-knob-' + id);
-        const currentTampil = btn.dataset.tampil === '1';
-        const newTampil = !currentTampil;
-
-        // Optimistic UI
-        if (newTampil) {
+        if (isOn) {
             btn.classList.remove('bg-gray-300');
             btn.classList.add('bg-green-500');
             knob.classList.remove('translate-x-1');
@@ -929,8 +925,23 @@
             knob.classList.remove('translate-x-6');
             knob.classList.add('translate-x-1');
         }
-        btn.dataset.tampil = newTampil ? '1' : '0';
-        btn.title = newTampil ? 'Klik untuk sembunyikan dari pelanggan' : 'Klik untuk tampilkan ke pelanggan';
+        btn.dataset.tampil = isOn ? '1' : '0';
+        btn.title = isOn ? 'Klik untuk sembunyikan dari pelanggan' : 'Klik untuk tampilkan ke pelanggan';
+    }
+
+    // Toggle on/off tampil di pelanggan (AJAX, langsung di tabel)
+    function toggleTampilPelanggan(id, btn) {
+        if (btn.disabled) return; // Cegah double-click
+
+        const currentTampil = btn.dataset.tampil === '1';
+        const newTampil = !currentTampil;
+
+        // Optimistic UI update
+        setToggleVisual(id, btn, newTampil);
+
+        // Disable sementara selama request berjalan
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
 
         fetch('{{ url("obat") }}/' + id + '/toggle-tampil', {
             method: 'POST',
@@ -943,13 +954,17 @@
         .then(r => r.json())
         .then(data => {
             if (!data.success) {
-                // Revert on failure
-                toggleTampilPelanggan(id, btn);
+                // Revert visual saja — TANPA AJAX lagi
+                setToggleVisual(id, btn, currentTampil);
             }
         })
         .catch(() => {
-            // Revert on error
-            toggleTampilPelanggan(id, btn);
+            // Revert visual saja — TANPA AJAX lagi
+            setToggleVisual(id, btn, currentTampil);
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
         });
     }
 

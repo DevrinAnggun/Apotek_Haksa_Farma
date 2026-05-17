@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Obat;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class PublicController extends Controller
 {
@@ -17,7 +18,9 @@ class PublicController extends Controller
                         $q->where('stok_sisa', '>', 0)
                           ->where('tgl_expired', '>=', date('Y-m-d'));
                      })
-                     ->where('tampil_di_pelanggan', true)
+                     ->when(Schema::hasColumn('obats', 'tampil_di_pelanggan'), function($q) {
+                        $q->where('tampil_di_pelanggan', true);
+                     })
                      ->with(['kategori', 'satuan'])
                      ->withSum(['stokBatches as total_stok' => function($q) {
                         $q->where('tgl_expired', '>=', date('Y-m-d'));
