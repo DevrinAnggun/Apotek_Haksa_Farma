@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/obat/sync-stock', [ObatController::class, 'syncStock'])->name('obat.sync_stock');
         Route::get('/obat/{id}/so-data', [ObatController::class, 'getSOData'])->name('obat.so_data');
         Route::get('/obat/cetak-so', [ObatController::class, 'cetakStokOpname'])->name('obat.cetak_so');
+        Route::post('/obat/{id}/toggle-tampil', [ObatController::class, 'toggleTampil'])->name('obat.toggle_tampil');
         Route::resource('obat', ObatController::class);
         Route::get('/kadaluarsa/pdf', [KadaluarsaController::class, 'cetakPdf'])->name('kadaluarsa.pdf');
         Route::resource('kadaluarsa', KadaluarsaController::class);

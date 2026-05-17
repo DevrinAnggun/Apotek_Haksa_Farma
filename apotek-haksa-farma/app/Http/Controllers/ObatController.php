@@ -293,6 +293,21 @@ class ObatController extends Controller
         return redirect()->back()->with('success', 'Data Obat berhasil dihapus!');
     }
 
+    public function toggleTampil(Request $request, $id)
+    {
+        $obat = Obat::findOrFail($id);
+        $obat->tampil_di_pelanggan = !$obat->tampil_di_pelanggan;
+        $obat->save();
+
+        return response()->json([
+            'success' => true,
+            'tampil'  => $obat->tampil_di_pelanggan,
+            'message' => $obat->tampil_di_pelanggan
+                ? 'Obat ditampilkan di halaman pelanggan.'
+                : 'Obat disembunyikan dari halaman pelanggan.',
+        ]);
+    }
+
     public function saveStockOpname(Request $request)
     {
         $id_obat = $request->id_obat;

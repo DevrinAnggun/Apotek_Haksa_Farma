@@ -16,9 +16,14 @@ class Obat extends Model
         'harga_beli',
         'harga_jual',
         'batas_stok_minimal',
+        'tampil_di_pelanggan',
         'gambar',
         'deskripsi',
         'cara_pakai',
+    ];
+
+    protected $casts = [
+        'tampil_di_pelanggan' => 'boolean',
     ];
 
     public function kategori()

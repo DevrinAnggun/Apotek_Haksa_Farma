@@ -145,6 +145,7 @@
                 <th class="border border-gray-400 p-2 min-w-[90px] leading-tight">SISA<br>STOK</th>
                 <th class="border border-gray-400 p-2 min-w-[120px] leading-tight">TOTAL HARGA<br>PENJUALAN</th>
                 <th class="border border-gray-400 p-2 min-w-[120px]">TGL KADALUARSA</th>
+                <th class="border border-gray-400 p-2 min-w-[90px]">TAMPILKAN</th>
                 <th class="border border-gray-400 p-2 min-w-[100px]">AKSI</th>
             </tr>
         </thead>
@@ -199,6 +200,23 @@
                         <span class="text-gray-300">-</span>
                     @endif
                 </td>
+                {{-- Toggle Tampil Pelanggan --}}
+                <td class="py-2 px-2 border border-gray-400">
+                    <div class="flex justify-center items-center">
+                        <button type="button"
+                            id="toggle-btn-{{ $obat->id }}"
+                            onclick="toggleTampilPelanggan({{ $obat->id }}, this)"
+                            data-tampil="{{ $obat->tampil_di_pelanggan ? '1' : '0' }}"
+                            title="{{ $obat->tampil_di_pelanggan ? 'Klik untuk sembunyikan dari pelanggan' : 'Klik untuk tampilkan ke pelanggan' }}"
+                            class="relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none shadow-inner
+                                   {{ $obat->tampil_di_pelanggan ? 'bg-green-500' : 'bg-gray-300' }}">
+                            <span id="toggle-knob-{{ $obat->id }}"
+                                class="inline-block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300
+                                       {{ $obat->tampil_di_pelanggan ? 'translate-x-6' : 'translate-x-1' }}">
+                            </span>
+                        </button>
+                    </div>
+                </td>
                 <td class="py-2 px-2 border border-gray-400">
                     <div class="flex justify-center items-center gap-1">
                         <button type="button"
@@ -214,6 +232,7 @@
                             data-harga-beli="{{ $obat->harga_beli }}"
                             data-expired-date="{{ $obat->tanggal_kadaluarsa ?? '' }}"
                             data-stok-minimal="{{ $obat->batas_stok_minimal }}"
+                            data-tampil-di-pelanggan="{{ $obat->tampil_di_pelanggan ? '1' : '0' }}"
                             onclick="openEditModal(this)"
                             class="bg-green-600 hover:bg-green-700 text-white p-1 rounded transition shadow-sm" title="Edit">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -228,7 +247,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="13" class="py-12 text-center text-gray-400 border border-gray-300">Data obat belum tersedia.</td>
+                <td colspan="12" class="py-12 text-center text-gray-400 border border-gray-300">Data obat belum tersedia.</td>
             </tr>
             @endforelse
         </tbody>
@@ -339,9 +358,23 @@
                     </div>
                 </div>
 
-                <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
-                    <input type="number" name="batas_stok_minimal" id="tambah_batas_stok_minimal" min="0" value="5" required placeholder="Contoh: 5" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                <div class="grid grid-cols-2 gap-4 items-end">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
+                        <input type="number" name="batas_stok_minimal" id="tambah_batas_stok_minimal" min="0" value="5" required placeholder="Contoh: 5" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-bold">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Tampilkan</label>
+                        <div class="flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50">
+                            <button type="button" id="tambah_toggle_btn"
+                                onclick="toggleModalSwitch('tambah')"
+                                class="relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none shadow-inner bg-green-500">
+                                <span id="tambah_toggle_knob" class="inline-block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 translate-x-6"></span>
+                            </button>
+                            <span id="tambah_toggle_label" class="text-xs font-bold text-green-600">ON</span>
+                            <input type="hidden" name="tampil_di_pelanggan" id="tambah_tampil_di_pelanggan" value="1">
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -424,9 +457,23 @@
                     </div>
                 </div>
 
-                <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
-                    <input type="number" name="batas_stok_minimal" id="edit_batas_stok_minimal" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
+                <div class="grid grid-cols-2 gap-4 items-end">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Minimal Stok <span class="text-red-500">*</span></label>
+                        <input type="number" name="batas_stok_minimal" id="edit_batas_stok_minimal" min="0" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-sm font-medium">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Tampilkan</label>
+                        <div class="flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50">
+                            <button type="button" id="edit_toggle_btn"
+                                onclick="toggleModalSwitch('edit')"
+                                class="relative inline-flex items-center h-6 w-12 rounded-full transition-colors duration-300 focus:outline-none shadow-inner bg-green-500">
+                                <span id="edit_toggle_knob" class="inline-block w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 translate-x-6"></span>
+                            </button>
+                            <span id="edit_toggle_label" class="text-xs font-bold text-green-600">ON</span>
+                            <input type="hidden" name="tampil_di_pelanggan" id="edit_tampil_di_pelanggan" value="1">
+                        </div>
+                    </div>
                 </div>
                     
             </form>
@@ -852,12 +899,114 @@
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+
+        // Set toggle tampil di pelanggan berdasarkan data obat
+        const tampil = parseInt(el.dataset.tampilDiPelanggan ?? '1');
+        setModalToggle('edit', tampil);
     }
     function closeEditModal() { 
         const modal = document.getElementById('modalEdit');
         modal.classList.add('hidden'); 
         modal.style.display = 'none';
         document.body.style.overflow = ''; 
+    }
+
+    // Toggle on/off tampil di pelanggan (AJAX, langsung di tabel)
+    function toggleTampilPelanggan(id, btn) {
+        const knob = document.getElementById('toggle-knob-' + id);
+        const currentTampil = btn.dataset.tampil === '1';
+        const newTampil = !currentTampil;
+
+        // Optimistic UI
+        if (newTampil) {
+            btn.classList.remove('bg-gray-300');
+            btn.classList.add('bg-green-500');
+            knob.classList.remove('translate-x-1');
+            knob.classList.add('translate-x-6');
+        } else {
+            btn.classList.remove('bg-green-500');
+            btn.classList.add('bg-gray-300');
+            knob.classList.remove('translate-x-6');
+            knob.classList.add('translate-x-1');
+        }
+        btn.dataset.tampil = newTampil ? '1' : '0';
+        btn.title = newTampil ? 'Klik untuk sembunyikan dari pelanggan' : 'Klik untuk tampilkan ke pelanggan';
+
+        fetch('{{ url("obat") }}/' + id + '/toggle-tampil', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({})
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) {
+                // Revert on failure
+                toggleTampilPelanggan(id, btn);
+            }
+        })
+        .catch(() => {
+            // Revert on error
+            toggleTampilPelanggan(id, btn);
+        });
+    }
+
+    // Toggle switch di dalam modal (Tambah / Edit)
+    function toggleModalSwitch(prefix) {
+        const btn   = document.getElementById(prefix + '_toggle_btn');
+        const knob  = document.getElementById(prefix + '_toggle_knob');
+        const label = document.getElementById(prefix + '_toggle_label');
+        const input = document.getElementById(prefix + '_tampil_di_pelanggan');
+        const isOn  = input.value === '1';
+
+        if (isOn) {
+            // Turn OFF
+            btn.classList.remove('bg-green-500');
+            btn.classList.add('bg-gray-300');
+            knob.classList.remove('translate-x-6');
+            knob.classList.add('translate-x-1');
+            label.textContent = 'OFF';
+            label.className = 'text-xs font-bold text-gray-400';
+            input.value = '0';
+        } else {
+            // Turn ON
+            btn.classList.remove('bg-gray-300');
+            btn.classList.add('bg-green-500');
+            knob.classList.remove('translate-x-1');
+            knob.classList.add('translate-x-6');
+            label.textContent = 'ON';
+            label.className = 'text-xs font-bold text-green-600';
+            input.value = '1';
+        }
+    }
+
+    // Helper: set modal toggle state to a specific value (1=ON, 0=OFF)
+    function setModalToggle(prefix, value) {
+        const btn   = document.getElementById(prefix + '_toggle_btn');
+        const knob  = document.getElementById(prefix + '_toggle_knob');
+        const label = document.getElementById(prefix + '_toggle_label');
+        const input = document.getElementById(prefix + '_tampil_di_pelanggan');
+        if (!btn || !knob || !label || !input) return;
+
+        if (value) {
+            btn.classList.remove('bg-gray-300');
+            btn.classList.add('bg-green-500');
+            knob.classList.remove('translate-x-1');
+            knob.classList.add('translate-x-6');
+            label.textContent = 'ON';
+            label.className = 'text-xs font-bold text-green-600';
+            input.value = '1';
+        } else {
+            btn.classList.remove('bg-green-500');
+            btn.classList.add('bg-gray-300');
+            knob.classList.remove('translate-x-6');
+            knob.classList.add('translate-x-1');
+            label.textContent = 'OFF';
+            label.className = 'text-xs font-bold text-gray-400';
+            input.value = '0';
+        }
     }
     function openHapusModal(id, nama) {
         document.getElementById('formHapus').action = '{{ url("obat") }}/' + id;

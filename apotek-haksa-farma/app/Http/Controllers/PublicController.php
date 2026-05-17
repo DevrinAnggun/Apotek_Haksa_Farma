@@ -17,6 +17,7 @@ class PublicController extends Controller
                         $q->where('stok_sisa', '>', 0)
                           ->where('tgl_expired', '>=', date('Y-m-d'));
                      })
+                     ->where('tampil_di_pelanggan', true)
                      ->with(['kategori', 'satuan'])
                      ->withSum(['stokBatches as total_stok' => function($q) {
                         $q->where('tgl_expired', '>=', date('Y-m-d'));
